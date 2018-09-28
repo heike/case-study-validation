@@ -177,7 +177,7 @@ For the Houston Sets, Ruger LCP barrels were used. These barrels are first rifle
 # From land-to-land scores to bullet summary scores
 
 ```{r, echo=FALSE, results = 'hide', warning = FALSE, message = FALSE}
-features <- read.csv("data/fsi-features.csv")
+features <- read.csv("data/fsi-features.csv.gz")
 features <- features %>% mutate(
   bullet1 = gsub("ullet ","", bullet1),
   bullet2 = gsub("ullet ","", bullet2)
@@ -377,7 +377,7 @@ The results from automatic matching, again, correctly match barrel and questione
 \autoref{fig:hou} shows an overview the three sets of the scores for all pairs of questioned bullets with all other bullets 
 
 ```{r hou, fig.width=9, fig.height = 3, fig.cap="Overview of matching scores for all pairs of questioned bullets to known bullets from five barrels (on the left) and questioned bullets to themselves (tiles on the right).", fig.subcap=c("Set 1", "Set 2", "Set 3"), fig.align="middle", fig.ncol=1}
-features <- read.csv("data/fsi-features.csv")
+features <- read.csv("data/fsi-features.csv.gz")
 
 features <- features %>% mutate(
   bullet1 = gsub("ullet ","", bullet1),
