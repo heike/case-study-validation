@@ -138,7 +138,7 @@ A signature for a land engraved area is then defined as the sequence $z_i$, $i =
 # dframe$land <- paste("Land", dframe$landid)
 
 signatures <- read.csv("data/signatures.csv")
-signatures <- dframe %>% select(bullet, land, sigs) %>% tidyr::unnest()
+# signatures <- dframe %>% select(bullet, land, sigs) %>% tidyr::unnest()
 signatures %>% 
   ggplot(aes(x = x/1000)) + 
   geom_line(aes(y = raw_sig), colour = "grey70") +
