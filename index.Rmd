@@ -136,9 +136,9 @@ A signature for a land engraved area is then defined as the sequence $z_i$, $i =
 # dframe$landid <- parse_number(dframe$land)
 # dframe$landid[idx] <- (dframe$landid[idx] +1) %% 6 + 1
 # dframe$land <- paste("Land", dframe$landid)
+# signatures <- dframe %>% select(bullet, land, sigs) %>% tidyr::unnest()
 
 signatures <- read.csv("data/signatures.csv")
-# signatures <- dframe %>% select(bullet, land, sigs) %>% tidyr::unnest()
 signatures %>% 
   ggplot(aes(x = x/1000)) + 
   geom_line(aes(y = raw_sig), colour = "grey70") +
@@ -323,14 +323,29 @@ Some of the questioned bullets match the same barrel, e.g. questioned bullets 'P
 
 ## Phoenix PD
 
-```{r pd, echo=FALSE, fig.width = 10, fig.height=5, fig.cap="Phoenix study: overview of all bullet-to-bullet matches between all pairs of questioned bullets ($y$-axis) and known test fires from ten barrels ($x$ axis). The order of the bullets on the $y$ axis is determined by matching barrel."}
+```{r pd, echo=FALSE, fig.width = 9, fig.height=4, fig.cap="Phoenix study: overview of all bullet-to-bullet matches between all pairs of questioned bullets ($y$-axis) and known test fires from ten barrels ($x$ axis). The order of the bullets on the $y$ axis is determined by matching barrel."}
 features <- read.csv("data/pd-features.csv.gz")
+
 f2 <- features %>% 
   separate(first, into = c("foo1", "foo2", "barrel1", "bullet1", "land1", "foo3"), remove = FALSE) %>% 
   separate(second, into = c("foo4", "foo5", "bullet2", "land2", "foo6"), remove = FALSE) %>%
   select(-foo1, -foo2, -foo3, -foo4, -foo5, -foo6) 
 
-pdnest <- f2 %>% group_by(bullet2, barrel1, bullet1) %>%  nest()  
+unknowns <- read.csv("data/pd-features-unknown.csv")
+unknowns <- unknowns %>% filter(bullet1 != bullet2)
+unknowns <- unknowns %>% mutate(
+  bullet2 = gsub("Unknown 1-", "", bullet2),
+  bullet1 = gsub("Unknown 1-", "", bullet1)
+)
+f3 <- rbind(
+  f2 %>% select(b1, b2, barrel1, bullet1, 
+                land1, bullet2, land2, ccf, rfscore, KM) %>%
+    mutate(barrel2 = "Unknown"),
+  unknowns %>% select(b1, b2, bullet1, 
+                land1, bullet2, land2, ccf, rfscore) %>%
+    mutate(barrel1 ="Unknown", barrel2="Unknown", KM=FALSE)
+  )
+pdnest <- f3 %>% group_by(bullet2, barrel1, bullet1) %>%  nest()  
 
 pdnest <- pdnest %>% mutate(
   sam_ccf = data %>% purrr::map_dbl(.f=function(d) {
@@ -346,23 +361,26 @@ pdnest <- pdnest %>% mutate(
 
 pdnest <- pdnest %>% 
   mutate(
-    bullet2 = factor(bullet2, levels=rev(c("N", "B", "E", "T", "H", "J", "K", "Q", "Y", "Z")))
+    bullet2 = factor(bullet2, levels=rev(c("N", "B", "E", "T", "H", "J", "K", "Q", "Y", "Z"))),
+    bullet1 = factor(bullet1, levels=c("B1", "B2", "B3", rev(levels(bullet2))))
   )
 p3 <- pdnest %>%
   ggplot(aes(y = bullet2, x = bullet1, fill = sam_rf)) + 
   geom_tile(size=1) + 
-  facet_grid(.~barrel1) +
+  facet_grid(.~barrel1, scales="free", space="free") +
   ylab("Questioned bullets") + 
-  xlab("Known bullets") +
+  xlab("Known bullets and Questioned bullets") +
   scale_fill_gradient2("RF score ", low="darkgrey", 
                        high="darkorange", midpoint=0.45, limits=c(0,1)) + 
   scale_colour_manual("same source", values="darkorange") + 
   scale_y_discrete() +
+  theme_bw() +
   theme(legend.position="bottom") +
-  coord_equal() +
+#  coord_equal() +
   geom_tile(aes(colour = TRUE), size = .5,
             data = filter(pdnest, KM)) +
-  guides(colour = guide_legend(override.aes = list(fill = NA)))
+  guides(colour = guide_legend(override.aes = list(fill = NA))) 
+  
 
 pdnest$samesource <- pdnest$KM
 
