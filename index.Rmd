@@ -1,0 +1,516 @@
+---
+title: Case study validations of automatic bullet matching
+
+# to produce blinded version set to 1
+blinded: 0
+
+authors: 
+- name: Author 1
+  thanks: The authors gratefully acknowledge XXX NIST funding for CSAFE XXX access to bullets from Hamby set 44, XXX Tylor, Melissa and Kasi. Scanning. Hamby advice. 
+  affiliation: Department of YYY, University of XXX
+  
+- name: Author 2
+  affiliation: Department of ZZZ, University of WWW
+
+keywords:
+- 3 to 6 keywords
+- that do not appear in the title
+
+abstract: |
+  
+bibliography: bibliography
+biblio-style: apsr
+
+output: 
+  pdf_document:
+    citation_package: natbib
+    keep_tex: true
+    fig_caption: true
+    latex_engine: pdflatex
+    template: template.tex
+
+---
+\newcommand{\hh}[1]{{\textcolor{orange}{#1}}}
+\noindent
+
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+library(knitr)
+knitr::opts_chunk$set(
+  message = FALSE,
+  warning = FALSE,
+  error = FALSE, 
+  collapse = TRUE,
+  comment = "",
+  fig.height = 6,
+  fig.width = 6,
+  fig.align = "center",
+  out.width= '\\textwidth',
+  cache = FALSE,
+  fig.path='figures/',
+  echo=FALSE
+)
+options(knitr.table.format = "latex")
+
+library(tidyverse)
+library(scales)
+library(multidplyr) # install_github("hadley/multidplyr")
+library(bulletxtrctr) # install_github("csafe-isu/bulletr")
+library(gridExtra)
+library(kableExtra)
+```
+
+```{r functions}
+estimateBeta <- function(x, method = "mm", probs=c(0.25, 0.75)) {
+  if (method =="mm") {
+    mu = mean(x, na.rm=TRUE)
+    sd = sd(x, na.rm=TRUE)
+    lambda <- mu/sd*(1-mu)/sd - 1
+    alpha <- mu*lambda
+    beta <- (1-mu)*lambda
+  }
+  if (method =="LB") {
+    quantile1=list(p=probs[1],x=quantile(probs=probs[1], x))
+    quantile2=list(p=probs[2],x=quantile(probs=probs[2], x))
+    bs <- LearnBayes::beta.select(quantile1,quantile2)
+    alpha = bs[1]
+    beta = bs[2]
+  }
+  return(c(alpha=alpha, beta=beta))
+}
+```
+# Idea of the paper
+
+In \citet{aoas} an algorithm has been laid out to quantify the similarity between land engraved areas of bullets. 
+In this paper we present results of the algorithm on several case studies where ground truth is known.
+
+
+# Introduction and Background
+In current practice, firearms and toolmark examiners (FTE) evaluate the similiarity of striae on bullets by placing the evidence together with a bullet from the suspected gun under a comparison microscope and visually classify similarity according to the theory of firearms identification \citep{identification} as one of identification, inconclusive or exclusion. Exact guidelines for this classification vary from lab to lab, e.g.\ some labs will exclude only on the basis of non-matching class characteristics (such as direction of the twist in rifling, land length or number of lands, or type of rifling). In some labs,  CMS (consecutively matching striae) as defined by \citet{biasotti} is used as a way to quantify the strength of a match.
+
+In the algorithm  similarity of bullet land engraved areas is evaluated based on 3d topographic scans of land engraved areas (LEAs). From each land engraved area a signature is derived by
+\begin{itemize}
+\item[(a)] identifying an area where striae are expressed, 
+\item[(b)] discarding extraneous/contaminated data, such as data from groove engraved area and areas affected by break-off or contact with objects after the bullet exited the barrel  (``tank rash"), 
+\item[(c)] removing bullet curvature. 
+\end{itemize}
+A signature for a land engraved area is then defined as the sequence $z_i$, $i = 1, ..., I$, where $I$ is the number of observed locations across the base of the bullet. \autoref{fig:signatures} shows a set of six signatures corresponding to the six land engraved areas of bullets 1 and 2 from barrel 1 of set 44 of the Hamby study \citep{hamby}. 
+
+```{r signatures, fig.width = 10, fig.height = 4, fig.cap="Signatures of all six lands of bullets 1 and 2 from barrel 1 of the Hamby set 44."}
+# signatures for one bullet
+h44cc <- readRDS("data/h44-ccdata.rda")
+br1 <- h44cc[1:12]
+dframe <- 1:12 %>% purrr::map_df(.f = function(i) {
+  d <- br1[[i]]
+  d <- d %>% group_by(y) %>% summarize(
+    value = mean(value, na.rm=TRUE)
+  )
+  d$id <- i
+  d %>% ungroup(y) %>% rename(
+    x = y
+  )
+})
+
+dframe$bullet <- rep(c("Bullet 1", "Bullet 2"), each = 6)[dframe$id]
+dframe$land <- paste("Land", (dframe$id %% 6 + 1))
+
+dframe <- dframe %>% group_by(bullet, land) %>% nest()
+names(dframe)[3] <- "ccdata"
+
+library(bulletxtrctr)
+dframe <- dframe %>% mutate(
+  grooves = ccdata %>% 
+    purrr::map(.f = cc_locate_grooves, method = "middle", 
+               adjust = 30, return_plot = TRUE)
+)
+dframe <- dframe %>% mutate(
+  sigs = purrr::map2(
+    .x = ccdata, .y = grooves, 
+    .f = function(x, y) {
+      cc_get_signature(
+        ccdata = x, grooves = y, span1 = 0.75, span2 = 0.03)
+    })
+)
+dframe$barrelland <- dframe$land
+idx <- which(dframe$bullet=="Bullet 2")
+dframe$landid <- parse_number(dframe$land)
+dframe$landid[idx] <- (dframe$landid[idx] +1) %% 6 + 1
+dframe$land <- paste("Land", dframe$landid)
+
+signatures <- dframe %>% select(bullet, land, sigs) %>% tidyr::unnest()
+signatures %>% 
+  ggplot(aes(x = x/1000)) + 
+  geom_line(aes(y = raw_sig), colour = "grey70") +
+  geom_line(aes(y = sig), colour = "grey30") +
+  facet_grid(bullet~land) +
+  ylim(c(-5,5)) +
+  theme_bw() +
+  ylab("Surface measurement (in microns)") +
+  xlab("Relative Location (in millimeters)") 
+```
+
+Quantitative features describing the similarity of two signature are extracted. Features include cross-correlation, Euclidean distance, depth and number of matching striae, as well as the number of consecutively matching striae (CMS).   
+
+# Validation Sets
+
+The algorithm in \citet{aoas} is trained on scans from Hamby sets 252 and 173 made available through \citet{nist}. (Set 173 was originally published as Hamby set 44. This has been corrected now.)
+
+Here, we are considering three validation sets:
+\begin{itemize}
+\item {\bf Hamby set 44} 
+Hamby set 44 is one set of the Hamby study \citep{hamby}. Each Hamby set  consists of a total of 35 bullets fired through ten consecutively manufactured barrels of Rugers P85. Each set consists of 20 known bullets (two from each of the ten barrels) and 15 questioned bullets of unknown origin. Note that all Hamby sets are closed sets, i.e. all questioned bullets are fired through one of the ten barrels. The ammunition used for this set were 9 mm Luger 115 Grain Full Metal Jacket  from the Winchester Ammunition Company.
+\item {\bf Phoenix PD}
+Tylor Klep from Phoenix PD provided sets of known and unkown bullets: the set of known bullets consists of three test fires (B1, B2, B3) from each of eight different barrels (A9, C8, F6, L5, M2, P7, R3, U10). Ten unknown bullets were provided (B, E, H, J, K N, Q, T, Y, Z). Land engraved areas for each of the six lands of each bullet were scanned by Bill Henderson (Sensofar).
+\item {\bf Houston FSI}
+This study was set up by Melissa Nally and Kasi Kirksey from FSI Houston. Three test sets based on ten consecutively rifled Ruger LCP barrels (A, B, C, D, E, F, G, H, I, J) and three other, non-consecutively rifled Ruger LCP barrels (R1, R2, R3). Each test set consists of three test fires each from five consecutively rifled barrels. Additionally, ten unknowns bullets are provided for each kit. The ammunition used in both test fires and the unknowns were Remington UMC 9mm Luger Full Metal Jackets.
+\end{itemize}
+
+Scans of all land engraved areas were taken on a Sensofar Confocal Light microscope at 20x magnification resulting a resolution of 0.645 microns per pixel. If not indicated otherwise, scans were taken at the Roy J Carver high resolution microscopy lab at Iowa State University.
+
+
+Case studies were chosen such that difficulty for the matching algorithm increases from one to the other: Hamby set 44 is part of the Hamby study. The algorithm in \citet{aoas} was trained on sets 173 and 252, so the bullets in Hamby 44 are of the same type of ammunition and are fired through the same barrels as the bullets in the training set.
+
+For the Phoenix PD set, Ruger XXX barrels were used. Obviously, the barrels in this set are different from the barrels in the training, but the barrels are similarly rifled as the Ruger P-85 barrels.  
+
+For the Houston Sets, Ruger LCP barrels were used. These barrels are first rifled traditionally, i.e. similar to the Ruger P-85, but are double fired. The second firing happens after the rifling. This second firing has the potential to introduce some subclass characteristics, i.e. anomalies that are shared between similarly barrels. This should make the automatic matching, and in particular, the classification as different-source land engraved areas/bullets, harder.
+
+# From land-to-land scores to bullet summary scores
+
+```{r, echo=FALSE, results = 'hide', warning = FALSE, message = FALSE}
+features <- read.csv("data/fsi-features.csv")
+features <- features %>% mutate(
+  bullet1 = gsub("ullet ","", bullet1),
+  bullet2 = gsub("ullet ","", bullet2)
+)
+b12 <- features %>% filter(group1 == "G1", barrel1=="KA", bullet1== "B1",
+                           group2 == "G1", barrel2=="KA", bullet2== "B2")
+p1 <- b12 %>% ggplot(aes(x = land1, y = land2, fill = rfscore)) + 
+  geom_tile() + ggtitle ("Same barrel") +  
+  scale_fill_gradient2("RF score: ", midpoint=0.3, low = "darkgrey", high = "darkorange", limits=c(0,1)) +
+  theme_bw() + 
+  xlab ("Bullet 2") + ylab("Bullet 1") +
+  theme(legend.position = "bottom") + coord_equal()
+
+bab <- features %>% filter(group1 == "G1", barrel1=="KA", bullet1== "B1",
+                           group2 == "G1", barrel2=="KB", bullet2== "B1")
+p2 <- bab %>% ggplot(aes(x = land1, y = land2, fill = rfscore)) + 
+  geom_tile() + ggtitle ("Different barrel") +  
+  scale_fill_gradient2("RF score: ", midpoint=0.3, low = "darkgrey", high = "darkorange", limits=c(0,1)) +
+  theme_bw() + 
+  xlab ("Bullet 2") + ylab("Bullet 1") +
+  theme(legend.position = "bottom") + coord_equal()
+```
+
+
+
+Land-land comparisons lead to a whole set of scores for bullet-bullet comparisons. \autoref{fig:b2b} shows two matrices of scores for a pair of bullet-bullet matches. On the left, a matrix is shown that is typical for scores from two bullets from the same barrel. On the right, values for a pair of known non-matching bullets are shown.
+
+
+```{r b2b, echo = FALSE, fig.width = 9, fig.height = 5,  out.width='.6\\textwidth', fig.cap="Overview of land-land matching scores for two pairs of bullet-bullet comparisons. On the left the two bullets are known to come from the same source (barrel) on the right, the bullets are from two different sources (barrels)"}
+grid.arrange(p1, p2, ncol=2, padding=2)
+```
+
+When imaging bullets, operators scan one land at a time in a clockwise (left twisted rifling) or anti-clockwise (right twisted rifling) sequence. The order in which scans are acquired is kept as meta-information. Let us assume that lands on a bullet are labelled $\ell_i$ with $i = 1, .., p$. A match between two bullets therefore results in an expected additional $p-1$ matches between pairs of lands. These lands are also expected to be in a sequence, i.e. if there is a match between lands $\ell_i$ on bullet 1 and $\ell_j$ on bullet 2, we also expect lands $\ell_{i\oplus s}$ and $\ell_{j\oplus s}$ to match for all integers $s$, where $\oplus$ is defined as $a \oplus b \equiv \left((a + b)\mod p\right) + 1$. This relationship gives rise to the sequence average maximum (SAM) to quantify a bullet-to-bullet match. 
+
+\begin{definition}{Sequence Average and its Maximum}
+Let $A$ be a square real-valued matrix of dimensions $p \times p$. For the purpose of this paper, $A$ consists of scores describing the similarity between two sets of land engraved areas.
+The $k$th \emph{sequence average} $SA(A, k)$ for $k = 0, ... p-1$ is defined  as 
+$$SA(A, k) = \frac{1}{p} \sum_{i=1}^{p} a_{i,i \oplus k}, \text{ where } i\oplus k := \left((i + k)\mod p\right) + 1.$$
+The \emph{Sequence Average Maximum} \citep[SAM, ][]{sam} of square matrix $A$ of scores is defined as
+$$SAM (A) = \max_{k = 1}^{p} SA(A, k).$$
+\end{definition}
+
+Note that the sequence average maximum of the correlation between lands is used in SensoComp to capture the similarity between bullets. The correlation based SAM score has also been called the 'average correlation calculated at the max phase' in \citet{chu}. 
+
+```{r sam-sketch, out.width='\\textwidth', fig.width=12, fig.height = 2.5, fig.cap="Sketch of all six land-to-land sequences between two bullets with six lands. "}
+df2 <- data.frame(expand.grid(x = 1:6, y = 1:6))
+df2$case1 <- df2$x == ((df2$y+5) %% 6) + 1
+df2$case2 <- df2$x == ((df2$y+0) %% 6) + 1
+df2$case3 <- df2$x == ((df2$y+1) %% 6) + 1
+df2$case4 <- df2$x == ((df2$y+2) %% 6) + 1
+df2$case5 <- df2$x == ((df2$y+3) %% 6) + 1
+df2$case6 <- df2$x == ((df2$y+4) %% 6) + 1
+
+df2 %>% gather("case", "values", starts_with("case")) %>% 
+  mutate(case = gsub("case", "", case)) %>%
+  mutate(case = paste0("k = ", as.numeric(case)-1)) %>%
+  ggplot(aes(x = factor(x), y = factor(y, levels=1:6), fill = values)) + 
+  geom_tile(colour = "grey20") + 
+  facet_wrap(~case, ncol = 6) +
+  xlab("Bullet 2") + ylab("Bullet 1") +
+  scale_x_discrete(labels = paste0("L",1:6)) +
+  scale_y_discrete(labels = paste0("L",1:6)) +
+  scale_fill_manual("Cell included in SA(A,k)", values = c("white", "grey20")) + 
+  coord_equal() +
+  theme(legend.position="bottom")
+```
+
+Looking back at Figure \ref{fig:b2b}, we see that for the two bullets from the same barrel, the sequence average for 
+$k=2$ is higher than the other sequence averages, and also higher than the sequence averages for the other pair of bullets shown on the right of the figure.
+
+SAM scores allow us to define a single quantity for each pair of bullets that describes the similarity between these two bullets. 
+This leads us to two minimal requirements the scores should fulfill:
+\begin{itemize}
+\item[(R1)] {\bf Monotonicity:} a higher score is indicative of higher similarity between a pair of bullets, in particular, similarity scores of same-source pairs of bullets are higher than different-source pairs.
+\item[(R2)] {\bf Stability:} the same score leads to the same conclusion. 
+\end{itemize}
+
+# Results from the validation sets
+
+## Hamby Set 44
+
+```{r h44, echo=FALSE, fig.width = 10, fig.height=5, fig.cap="Hamby set 44: overview of all bullet-to-bullet matches between all pairs of questioned bullets ($y$-axis) and known test fires from ten barrels ($x$ axis)."}
+h44features <- read.csv("data/h44-features.csv")
+
+h44nest <- h44features %>% 
+  filter(barrel1=="Unk") %>%
+  filter(barrel1 != barrel2 | bullet1 != bullet2) %>%
+  mutate(
+    barrel1 = "Unknown",
+    barrel2 = as.character(barrel2),
+    barrel2 = replace(barrel2, barrel2=="Unk", "Unknown")
+  ) %>%
+  group_by(bullet1, barrel2, bullet2) %>%  nest()  
+
+h44nest <- h44nest %>% mutate(
+  sam_ccf = data %>% purrr::map_dbl(.f=function(d) {
+    scores <- bulletxtrctr::compute_average_scores(d$land1, d$land2, d$ccf)
+    max(scores)
+  }),
+  sam_rf = data %>% purrr::map_dbl(.f=function(d) {
+    scores <- bulletxtrctr::compute_average_scores(d$land1, d$land2, d$rfscore)
+    max(scores)
+  })
+  )
+h44nest <- h44nest %>% 
+  mutate(
+    barrel2 = factor(barrel2, levels =c(1:10, "Unknown")),
+    bullet1 = factor(bullet1, levels=rev(c("K", "O","L", "P",
+                                           "J",
+                                         "H", "I", "Y", "G",
+                                         "E", "U", "X", "F", 
+                                         "T", "S"))),
+    bullet2 = factor(bullet2, levels=c(1:2, rev(levels(bullet1))))
+  )
+h44 <-  h44nest %>%
+  ggplot(aes(y = bullet1, x = bullet2, 
+             fill = sam_rf)) + 
+  geom_tile(size=1) + 
+  facet_grid(.~barrel2, space="free", scales = "free") +
+  ylab("Questioned bullets") + 
+  xlab("Testfires from barrels 1 to 10 (left), questioned bullets (right)") +
+  scale_fill_gradient2("RF score ", low="darkgrey", 
+                       high="darkorange", midpoint=0.375, limits=c(0,1)) + 
+  scale_colour_manual("same source", values="darkorange") + 
+  
+  #  scale_x_discrete(position = "top") +
+  scale_y_discrete() +
+  geom_tile(aes(colour = TRUE), size = .5, data = filter(h44nest, sam_rf > 0.3)) +
+  guides(colour = guide_legend(override.aes = list(fill = NA))) + ggtitle("Hamby set 44") +
+  theme_bw() +
+    theme(legend.position="bottom")
+  
+
+h44nest$samesource <- h44nest$sam_rf > 0.3
+
+h44
+``` 
+
+\autoref{fig:h44} shows an overview of all scores from pairs of questioned bullets with all other bullets. On the left of \autoref{fig:h44} there are ten strips labelled 1 through 10. These strips correspond to known barrels 1 through 10. For each of these barrels, two test fires were done. Each of the colored tiles corresponds to a pair of bullets between a questioned bullet (shown along the $y$-axis) and one of the other bullets. The similarity score is encoded in color: grey colors correspond to low similarity scores, orange colors correspond to high similarity scores. Ground truth is encoded in this figure as a thin orange frame for all pairs of same-source bullets. 
+What we want to see for the relationship between questioned bullets and the ten barrels, is one barrel with orange-filled, orange-framed tiles for both bullets from the same barrel, and grey tiles across the other barrels. This expectation is met for all questioned bullets, i.e. the automatic matching  identifies the correct barrel for all questioned bullets. On the right of \autoref{fig:h44} the relationship between all pairs of questioned bullets is shown. Note that questioned bullets are not compared to themselves, leaving white squares on the diagonal.
+Some of the questioned bullets match the same barrel, e.g. questioned bullets 'P' and 'J' both match barrel 5. Therefore bullets 'P' and 'J' are also matching each other in the square on the right hand side.
+
+## Phoenix PD
+
+```{r pd, echo=FALSE, fig.width = 10, fig.height=5, fig.cap="Phoenix study: overview of all bullet-to-bullet matches between all pairs of questioned bullets ($y$-axis) and known test fires from ten barrels ($x$ axis). The order of the bullets on the $y$ axis is determined by matching barrel."}
+features <- read.csv("data/pd-features.csv.gz")
+f2 <- features %>% 
+  separate(first, into = c("foo1", "foo2", "barrel1", "bullet1", "land1", "foo3"), remove = FALSE) %>% 
+  separate(second, into = c("foo4", "foo5", "bullet2", "land2", "foo6"), remove = FALSE) %>%
+  select(-foo1, -foo2, -foo3, -foo4, -foo5, -foo6) 
+
+pdnest <- f2 %>% group_by(bullet2, barrel1, bullet1) %>%  nest()  
+
+pdnest <- pdnest %>% mutate(
+  sam_ccf = data %>% purrr::map_dbl(.f=function(d) {
+    scores <- bulletxtrctr::compute_average_scores(d$land1, d$land2, d$ccf)
+    max(scores)
+  }),
+  sam_rf = data %>% purrr::map_dbl(.f=function(d) {
+    scores <- bulletxtrctr::compute_average_scores(d$land1, d$land2, d$rfscore)
+    max(scores)
+  }), 
+  KM = data %>% purrr::map_lgl(.f=function(d) { any(d$KM) })
+)
+
+pdnest <- pdnest %>% 
+  mutate(
+    bullet2 = factor(bullet2, levels=rev(c("N", "B", "E", "T", "H", "J", "K", "Q", "Y", "Z")))
+  )
+p3 <- pdnest %>%
+  ggplot(aes(y = bullet2, x = bullet1, fill = sam_rf)) + 
+  geom_tile(size=1) + 
+  facet_grid(.~barrel1) +
+  ylab("Questioned bullets") + 
+  xlab("Known bullets") +
+  scale_fill_gradient2("RF score ", low="darkgrey", 
+                       high="darkorange", midpoint=0.45, limits=c(0,1)) + 
+  scale_colour_manual("same source", values="darkorange") + 
+  scale_y_discrete() +
+  theme(legend.position="bottom") +
+  coord_equal() +
+  geom_tile(aes(colour = TRUE), size = .5,
+            data = filter(pdnest, KM)) +
+  guides(colour = guide_legend(override.aes = list(fill = NA)))
+
+pdnest$samesource <- pdnest$KM
+
+p3 + ggtitle("Phoenix PD set")
+```
+
+\autoref{fig:pd} shows an overview of similarity scores for all pairs of questioned bullets and  test fires. The color encoding is the same as in the previous figure. What we see here, are matches of one of the questioned bullets to all three bullets of one of the barrels each. None of the test fires from barrel U10 shows a match to any of the questioned bullets. SImilarly, questioned bullets 'Q', 'Y', and 'Z' do not match any of the knwon barrels. This is the sign of an open set. 
+The results from automatic matching, again, correctly match barrel and questioned bullets.
+
+
+## Houston FSI
+
+\autoref{fig:hou} shows an overview the three sets of the scores for all pairs of questioned bullets with all other bullets 
+
+```{r hou, fig.width=9, fig.height = 3, fig.cap="Overview of matching scores for all pairs of questioned bullets to known bullets from five barrels (on the left) and questioned bullets to themselves (tiles on the right).", fig.subcap=c("Set 1", "Set 2", "Set 3"), fig.align="middle", fig.ncol=1}
+features <- read.csv("data/fsi-features.csv")
+
+features <- features %>% mutate(
+  bullet1 = gsub("ullet ","", bullet1),
+  bullet2 = gsub("ullet ","", bullet2)
+)
+
+groups <- features %>% 
+  filter(group1 == group2) %>%
+  filter(barrel1 == "Unknowns") %>%
+  filter(barrel1 != barrel2 | bullet1 != bullet2) %>%
+  group_by(group1, barrel1, bullet1, barrel2, bullet2) %>%
+  nest()
+
+
+hounest <- groups %>% mutate(
+  sam_ccf = data %>% purrr::map_dbl(.f=function(d) {
+    scores <- bulletxtrctr::compute_average_scores(d$land1, d$land2, d$ccf)
+    max(scores)
+  }),
+  sam_rf = data %>% purrr::map_dbl(.f=function(d) {
+    scores <- bulletxtrctr::compute_average_scores(d$land1, d$land2, d$rfscore)
+    max(scores)
+  })
+)
+
+hounest$samesource <- hounest$sam_rf > 0.3
+
+hou1nest <- hounest %>% filter(group1 == "G1") %>%
+  mutate(
+    bullet1 = factor(bullet1, levels=rev(c("U40", "U36", "U42", "U10", "U77", "U37", "U28", "U15"))),
+    bullet2 = factor(bullet2, levels=c("B1", "B2", "B3", levels(bullet1)))
+  )
+
+hou1 <- hou1nest %>%
+  ggplot(aes(y = bullet1, x = bullet2, fill = sam_rf)) + 
+  geom_tile(size=1) + 
+  facet_grid(.~barrel2, scales = "free", space="free") +
+  ylab("Questioned bullets") + 
+  xlab("Known bullets and Questioned bullets") +
+  scale_fill_gradient2("RF score ", low="darkgrey", 
+                       high="darkorange", midpoint=0.375, limits=c(0,1)) + 
+  scale_y_discrete() +
+  scale_colour_manual("same source", values="darkorange") +
+  geom_tile(aes(colour = TRUE), size = .5, data = filter(hou1nest, sam_rf > 0.3)) +
+  guides(colour = guide_legend(override.aes = list(fill = NA))) + ggtitle("Houston set 1")
+  
+
+hou2nest <- hounest %>% filter(group1 == "G2") %>%
+  mutate(
+    bullet1 = factor(bullet1, levels=rev(c("U23", "U41", "U61", "U98", "U73", "U34", "U63", "U66"))),
+    bullet2 = factor(bullet2, levels=c("B1", "B2", "B3", levels(bullet1)))
+  )
+hou2 <-  hou2nest %>%
+  ggplot(aes(y = bullet1, x = bullet2, fill = sam_rf)) + 
+  geom_tile(size=1) + 
+  facet_grid(.~barrel2, scales = "free", space="free") +
+  ylab("Questioned bullets") + 
+  xlab("Known bullets and Questioned bullets") +
+  scale_fill_gradient2("RF score ", low="darkgrey", 
+                       high="darkorange", midpoint=0.375, limits=c(0,1)) + 
+  scale_y_discrete() +
+    scale_colour_manual("same source", values="darkorange") +
+  geom_tile(aes(colour = TRUE), size = .5, data = filter(hou2nest, sam_rf > 0.3)) +
+  guides(colour = guide_legend(override.aes = list(fill = NA))) + ggtitle("Houston set 2")
+
+hou3nest <- hounest %>% filter(group1 == "G3") %>%
+  mutate(
+    bullet1 = factor(bullet1, levels=rev(c("U27", "U33", "U36", "U49", "U56", "U65", "U14", "U45"))),
+    bullet2 = factor(bullet2, levels=c("B1", "B2", "B3", levels(bullet1)))
+  ) 
+
+hou3 <- hou3nest %>%
+  ggplot(aes(y = bullet1, x = bullet2, fill = sam_rf)) + 
+  geom_tile(size=1) + 
+  facet_grid(.~barrel2, scales = "free", space="free") +
+  ylab("Questioned bullets") + 
+  xlab("Known bullets and Questioned bullets") +
+  scale_fill_gradient2("RF score ", low="darkgrey", 
+                       high="darkorange", midpoint=0.375, limits=c(0,1)) + 
+  scale_y_discrete() +
+    scale_colour_manual("same source", values="darkorange") +
+  geom_tile(aes(colour = TRUE), size = .5, data = filter(hou3nest, sam_rf > 0.3)) +
+  guides(colour = guide_legend(override.aes = list(fill = NA))) + ggtitle("Houston set 3")
+
+hou1
+
+hou2
+
+hou3
+```
+
+# Comparison of SAM scores
+
+\autoref{fig:compare} shows density curves for the scores of each of the studies, comparing the SAM scores based on cross-correlation (top) and the random forest score (bottom). Color indicates ground truth. Besides densities, small vertical lines below the $x$-axis indicate observed scores in a so-called **rug-plot**. The plot shows that for all three case studies and both measures, i.e. SAM scores based on cross-correlation as well as SAM scores based on the random forest scores, all similarity scores are higher for pairs of bullets from the same source, i.e. bullets fired through the same barrel, than pairs of bullets from different sources (fired through different barrels). 
+ 
+```{r compare, fig.width = 8, fig.height = 5, fig.cap="Density curves of similarity scores from cross-correlation (top) and RF scores (bottom). Different colors indicate same source versus different source. Ideally all scores of different source pairs should be much lower than scores for same source pairs."}
+nests <- rbind(
+  h44nest %>% select(sam_rf, sam_ccf, samesource) %>%
+    mutate(study = "Hamby-44", group1=NA),
+  pdnest %>% select(sam_rf, sam_ccf, samesource) %>%
+    mutate(study = "Phoenix PD", group1=NA),
+  hounest %>% select(sam_rf, sam_ccf, samesource, group1) %>%
+    mutate(study = "Houston FSI")
+)
+nests$study <- factor(nests$study, levels=c("Hamby-44", "Phoenix PD", "Houston FSI"))
+nestslong <- nests %>% gather(key="measure", value="value", sam_rf, sam_ccf)
+nestslong$measure <- factor(nestslong$measure)
+levels(nestslong$measure) <- c("Cross-correlation", "RF score")
+
+nestslong %>% ggplot(aes(x = value, fill=samesource, 
+                     colour=samesource)) +
+  geom_density(alpha=0.6) +
+  geom_rug(alpha=0.5) +
+  facet_grid(measure~study) +
+  theme_bw() +
+  scale_fill_manual("Same source", values=c("darkgrey", "darkorange")) +
+  scale_colour_manual("Same source", values=c("darkgrey", "darkorange")) +
+  scale_x_continuous("SAM scores", limits=c(0,1)) +
+  theme(legend.position="bottom") +
+  geom_hline(yintercept =0) 
+```
+
+What we find in \autoref{fig:compare} is that neither of the measure fulfills both of the minimal requirements laid out above. Both measures fulfill (R1), i.e. all  scores  of  different-source pairs are lower than scores of same-source pairs for SAM scores based on cross-correlation and RF scores.
+However, SAM scores based on the multivariate random forest score show better separation between same-source and different-source scores than SAM scores based on cross-correlation. This can be seen from the larger horizontal distance between the modes of the density curves of RF based SAM scores than cross-correlation SAM scores.  
+
+Regarding requirement (R2), \autoref{fig:compare} shows that for neither of the two measures  a single cutoff exists across different studies that   separates same-source scores from different-source scores without introducing errors. 
+
+Potential improvements are two-fold: we can try to fine tune the matching  algorithm to take make and model of the firearm and ammunition used into account. Downside is that we need to massively expand the database used for training.
+Another solution would be to expand on the summarization. SAM scores only take the scores of the maximum sequence into account and ignore scores associated with pairs of land engraved areas from different sources. Those scores might be useful in establishing a baseline that better expresses similarity between pairs of bullets.
+
+# Discussion and Conclusions
+
+
+What is quite surprising, that what we anticipated to be the easiest case of Hamby 44 turned out to be the hardest to solve. 
+
+# References
