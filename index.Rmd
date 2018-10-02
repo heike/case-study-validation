@@ -86,7 +86,7 @@ In this paper we present results of the algorithm on several case studies where 
 
 
 # Introduction and Background
-In current practice, firearms and toolmark examiners (FTE) evaluate the similiarity of striae on bullets by placing the evidence together with a bullet from the suspected gun under a comparison microscope and visually classify similarity according to the theory of firearms identification \citep{identification} as one of identification, inconclusive or exclusion. Exact guidelines for this classification vary from lab to lab, e.g.\ some labs will exclude only on the basis of non-matching class characteristics (such as direction of the twist in rifling, land length or number of lands, or type of rifling). In some labs,  CMS (consecutively matching striae) as defined by \citet{biasotti} is used as a way to quantify the strength of a match.
+In current practice, firearms and toolmark examiners (FTE) evaluate the similarity of striae on bullets by placing the evidence together with a bullet from the suspected gun under a comparison microscope and visually classify similarity according to the theory of firearms identification \citep{identification} as one of identification, inconclusive or exclusion. Exact guidelines for this classification vary from lab to lab, e.g.\ some labs will exclude only on the basis of non-matching class characteristics (such as direction of the twist in rifling, land length or number of lands, or type of rifling). In some labs,  CMS (consecutively matching striae) as defined by \citet{biasotti} is used as a way to quantify the strength of a match.
 
 In the algorithm  similarity of bullet land engraved areas is evaluated based on 3d topographic scans of land engraved areas (LEAs). From each land engraved area a signature is derived by
 \begin{itemize}
@@ -161,7 +161,7 @@ Here, we are considering three validation sets:
 \item {\bf Hamby set 44} 
 Hamby set 44 is one set of the Hamby study \citep{hamby}. Each Hamby set  consists of a total of 35 bullets fired through ten consecutively manufactured barrels of Rugers P85. Each set consists of 20 known bullets (two from each of the ten barrels) and 15 questioned bullets of unknown origin. Note that all Hamby sets are closed sets, i.e. all questioned bullets are fired through one of the ten barrels. The ammunition used for this set were 9 mm Luger 115 Grain Full Metal Jacket  from the Winchester Ammunition Company.
 \item {\bf Phoenix PD}
-Tylor Klep from Phoenix PD provided sets of known and unkown bullets: the set of known bullets consists of three test fires (B1, B2, B3) from each of eight different barrels (A9, C8, F6, L5, M2, P7, R3, U10). Ten unknown bullets were provided (B, E, H, J, K N, Q, T, Y, Z). Land engraved areas for each of the six lands of each bullet were scanned by Bill Henderson (Sensofar).
+Tylor Klep from Phoenix PD provided sets of known and unknown bullets: the set of known bullets consists of three test fires (B1, B2, B3) from each of eight different barrels (A9, C8, F6, L5, M2, P7, R3, U10). Ten unknown bullets were provided (B, E, H, J, K N, Q, T, Y, Z). Land engraved areas for each of the six lands of each bullet were scanned by Bill Henderson (Sensofar).
 \item {\bf Houston FSI}
 This study was set up by Melissa Nally and Kasi Kirksey from FSI Houston. Three test sets based on ten consecutively rifled Ruger LCP barrels (A, B, C, D, E, F, G, H, I, J) and three other, non-consecutively rifled Ruger LCP barrels (R1, R2, R3). Each test set consists of three test fires each from five consecutively rifled barrels. Additionally, ten unknowns bullets are provided for each kit. The ammunition used in both test fires and the unknowns were Remington UMC 9mm Luger Full Metal Jackets.
 \end{itemize}
@@ -387,7 +387,7 @@ pdnest$samesource <- pdnest$KM
 p3 + ggtitle("Phoenix PD set")
 ```
 
-\autoref{fig:pd} shows an overview of similarity scores for all pairs of questioned bullets and  test fires. The color encoding is the same as in the previous figure. What we see here, are matches of one of the questioned bullets to all three bullets of one of the barrels each. None of the test fires from barrel U10 shows a match to any of the questioned bullets. SImilarly, questioned bullets 'Q', 'Y', and 'Z' do not match any of the knwon barrels. This is the sign of an open set. 
+\autoref{fig:pd} shows an overview of similarity scores for all pairs of questioned bullets and  test fires. The color encoding is the same as in the previous figure. What we see here, are matches of one of the questioned bullets to all three bullets of one of the barrels each. None of the test fires from barrel U10 shows a match to any of the questioned bullets. Similarly, questioned bullets 'Q', 'Y', and 'Z' do not match any of the known barrels. This is the sign of an open set. 
 The results from automatic matching, again, correctly match barrel and questioned bullets.
 
 
@@ -525,7 +525,7 @@ However, SAM scores based on the multivariate random forest score show better se
 Regarding requirement (R2), \autoref{fig:compare} shows that for neither of the two measures  a single cutoff exists across different studies that   separates same-source scores from different-source scores without introducing errors. 
 
 Potential improvements are two-fold: we can try to fine tune the matching  algorithm to take make and model of the firearm and ammunition used into account. Downside is that we need to massively expand the database used for training.
-Another solution would be to expand on the summarization. SAM scores only take the scores of the maximum sequence into account and ignore scores associated with pairs of land engraved areas from different sources. Those scores might be useful in establishing a baseline that better expresses similarity between pairs of bullets.
+Another solution would be to expand on the summation. SAM scores only take the scores of the maximum sequence into account and ignore scores associated with pairs of land engraved areas from different sources. Those scores might be useful in establishing a baseline that better expresses similarity between pairs of bullets.
 
 # Discussion and Conclusions
 
