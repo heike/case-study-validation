@@ -150,7 +150,7 @@ signatures %>%
   xlab("Relative Location (in millimeters)") 
 ```
 
-Quantitative features describing the similarity of two signature are extracted. Features include cross-correlation, Euclidean distance, depth and number of matching striae, as well as the number of consecutively matching striae (CMS).   
+Quantitative features describing the similarity of two signature are extracted. Features include characteristics of the signature that firearms and toolmark examiners base their visual assessment on, such as  depth of striae, number of matching striae, and the number of consecutively matching striae (CMS). We also include statistical features, such as cross-correlation and Euclidean distance between the signatures.
 
 # Validation Sets
 
@@ -526,8 +526,9 @@ However, SAM scores based on the multivariate random forest score show better se
 
 Regarding requirement (R2), \autoref{fig:compare} shows that for neither of the two measures  a single cutoff exists across different studies that   separates same-source scores from different-source scores without introducing errors. 
 
-Potential improvements are two-fold: we can try to fine tune the matching  algorithm to take make and model of the firearm and ammunition used into account. Downside is that we need to massively expand the database used for training.
-Another solution would be to expand on the summation. SAM scores only take the scores of the maximum sequence into account and ignore scores associated with pairs of land engraved areas from different sources. Those scores might be useful in establishing a baseline that better expresses similarity between pairs of bullets.
+There are several approaches for potential improvements: we can try to fine tune the matching  algorithm to take make and model of the firearm and ammunition used into account or expand the traing of the algorithm to include a wider variety of makes and models. The downside of this is that we need to considerably expand the database used for training. 
+Another solution would be to expand on the aggregation used to get from land-to-land scores to bullet scores: SAM scores only take the scores of the maximum sequence into account and ignore scores associated with pairs of land engraved areas from different sources. Those scores might be useful in establishing a baseline that better expresses similarity between pairs of bullets.
+
 
 # Discussion and Conclusions
 
