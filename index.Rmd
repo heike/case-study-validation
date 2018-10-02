@@ -162,9 +162,10 @@ Here, we are considering three validation sets:
 Hamby set 44 is one set of the Hamby study \citep{hamby}. Each Hamby set  consists of a total of 35 bullets fired through ten consecutively manufactured barrels of Rugers P85. Each set consists of 20 known bullets (two from each of the ten barrels) and 15 questioned bullets of unknown origin. Note that all Hamby sets are closed sets, i.e. all questioned bullets are fired through one of the ten barrels. The ammunition used for this set were 9 mm Luger 115 Grain Full Metal Jacket  from the Winchester Ammunition Company.
 \item {\bf Phoenix PD}
 Tylor Klep from Phoenix PD provided sets of known test fires and questioned bullets: the set of known bullets consists of three test fires (B1, B2, B3) from each of eight different barrels (A9, C8, F6, L5, M2, P7, R3, U10). Ten questioned bullets were provided (B, E, H, J, K N, Q, T, Y, Z). This set is an open set, i.e.\ it is not known in advance whether all (or any) of the questioned bullets are fired from the known barrels.
+
 Land engraved areas for each of the six lands of each bullet were scanned by Bill Henderson (Sensofar).
 \item {\bf Houston FSI}
-This study was set up by Melissa Nally and Kasi Kirksey from FSI Houston. Three test sets based on ten consecutively rifled Ruger LCP barrels (A, B, C, D, E, F, G, H, I, J) and three other, non-consecutively rifled Ruger LCP barrels (R1, R2, R3). Each test set consists of three test fires each from five consecutively rifled barrels. Additionally, ten unknowns bullets are provided for each kit. The ammunition used in both test fires and the unknowns were Remington UMC 9mm Luger Full Metal Jackets.
+This study was set up by Melissa Nally and Kasi Kirksey from FSI Houston. Three test sets based on ten consecutively rifled Ruger LCP barrels (A, B, C, D, E, F, G, H, I, J) and three other, non-consecutively rifled Ruger LCP barrels (R1, R2, R3). Each test set consists of three test fires each from five consecutively rifled barrels. Additionally, ten questioned bullets are provided for each kit. The ammunition used in both test fires and the questioned bullets were Remington UMC 9mm Luger Full Metal Jackets. All three of the test sets are open, i.e.\ not every one of the questioned bullets is fired from the five known barrels in each of the test set.
 \end{itemize}
 
 Scans of all land engraved areas were taken on a Sensofar Confocal Light microscope at 20x magnification resulting a resolution of 0.645 microns per pixel. If not indicated otherwise, scans were taken at the Roy J Carver high resolution microscopy lab at Iowa State University.
@@ -388,8 +389,8 @@ pdnest$samesource <- pdnest$KM
 p3 + ggtitle("Phoenix PD set")
 ```
 
-\autoref{fig:pd} shows an overview of similarity scores for all pairs of questioned bullets and  test fires. The color encoding is the same as in the previous figure. What we see here, are matches of one of the questioned bullets to all three bullets of one of the barrels each. None of the test fires from barrel U10 shows a match to any of the questioned bullets. Similarly, questioned bullets 'Q', 'Y', and 'Z' do not match any of the known barrels. This is the sign of an open set. 
-The results from automatic matching, again, correctly match barrel and questioned bullets.
+\autoref{fig:pd} shows an overview of similarity scores for all pairs of questioned bullets and  test fires. The color encoding is the same as in the previous figure. What we see here, are matches of one of the questioned bullets to all three bullets of one of the barrels each. None of the test fires from barrel U10 shows a match to any of the questioned bullets. Similarly, questioned bullets 'Q', 'Y', and 'Z' do not match any of the known barrels. This is a sign of the previously mentioned open set characteristic of the study. 
+The results from automatic matching, again, correctly pair questioned bullets to their corresponding barrels.
 
 
 ## Houston FSI
