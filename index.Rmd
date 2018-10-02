@@ -206,19 +206,19 @@ p2 <- bab %>% ggplot(aes(x = land1, y = land2, fill = rfscore)) +
 
 
 
-Land-land comparisons lead to a whole set of scores for bullet-bullet comparisons. \autoref{fig:b2b} shows two matrices of scores for a pair of bullet-bullet matches. On the left, a matrix is shown that is typical for scores from two bullets from the same barrel. On the right, values for a pair of known non-matching bullets are shown.
+Land-to-land comparisons lead to a whole set of scores for bullet-to-bullet comparisons. \autoref{fig:b2b} shows two matrices of scores for a pair of bullet-bullet matches. On the left, a matrix is shown that is typical for scores from two bullets from the same barrel. On the right, values for a pair of known non-matching bullets are shown.
 
 
 ```{r b2b, echo = FALSE, fig.width = 9, fig.height = 5,  out.width='.6\\textwidth', fig.cap="Overview of land-land matching scores for two pairs of bullet-bullet comparisons. On the left the two bullets are known to come from the same source (barrel) on the right, the bullets are from two different sources (barrels)"}
 grid.arrange(p1, p2, ncol=2, padding=2)
 ```
 
-When imaging bullets, operators scan one land at a time in a clockwise (left twisted rifling) or anti-clockwise (right twisted rifling) sequence. The order in which scans are acquired is kept as meta-information. Let us assume that lands on a bullet are labelled $\ell_i$ with $i = 1, .., p$. A match between two bullets therefore results in an expected additional $p-1$ matches between pairs of lands. These lands are also expected to be in a sequence, i.e. if there is a match between lands $\ell_i$ on bullet 1 and $\ell_j$ on bullet 2, we also expect lands $\ell_{i\oplus s}$ and $\ell_{j\oplus s}$ to match for all integers $s$, where $\oplus$ is defined as $a \oplus b \equiv \left((a + b)\mod p\right) + 1$. This relationship gives rise to the sequence average maximum (SAM) to quantify a bullet-to-bullet match. 
+When imaging bullets, operators scan one land at a time in a clockwise (left twisted rifling) or anti-clockwise (right twisted rifling) sequence. The order in which scans are acquired is kept as meta-information. Let us assume that lands on a bullet are labelled $\ell_i$ with $i = 1, .., p$. A match between two bullets therefore results in an expected additional $p-1$ matches between pairs of lands. These lands are also expected to be in a sequence, i.e. if there is a match between lands $\ell_i$ on bullet 1 and $\ell_j$ on bullet 2, we also expect lands $\ell_{i\oplus s}$ and $\ell_{j\oplus s}$ to match for all integers $s$, where $\oplus$ is defined as $a \oplus b \equiv \left((a + b - 1)\mod p\right) + 1$. This relationship gives rise to the sequence average maximum (SAM) to quantify a bullet-to-bullet match. 
 
 \begin{definition}{Sequence Average and its Maximum}
 Let $A$ be a square real-valued matrix of dimensions $p \times p$. For the purpose of this paper, $A$ consists of scores describing the similarity between two sets of land engraved areas.
 The $k$th \emph{sequence average} $SA(A, k)$ for $k = 0, ... p-1$ is defined  as 
-$$SA(A, k) = \frac{1}{p} \sum_{i=1}^{p} a_{i,i \oplus k}, \text{ where } i\oplus k := \left((i + k)\mod p\right) + 1.$$
+$$SA(A, k) = \frac{1}{p} \sum_{i=1}^{p} a_{i,i \oplus k}, \text{ where } i\oplus k := \left((i + k - 1)\mod p\right) + 1.$$
 The \emph{Sequence Average Maximum} \citep[SAM, ][]{sam} of square matrix $A$ of scores is defined as
 $$SAM (A) = \max_{k = 1}^{p} SA(A, k).$$
 \end{definition}
