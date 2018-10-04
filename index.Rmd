@@ -320,8 +320,80 @@ h44
 ``` 
 
 \autoref{fig:h44} shows an overview of all scores from pairs of questioned bullets with all other bullets. On the left of \autoref{fig:h44} there are ten strips labelled 1 through 10. These strips correspond to known barrels 1 through 10. For each of these barrels, two test fires were done. Each of the colored tiles corresponds to a pair of bullets between a questioned bullet (shown along the $y$-axis) and one of the other bullets. The similarity score is encoded in color: grey colors correspond to low similarity scores, orange colors correspond to high similarity scores. Ground truth is encoded in this figure as a thin orange frame for all pairs of same-source bullets. 
-What we want to see for the relationship between questioned bullets and the ten barrels, is one barrel with orange-filled, orange-framed tiles for both bullets from the same barrel, and grey tiles across the other barrels. This expectation is met for all questioned bullets, i.e. the automatic matching  identifies the correct barrel for all questioned bullets. On the right of \autoref{fig:h44} the relationship between all pairs of questioned bullets is shown. Note that questioned bullets are not compared to themselves, leaving white squares on the diagonal.
+What we want to see for the relationship between questioned bullets and the ten barrels, is one barrel with orange-filled, orange-framed tiles for both bullets from the same barrel, and grey tiles across the other barrels. This expectation is met for all questioned bullets, i.e. the automatic matching  identifies the correct barrel for all questioned bullets. For two of the questioned bullets, 'I' and 'F' the similarity scores to the matching barrels are considerably smaller than for the other questioned bullets.  Some of these close decisions are further investigated in \autoref{fig:close}. On the right of \autoref{fig:h44} the relationship between all pairs of questioned bullets is shown. Note that questioned bullets are not compared to themselves, leaving white squares on the diagonal.
 Some of the questioned bullets match the same barrel, e.g. questioned bullets 'P' and 'J' both match barrel 5. Therefore bullets 'P' and 'J' are also matching each other in the square on the right hand side.
+
+```{r close, fig.width=11.25, fig.height=4.2, fig.cap="Examples of land-to-land comparisons from the Hamby-44 set. Along the top are the three bullets from different source with the highest RF scores, along the bottom are the three bullets from same source with the lowest RF score.", fig.subcap=c("Ground truth: different source", "Ground truth: same-source"), fig.align="middle", fig.ncol=1}
+ex2 <- h44nest %>% filter(samesource == FALSE & sam_rf >= 0.295)
+rfs2 <- ex2$sam_rf
+ex2 <- ex2 %>% mutate(
+  data = data %>% purrr::map(.f = function(d) {
+ #   browser()
+    index <- which.max(bulletxtrctr::compute_average_scores(d$land1, d$land2, d$rfscore))
+    d$same <- ((d$land2 - d$land1) %% 6)  == index-1
+    
+  #   d %>% ggplot(aes(x = land1, y=land2, fill=rfscore)) + 
+  #                  geom_tile() +
+  #     geom_tile(colour="darkorange", data = d %>% filter(same), size=0.5) +
+  #     scale_fill_gradient2(low="darkgrey", high = "darkorange",
+  #                      midpoint = 0.5) +
+  #     scale_colour_manual(values=c( "darkorange")) +
+  # scale_x_discrete("") +
+  # scale_y_discrete("")
+    d
+  })
+)
+ex2$example <- with(ex2, paste0(bullet1, " vs ", barrel2, "-", bullet2))
+ex2 <- unnest(ex2, data)
+ex2 %>% 
+  ggplot(aes(x = land1, y = land2, fill=rfscore)) + 
+  geom_tile() +
+  theme_bw() +
+  scale_fill_gradient2("RF score", low="darkgrey", high = "darkorange",
+                       midpoint = 0.5) +
+#  geom_tile(colour="darkgrey", data = ex2 %>% filter(same), size=0.5) +
+  facet_grid(.~example) +
+  scale_x_discrete("") +
+  scale_y_discrete("") +
+  annotate(geom="text", x = 0.5, y = 6.75, label=sprintf("SAM RF: %.3f", rfs2), hjust = 0)
+
+
+
+ex1 <- h44nest %>% filter(samesource == TRUE & sam_rf < 0.4)
+rfs <- ex1$sam_rf
+ex1 <- ex1 %>% mutate(
+  data = data %>% purrr::map(.f = function(d) {
+ #   browser()
+    index <- which.max(bulletxtrctr::compute_average_scores(d$land1, d$land2, d$rfscore))
+    d$same <- ((d$land2 - d$land1) %% 6)  == index-1
+    
+  #   d %>% ggplot(aes(x = land1, y=land2, fill=rfscore)) + 
+  #                  geom_tile() +
+  #     geom_tile(colour="darkorange", data = d %>% filter(same), size=0.5) +
+  #     scale_fill_gradient2(low="darkgrey", high = "darkorange",
+  #                      midpoint = 0.5) +
+  #     scale_colour_manual(values=c( "darkorange")) +
+  # scale_x_discrete("") +
+  # scale_y_discrete("")
+    d
+  })
+)
+ex1$example <- with(ex1, paste0(bullet1, " vs ", barrel2, "-", bullet2))
+ex1 <- unnest(ex1, data)
+ex1 %>% 
+  ggplot(aes(x = land1, y = land2, fill=rfscore)) + 
+  geom_tile() +
+  theme_bw() +
+  scale_fill_gradient2("RF score", low="darkgrey", high = "darkorange",
+                       midpoint = 0.5) +
+  geom_tile(colour="darkorange", data = ex1 %>% filter(same), size=0.5) +
+  facet_grid(.~example) +
+  scale_x_discrete("") +
+  scale_y_discrete("") +
+  annotate(geom="text", x = 0.5, y = 6.75, label=sprintf("SAM RF: %.3f", rfs), hjust = 0)
+```
+
+
 
 ## Phoenix PD
 
@@ -529,75 +601,6 @@ Regarding requirement (R2), \autoref{fig:compare} shows that for neither of the 
 There are several approaches for potential improvements: we can try to fine tune the matching  algorithm to take make and model of the firearm and ammunition used into account or expand the traing of the algorithm to include a wider variety of makes and models. The downside of this is that we need to considerably expand the database used for training. 
 Another solution would be to expand on the aggregation used to get from land-to-land scores to bullet scores: SAM scores only take the scores of the maximum sequence into account and ignore scores associated with pairs of land engraved areas from different sources. Those scores might be useful in establishing a baseline that better expresses similarity between pairs of bullets.
 
-```{r, fig.width=7.5, fig.height=2.8, fig.cap="Examples of land-to-land comparisons from the Hamby-44 set. Along the top are the three bullets from different source with the highest RF scores, along the bottom are the three bullets from same source with the lowest RF score.", fig.subcap=c("Ground truth: different source", "Ground truth: same-source"), fig.align="middle", fig.ncol=1}
-ex2 <- h44nest %>% filter(samesource == FALSE & sam_rf >= 0.295)
-rfs2 <- ex2$sam_rf
-ex2 <- ex2 %>% mutate(
-  data = data %>% purrr::map(.f = function(d) {
- #   browser()
-    index <- which.max(bulletxtrctr::compute_average_scores(d$land1, d$land2, d$rfscore))
-    d$same <- ((d$land2 - d$land1) %% 6)  == index-1
-    
-  #   d %>% ggplot(aes(x = land1, y=land2, fill=rfscore)) + 
-  #                  geom_tile() +
-  #     geom_tile(colour="darkorange", data = d %>% filter(same), size=0.5) +
-  #     scale_fill_gradient2(low="darkgrey", high = "darkorange",
-  #                      midpoint = 0.5) +
-  #     scale_colour_manual(values=c( "darkorange")) +
-  # scale_x_discrete("") +
-  # scale_y_discrete("")
-    d
-  })
-)
-ex2$example <- with(ex2, paste0(bullet1, " vs ", barrel2, "-", bullet2))
-ex2 <- unnest(ex2, data)
-ex2 %>% 
-  ggplot(aes(x = land1, y = land2, fill=rfscore)) + 
-  geom_tile() +
-  theme_bw() +
-  scale_fill_gradient2("RF score", low="darkgrey", high = "darkorange",
-                       midpoint = 0.5) +
-#  geom_tile(colour="darkgrey", data = ex2 %>% filter(same), size=0.5) +
-  facet_grid(.~example) +
-  scale_x_discrete("") +
-  scale_y_discrete("") +
-  annotate(geom="text", x = 0.5, y = 6.75, label=sprintf("SAM RF: %.3f", rfs2), hjust = 0)
-
-
-
-ex1 <- h44nest %>% filter(samesource == TRUE & sam_rf < 0.4)
-rfs <- ex1$sam_rf
-ex1 <- ex1 %>% mutate(
-  data = data %>% purrr::map(.f = function(d) {
- #   browser()
-    index <- which.max(bulletxtrctr::compute_average_scores(d$land1, d$land2, d$rfscore))
-    d$same <- ((d$land2 - d$land1) %% 6)  == index-1
-    
-  #   d %>% ggplot(aes(x = land1, y=land2, fill=rfscore)) + 
-  #                  geom_tile() +
-  #     geom_tile(colour="darkorange", data = d %>% filter(same), size=0.5) +
-  #     scale_fill_gradient2(low="darkgrey", high = "darkorange",
-  #                      midpoint = 0.5) +
-  #     scale_colour_manual(values=c( "darkorange")) +
-  # scale_x_discrete("") +
-  # scale_y_discrete("")
-    d
-  })
-)
-ex1$example <- with(ex1, paste0(bullet1, " vs ", barrel2, "-", bullet2))
-ex1 <- unnest(ex1, data)
-ex1 %>% 
-  ggplot(aes(x = land1, y = land2, fill=rfscore)) + 
-  geom_tile() +
-  theme_bw() +
-  scale_fill_gradient2("RF score", low="darkgrey", high = "darkorange",
-                       midpoint = 0.5) +
-  geom_tile(colour="darkorange", data = ex1 %>% filter(same), size=0.5) +
-  facet_grid(.~example) +
-  scale_x_discrete("") +
-  scale_y_discrete("") +
-  annotate(geom="text", x = 0.5, y = 6.75, label=sprintf("SAM RF: %.3f", rfs), hjust = 0)
-```
 
 # Discussion and Conclusions
 
