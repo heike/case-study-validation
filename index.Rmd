@@ -282,11 +282,11 @@ h44nest <- h44features %>%
   ) %>%
   group_by(bullet1, barrel2, bullet2) %>%  nest()  
 
-h44nest <- h44nest %>% filter(bullet1=="I") %>%  mutate(
-  # sam_ccf = data %>% purrr::map_dbl(.f=function(d) {
-  #   scores <- bulletxtrctr::compute_average_scores(d$land1, d$land2, d$ccf)
-  #   max(scores)
-  # }),
+h44nest <- h44nest %>%  mutate(
+  sam_ccf = data %>% purrr::map_dbl(.f=function(d) {
+    scores <- bulletxtrctr::compute_average_scores(d$land1, d$land2, d$ccf)
+    max(scores)
+  }),
   sam_rf = data %>% purrr::map_dbl(.f=function(d) {
     scores <- bulletxtrctr::compute_average_scores(d$land1, d$land2, d$rfscore)
     max(scores)
@@ -619,7 +619,7 @@ nestslong %>% ggplot(aes(x = value, fill=samesource,
 What we find in \autoref{fig:compare} is that neither of the measure fulfills both of the minimal requirements laid out above. Both measures fulfill (R1), i.e. all  scores  of  different-source pairs are lower than scores of same-source pairs for SAM scores based on cross-correlation and RF scores.
 However, SAM scores based on the multivariate random forest score show better separation between same-source and different-source scores than SAM scores based on cross-correlation. This can be seen from the larger horizontal distance between the modes of the density curves of RF based SAM scores than cross-correlation SAM scores.  
 
-Regarding requirement (R2), \autoref{fig:compare} shows that for neither of the two measures  a single cutoff exists across different studies that   separates same-source scores from different-source scores without introducing errors. 
+Regarding requirement (R2), \autoref{fig:compare} shows that for neither of the two measures  a single cutoff exists across different studies that separates same-source scores from different-source scores without introducing errors. 
 
 There are several approaches for potential improvements: we can try to fine tune the matching  algorithm to take make and model of the firearm and ammunition used into account or expand the traing of the algorithm to include a wider variety of makes and models. The downside of this is that we need to considerably expand the database used for training. 
 Another solution would be to expand on the aggregation used to get from land-to-land scores to bullet scores: SAM scores only take the scores of the maximum sequence into account and ignore scores associated with pairs of land engraved areas from different sources. Those scores might be useful in establishing a baseline that better expresses similarity between pairs of bullets.
@@ -630,4 +630,25 @@ Another solution would be to expand on the aggregation used to get from land-to-
 
 What is quite surprising, that what we anticipated to be the easiest case of Hamby 44 turned out to be the hardest to solve. 
 
+# Appendix
+
+\autoref{fig:tankrash} shows an overview of all lands of bullets in the Hamby-44 with major deficiencies, such as 'tank rash' or extreme pitting (holes caused by direct contact with burning gun powder).
+```{r tankrash, fig.cap="Overview of bullet lands with prominent deficiency such as tank rash or extreme pitting in the Hamby-44 study.", fig.width=4, fig.height = 2, out.width='47.5%', fig.subcap=c("Br1-B1-L6", "Br2-B2-L5", "Br3-B1-L5", "Br8-B1-L6", "Br8-B2-L2", "Br8-B2-L6", "Unk-E-L6", "Unk-I-L6"), fig.align="middle", fig.ncol=2}
+knitr::include_graphics(
+  c('./images/B1-B1-L6.png', './images/B2-B2-L5.png',
+    './images/B3-B1-L5.png', './images/B8-B1-L6.png',
+    './images/B8-B2-L2.png', './images/B8-B2-L6.png',
+    './images/NA-BE-L6.png', './images/NA-BI-L6.png')
+)
+
+```
+
+Three lands across the two known bullets of barrel 8 are affected. This is the likely cause for the low scores for barrel 8 in \autoref{fig:h44}.
+
+### Limitations
+All of the studies involve the same firearm. We see some variations in scores across different models of Rugers. Likely, we are going to see even bigger variations with different brands of firearms, where there might be different number of lands of different lengths. We also know \cite{???} that different firearms mark differently well. Rugers are among the firearms that mark very well, so we would correspondingly expect to see lowered similarity scores for other firearms. The matching algorithm works on matching lands. Barrels with polygonal rifling, such as Glocks, do not introduce well defined lands on bullets, which makes an application of the matching algorithm impossible.  
+
+XXX Should we include some Sig Sauer matches?
+
 # References
+
