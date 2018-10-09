@@ -347,8 +347,8 @@ h44
 ``` 
 
 \autoref{fig:h44} shows an overview of all scores from pairs of questioned bullets with all other bullets. On the left of \autoref{fig:h44} there are ten strips labelled 1 through 10. These strips correspond to known barrels 1 through 10. For each of these barrels, two test fires were done. Each of the colored tiles corresponds to a pair of bullets between a questioned bullet (shown along the $y$-axis) and one of the other bullets. The similarity score is encoded in color: grey colors correspond to low similarity scores, orange colors correspond to high similarity scores. Ground truth is encoded in this figure as a thin orange frame for all pairs of same-source bullets. 
-What we want to see for the relationship between questioned bullets and the ten barrels, is one barrel with orange-filled, orange-framed tiles for both bullets from the same barrel, and grey tiles across the other barrels. This expectation is met for all questioned bullets, i.e. the automatic matching  identifies the correct barrel for all questioned bullets. For two of the questioned bullets, 'I' and 'F' the similarity scores to the matching barrels are considerably smaller than for the other questioned bullets.   On the right of \autoref{fig:h44} the relationship between all pairs of questioned bullets is shown. Note that questioned bullets are not compared to themselves, leaving white squares on the diagonal.
-Some of the questioned bullets match the same barrel, e.g. questioned bullets 'P' and 'J' both match barrel 5. Therefore bullets 'P' and 'J' are also matching each other in the square on the right hand side.
+What we want to see for the relationship between questioned bullets and the ten barrels, is one barrel with orange-filled, orange-framed tiles for both bullets from the same barrel, and grey tiles across the other barrels. This expectation is met for all questioned bullets, i.e. the automatic matching  identifies the correct barrel for all questioned bullets. For two of the questioned bullets, 'I' and 'F', the similarity scores to the matching barrels are considerably smaller than for the other questioned bullets. \svp{The right side of \autoref{fig:h44} shows the relationship between all pairs of questioned bullets.} Note that questioned bullets are not compared to themselves, leaving white squares on the diagonal.
+Some of the questioned bullets match the same barrel, e.g. questioned bullets 'P' and 'J' both match barrel 5. Therefore bullets 'P' and 'J' \svp{also match} each other in the square on the right hand side.
 
 ```{r close, eval=FALSE, fig.width=11.25, fig.height=4.2, fig.cap="Examples of land-to-land comparisons from the Hamby-44 set. Along the top are the three bullets from different source with the highest RF scores, along the bottom are the three bullets from same source with the lowest RF score.", fig.subcap=c("Ground truth: different source", "Ground truth: same-source"), fig.align="middle", fig.ncol=1}
 # ex2 <- h44nest %>% filter(samesource == FALSE & sam_rf >= 0.287)
@@ -422,8 +422,6 @@ Some of the questioned bullets match the same barrel, e.g. questioned bullets 'P
 
 # \autoref{fig:close} shows an example of six comparisons of bullet pairs at the land-to-land level. The panels along the top of the figure show three bullet pairs that are known to be from different barrels, the three bullet pairs along the bottom are known to be from the same barrel. The light orange frame in the bottom three panels indicate which lands correspond to one-another in the matching. It is obvious, that not all of the scores are as high as we would usually see in same-source comparisons.
 ```
-
-
 
 ## Phoenix PD
 
@@ -503,13 +501,11 @@ pdnest$samesource <- pdnest$KM
 p3 + ggtitle("Phoenix PD set")
 ```
 
-\autoref{fig:pd} shows an overview of similarity scores for all pairs of questioned bullets and  test fires. The color encoding is the same as in the previous figure. What we see here, are matches of one of the questioned bullets to all three bullets of one of the barrels each. None of the test fires from barrel U10 shows a match to any of the questioned bullets. Similarly, questioned bullets 'Q', 'Y', and 'Z' do not match any of the known barrels. This is a sign of the previously mentioned open set characteristic of the study. 
-The results from automatic matching, again, correctly pair questioned bullets to their corresponding barrels.
-
+\autoref{fig:pd} shows an overview of similarity scores for all pairs of questioned bullets and  test fires. The color encoding is the same as in the previous figures. \svp{Here, we see that some of the questioned bullets match all 3 bullets fired out of the same barrel.} None of the test fires from barrel U10 \svp{match} any of the questioned bullets. Similarly, questioned bullets 'Q', 'Y', and 'Z' do not match any of the known barrels. This is a sign of the previously mentioned open set characteristic of the study. \svp{Once again, the results from automatic matching correctly pair questioned bullets with their corresponding barrels.}
 
 ## Houston FSI
 
-\autoref{fig:hou} shows an overview the three sets of the scores for all pairs of questioned bullets with all other bullets 
+\autoref{fig:hou} shows an overview the three sets of the scores for all pairs of questioned bullets with all other bullets \svp{in the set. In set 1, five of the questioned bullets can be matched to known bullets in the set. None of the questioned bullets in set 1 match bullets fired from barrels KC or KD. Additionally, two of the questioned bullets which do not match any of the barrels in the set match each other. In set 2, four of the questioned bullets can be matched to known bullets in the set; of the additional four questioned bullets which do not match any known bullets, two were fired from the same barrel. In set 3, six of the questioned bullets match known bullets, and the remaining two questioned bullets match each other but do not match any known bullets in the set. Thus, we can conclude that the algorithm performs well on open set studies, as it can identify matches among questioned bullets which do not match any known bullets.}
 
 ```{r hou, fig.width=9, fig.height = 3, fig.cap="Overview of matching scores for all pairs of questioned bullets to known bullets from five barrels (on the left) and questioned bullets to themselves (tiles on the right).", fig.subcap=c("Set 1", "Set 2", "Set 3"), fig.align="middle", fig.ncol=1}
 features <- read.csv("data/fsi-features.csv.gz")
@@ -665,20 +661,20 @@ nestslong %>%
 ```
 
 What we find in \autoref{fig:compare} is that neither of the measure fulfills both of the minimal requirements laid out above. Both measures fulfill (R1), i.e. all  scores  of  different-source pairs are lower than scores of same-source pairs for SAM scores based on cross-correlation and RF scores.
-However, SAM scores based on the multivariate random forest score show better separation between same-source and different-source scores than SAM scores based on cross-correlation. This can be seen from the larger horizontal distance between the modes of the density curves of RF based SAM scores than cross-correlation SAM scores.  
+However, SAM scores based on the multivariate random forest score show better separation between same-source and different-source scores than SAM scores based on cross-correlation. This can be seen from the larger horizontal distance between the modes\svp{(peaks)} of the density curves of RF based SAM scores \svp{compared to the} cross-correlation SAM scores.  
 
-Regarding requirement (R2), \autoref{fig:compare} shows that for neither of the two measures  a single cutoff exists across different studies that separates same-source scores from different-source scores without introducing errors. 
+Regarding requirement (R2), \autoref{fig:compare} shows that \svp{a single cutoff value does not exist that separates same-source scores from different-source scores across all three studies, without introducing additional errors}.
 
-There are several approaches for potential improvements: we can try to fine tune the matching  algorithm to take make and model of the firearm and ammunition used into account or expand the traing of the algorithm to include a wider variety of makes and models. The downside of this is that we need to considerably expand the database used for training. 
+There are several approaches for potential improvements: we can try to fine tune the matching algorithm to take make and model of the firearm and ammunition used into account or expand the traing of the algorithm to include a wider variety of makes and models. The downside of this is that we need to considerably expand the database used for training. 
+
 Another solution would be to expand on the aggregation used to get from land-to-land scores to bullet scores: SAM scores only take the scores of the maximum sequence into account and ignore scores associated with pairs of land engraved areas from different sources. Those scores might be useful in establishing a baseline that better expresses similarity between pairs of bullets.
 
 
 # Discussion and Conclusions
 
 
-What is quite surprising, that what we anticipated to be the easiest case of Hamby 44 turned out to be the hardest to solve. 
-This is likely due to several lands in the Hamby-44 set having major deficiencies,  such as 'tank rash' (a collision of the bullet after exiting the barrel with a surface causing markings on top of the striations from the barrel) or extreme pitting (holes caused by direct contact with burning gun powder).
-\autoref{fig:tankrash} gives an overview of all lands of bullets in the Hamby-44 set affected. 
+What is quite surprising \svp{is} that what we anticipated to be the easiest case of Hamby 44 turned out to be the hardest to solve. This is likely due to several lands in the Hamby-44 set \svp{that have} major deficiencies,  such as 'tank rash' (a collision of the bullet after exiting the barrel with a surface causing markings on top of the striations from the barrel) or extreme pitting (holes caused by direct contact with burning gun powder).
+\autoref{fig:tankrash} gives an overview of all lands of bullets in the Hamby-44 set affected. \svp{These issues affect the algorithm's ability to identify a stable signature, which impacts the subsequent match scores.}
 ```{r tankrash, fig.cap="Overview of bullet lands with prominent deficiency such as tank rash or extreme pitting in the Hamby-44 study.", fig.width=4, fig.height = 2, out.width='47.5%', fig.subcap=c("Br1-B1-L6", "Br2-B2-L5", "Br3-B1-L5", "Br8-B1-L6", "Br8-B2-L2", "Br8-B2-L6", "Unk-E-L6", "Unk-I-L6"), fig.align="middle", fig.ncol=2}
 knitr::include_graphics(
   c(
@@ -690,7 +686,7 @@ knitr::include_graphics(
 )
 ```
 
-Three lands from bullets known to be fired from barrel 8 are affected. This is the likely cause for the low scores for barrel 8 in \autoref{fig:h44}. We also see that questioned bullet 'E' is affected, explaining some of the low similarity scores for this bullet.
+Three lands from bullets known to be fired from barrel 8 are affected\svp{, producing} low scores for barrel 8 in \autoref{fig:h44}. We also see that questioned bullet 'E' is affected, explaining some of the low similarity scores for this bullet.\svp{You've marked I vs. 5 and F vs. 8 in \autoref{fig:compare}; should E be marked?}
 
 ### Limitations
 All of the studies involve the same firearm. We see some variations in scores across different models of Rugers. Likely, we are going to see even bigger variations with different brands of firearms, where there might be different number of lands of different lengths. We also know  that different firearms mark differently well \cite{???}. Rugers are among the firearms that mark very well, so we would correspondingly expect to see lowered similarity scores for other firearms. The matching algorithm works on matching lands. Barrels with polygonal rifling, such as Glocks, do not introduce well defined lands on bullets, which makes an application of the matching algorithm impossible.  
