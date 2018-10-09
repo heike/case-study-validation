@@ -31,7 +31,7 @@ output:
 
 ---
 \newcommand{\hh}[1]{{\textcolor{orange}{#1}}}
-\newcommand{\svp}[1]{{\textcolor{darkgreen}{#1}}}
+\newcommand{\svp}[1]{{\textcolor{teal}{#1}}}
 \noindent
 
 
@@ -87,9 +87,9 @@ In this paper we present results of the algorithm on several case studies where 
 
 
 # Introduction and Background
-In current practice, firearms and toolmark examiners (FTE) evaluate the similarity of striae on bullets by placing the evidence together with a bullet from the suspected gun under a comparison microscope and visually classify similarity according to the theory of firearms identification \citep{identification} as one of identification, inconclusive or exclusion. Exact guidelines for this classification vary from lab to lab, e.g.\ some labs will exclude only on the basis of non-matching class characteristics (such as direction of the twist in rifling, land length or number of lands, or type of rifling). In some labs,  CMS (consecutively matching striae) as defined by \citet{biasotti} is used as a way to quantify the strength of a match.
+In current practice, firearms and toolmark examiners (FTE) evaluate the similarity of striae on bullets by placing the evidence together with a bullet from the suspected gun under a comparison microscope and visually classify similarity according to the theory of firearms identification \citep{identification} as one of identification, inconclusive or exclusion. Exact guidelines for this classification vary from lab to lab, e.g.\ some labs will exclude only on the basis of non-matching class characteristics (such as direction of the twist in rifling, land length or number of lands, or type of rifling). In some labs,  CMS (consecutively matching striae) as defined by \citet{biasotti} \svp{are} used as a way to quantify the strength of a match.
 
-In the algorithm  similarity of bullet land engraved areas is evaluated based on 3d topographic scans of land engraved areas (LEAs). From each land engraved area a signature is derived by
+In the \svp{matching algorithm,} similarity of bullet land engraved areas is evaluated based on 3d topographic scans of land engraved areas (LEAs). From each land engraved area a signature is derived by
 \begin{itemize}
 \item[(a)] identifying an area where striae are expressed, 
 \item[(b)] discarding extraneous/contaminated data, such as data from groove engraved area and areas affected by break-off or contact with objects after the bullet exited the barrel  (``tank rash"), 
@@ -151,32 +151,34 @@ signatures %>%
   xlab("Relative Location (in millimeters)")
 ```
 
-Quantitative features describing the similarity of two signature are extracted. Features include characteristics of the signature that firearms and toolmark examiners base their visual assessment on, such as  depth of striae, number of matching striae, and the number of consecutively matching striae (CMS). We also include statistical features, such as cross-correlation and Euclidean distance between the signatures.
+Quantitative features describing the similarity of two signature are extracted. Features include characteristics of the signature that firearms and toolmark examiners base their visual assessment on, such as \svp{striae depth}, number of matching striae, and the number of consecutively matching striae (CMS). We also include statistical features, such as cross-correlation and Euclidean distance between the signatures. 
+```{r, eval = F}
+# TODO: Add correlation and euclidian distance pictures?
+```
 
 # Validation Sets
 
-The algorithm in \citet{aoas} is trained on scans from Hamby sets 252 and 173 made available through \citet{nist}. Set 173 was originally published as Hamby set 44. This has been rectified now.
+The algorithm in \citet{aoas} is trained on scans from Hamby sets 252 and 173 made available through \citet{nist}. Set 173 was originally published as Hamby set 44\svp{, but was mislabeled.} \svp{Probably need to mention that the NIST scans have a different resolution, which may affect how the results generalize?}
 
 Here, we are considering three validation sets: 
 \begin{itemize}
 \item {\bf Hamby set 44} 
-Hamby set 44 is one set of the Hamby study \citep{hamby}. Each Hamby set  consists of a total of 35 bullets fired through ten consecutively manufactured barrels of Rugers P85. Each set consists of 20 known bullets (two from each of the ten barrels) and 15 questioned bullets of unknown origin. Note that all Hamby sets are closed sets, i.e. all questioned bullets are fired through one of the ten barrels. The ammunition used for this set were 9 mm Luger 115 Grain Full Metal Jacket  from the Winchester Ammunition Company.
+Hamby set 44 is one set of the Hamby study \citep{hamby}. Each Hamby set  consists of a total of 35 bullets fired through ten consecutively manufactured barrels of Rugers P85. Each set consists of 20 known bullets (two from each of the ten barrels) and 15 questioned bullets of unknown origin. Note that all Hamby sets are closed sets\svp{; that is,} all questioned bullets are fired through one of the ten barrels. The ammunition used for this set were 9 mm Luger 115 Grain Full Metal Jacket  from the Winchester Ammunition Company.
 \item {\bf Phoenix PD}
-Tylor Klep from Phoenix PD provided sets of known test fires and questioned bullets: the set of known bullets consists of three test fires (B1, B2, B3) from each of eight different barrels (A9, C8, F6, L5, M2, P7, R3, U10). Ten questioned bullets were provided (B, E, H, J, K N, Q, T, Y, Z). This set is an open set, i.e.\ it is not known in advance whether all (or any) of the questioned bullets are fired from the known barrels.
+Tylor Klep from Phoenix PD provided sets of known test fires and questioned bullets: the set of known bullets consists of three test fires (B1, B2, B3) from each of eight different barrels (A9, C8, F6, L5, M2, P7, R3, U10). Ten questioned bullets were provided (B, E, H, J, K N, Q, T, Y, Z). This set is an open set\svp{; that is,}\ it is not known in advance whether all (or any) of the questioned bullets are fired from the known barrels.
 
 Land engraved areas for each of the six lands of each bullet were scanned by Bill Henderson (Sensofar).
 \item {\bf Houston FSI}
-This study was set up by Melissa Nally and Kasi Kirksey from FSI Houston. Three test sets based on ten consecutively rifled Ruger LCP barrels (A, B, C, D, E, F, G, H, I, J) and three other, non-consecutively rifled Ruger LCP barrels (R1, R2, R3). Each test set consists of three test fires each from five consecutively rifled barrels. Additionally, ten questioned bullets are provided for each kit. The ammunition used in both test fires and the questioned bullets were Remington UMC 9mm Luger Full Metal Jackets. All three of the test sets are open, i.e.\ not every one of the questioned bullets is fired from the five known barrels in each of the test set.
+This study was set up by Melissa Nally and Kasi Kirksey from FSI Houston. Three test sets based on ten consecutively rifled Ruger LCP barrels (A, B, C, D, E, F, G, H, I, J) and three other, non-consecutively rifled Ruger LCP barrels (R1, R2, R3). Each test set consists of three test fires each from five consecutively rifled barrels. Additionally, ten questioned bullets are provided for each kit. The ammunition used in both test fires and the questioned bullets were Remington UMC 9mm Luger Full Metal Jackets. All three of the test sets are open\svp{; that is,}\ not every one of the questioned bullets is fired from the five known barrels in each of the test set.
 \end{itemize}
 
-Scans of all land engraved areas were taken on a Sensofar Confocal Light microscope at 20x magnification resulting a resolution of 0.645 microns per pixel. If not indicated otherwise, scans were taken at the Roy J Carver high resolution microscopy lab at Iowa State University.
+Scans of all land engraved areas were taken on a Sensofar Confocal Light microscope at 20x magnification resulting \svp{in} a resolution of 0.645 microns per pixel. If not indicated otherwise, scans were taken at the Roy J Carver high resolution microscopy lab at Iowa State University.
 
+Case studies were chosen such that difficulty for the matching algorithm increases \svp{with each case study}: Hamby set 44 is part of the Hamby study. The algorithm in \citet{aoas} was trained on sets 173 and 252, so the bullets in Hamby 44 are of the same type of ammunition and are fired through the same barrels as the bullets in the training set.
 
-Case studies were chosen such that difficulty for the matching algorithm increases from one to the other: Hamby set 44 is part of the Hamby study. The algorithm in \citet{aoas} was trained on sets 173 and 252, so the bullets in Hamby 44 are of the same type of ammunition and are fired through the same barrels as the bullets in the training set.
+\svp{The }Phoenix PD set \svp{uses} Ruger XXX barrels, \svp{which }are different from the barrels in the \svp{Hamby sets used for }training\svp{ the algorithm}, but the barrels are \svp{rifled similarly to} the Ruger P-85 barrels.  
 
-For the Phoenix PD set, Ruger XXX barrels were used. Obviously, the barrels in this set are different from the barrels in the training, but the barrels are similarly rifled as the Ruger P-85 barrels.  
-
-For the Houston Sets, Ruger LCP barrels were used. These barrels are first rifled traditionally, i.e. similar to the Ruger P-85, but are double fired. The second firing happens after the rifling. This second firing has the potential to introduce some subclass characteristics, i.e. anomalies that are shared between similarly barrels. This should make the automatic matching, and in particular, the classification as different-source land engraved areas/bullets, harder.
+\svp{The} Houston sets\svp{ use} Ruger LCP barrels. These barrels are first rifled traditionally, i.e. similar to the Ruger P-85, but are double fired. \svp{\{I still don't understand what double fired means in this context\}} The second firing happens after the rifling. This second firing has the potential to introduce some subclass characteristics, i.e. anomalies that are shared between similarly \svp{rifled? manufactured?} barrels. This should make the automatic matching, and in particular, the classification as different-source land engraved areas/bullets, harder.
 
 # From land-to-land scores to bullet summary scores
 
@@ -210,7 +212,6 @@ p2 <- bab %>%
   xlab("Bullet 2") + ylab("Bullet 1") +
   theme(legend.position = "bottom") + coord_equal()
 ```
-
 
 
 Land-to-land comparisons lead to a whole set of scores for bullet-to-bullet comparisons. \autoref{fig:b2b} shows two matrices of scores for a pair of bullet-bullet matches. On the left, a matrix is shown that is typical for scores from two bullets from the same barrel. On the right, values for a pair of known non-matching bullets are shown.
