@@ -89,7 +89,11 @@ In this paper we present results of the algorithm on several case studies where 
 # Introduction and Background
 In current practice, firearms and toolmark examiners (FTE) evaluate the similarity of striae on bullets by placing the evidence together with a bullet from the suspected gun under a comparison microscope and visually classify similarity according to the theory of firearms identification \citep{identification} as one of identification, inconclusive or exclusion. Exact guidelines for this classification vary from lab to lab, e.g.\ some labs will exclude only on the basis of non-matching class characteristics (such as direction of the twist in rifling, land length or number of lands, or type of rifling). In some labs,  CMS (consecutively matching striae) as defined by \citet{biasotti} \svp{are} used as a way to quantify the strength of a match.
 
+XXX 3d technology 
+
 In the \svp{matching algorithm,} similarity of bullet land engraved areas is evaluated based on 3d topographic scans of land engraved areas (LEAs). From each land engraved area a signature is derived by
+
+
 \begin{itemize}
 \item[(a)] identifying an area where striae are expressed, 
 \item[(b)] discarding extraneous/contaminated data, such as data from groove engraved area and areas affected by break-off or contact with objects after the bullet exited the barrel  (``tank rash"), 
