@@ -664,10 +664,11 @@ However, SAM scores based on the multivariate random forest score show better se
 
 Regarding requirement (R2), \autoref{fig:compare} shows that \svp{a single cutoff value does not exist that separates same-source scores from different-source scores across all three studies, without introducing additional errors}.
 
-There are several approaches for potential improvements: we can try to fine tune the matching algorithm to take make and model of the firearm and ammunition used into account or expand the traing of the algorithm to include a wider variety of makes and models. The downside of this is that we need to considerably expand the database used for training. 
+There are several approaches for potential improvements: we can try to fine tune the matching algorithm to take make and model of the firearm and ammunition used into account or expand the trainings base of the algorithm to include a wider variety of makes and models. The downside of this is that we need to considerably expand the database used for training. 
 
-Another solution would be to expand on the aggregation used to get from land-to-land scores to bullet scores: SAM scores only take the scores of the maximum sequence into account and ignore scores associated with pairs of land engraved areas from different sources. Those scores might be useful in establishing a baseline that better expresses similarity between pairs of bullets.
 
+Another solution would be to expand on the aggregation used to get from land-to-land scores to bullet scores: SAM scores only take the scores of the maximum sequence into account and ignore scores associated with pairs of land engraved areas from different sources. Those scores might be useful in establishing a baseline that better expresses similarity between pairs of bullets. One approach that uses scores for both same source pairs and different source pairs are score-based likelihood ratios \citep{Bunch:2013if, Morrison:2018fh}.
+\citet{Morrison:2018km}  stress the need to additionally include the typicality of a signature.
 
 # Discussion and Conclusions
 
@@ -692,6 +693,9 @@ All of the studies involve the same firearm. We see some variations in scores ac
 
 
 As seen in the earlier discussion, similarity scores are affected by deficiencies on lands. It has been shown \citet{lpr} that parts of lands can be used for successful identifications. The  algorithm proposed by \citet{aoas} is not capable of  automatically detecting parts of lands with well expressed striae. XXX citation for neural network algorithm
+
+
+
 
 # References
 
