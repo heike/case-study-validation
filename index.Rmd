@@ -678,7 +678,7 @@ Another solution would be to expand on the aggregation used to get from land-to-
 
 What is quite surprising \svp{is} that what we anticipated to be the easiest case of Hamby 44 turned out to be the hardest to solve. This is likely due to several lands in the Hamby-44 set \svp{that have} major deficiencies,  such as 'tank rash' (a collision of the bullet after exiting the barrel with a surface causing markings on top of the striations from the barrel) or extreme pitting (holes caused by direct contact with burning gun powder).
 \autoref{fig:tankrash} gives an overview of all lands of bullets in the Hamby-44 set affected. \svp{These issues affect the algorithm's ability to identify a stable signature, which impacts the subsequent match scores.}
-```{r tankrash, fig.cap="Overview of bullet lands with prominent deficiency such as tank rash or extreme pitting in the Hamby-44 study.", fig.width=4, fig.height = 2, out.width='47.5%', fig.subcap=c("Br1-B1-L6 (breakaway)", "Br2-B2-L5 (tank rash)", "Br3-B1-L5 (tank rash)", "Br8-B1-L6 (tank rash)", "Br8-B2-L2 (pitting)", "Br8-B2-L6 (breakaway)", "Unk-E-L6 (breakaway)", "Unk-I-L6 (breakaway)"), fig.align="middle", fig.ncol=2}
+```{r tankrash, fig.cap="Overview of bullet lands with prominent deficiency such as tank rash or extreme pitting in the Hamby-44 study.", fig.width=4, fig.height = 2, out.width='47.5%', fig.subcap=c("Br1-B1-L6 (tank rask)", "Br2-B2-L5 (tank rash)", "Br3-B1-L5 (tank rash)", "Br8-B1-L6 (tank rash)", "Br8-B2-L2 (pitting)", "Br8-B2-L6 (tank rash)", "Unk-E-L6 (tank rash)", "Unk-I-L6 (tank rash and break-off)"), fig.align="middle", fig.ncol=2}
 knitr::include_graphics(
   c(
     "./images/B1-B1-L6.png", "./images/B2-B2-L5.png",
