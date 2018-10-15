@@ -667,7 +667,7 @@ nestslong %>%
 What we find in \autoref{fig:compare} is that neither of the measure fulfills both of the minimal requirements laid out above. Both measures fulfill (R1), i.e. all  scores  of  different-source pairs are lower than scores of same-source pairs for SAM scores based on cross-correlation and RF scores.
 However, SAM scores based on the multivariate random forest score show better separation between same-source and different-source scores than SAM scores based on cross-correlation. This can be seen from the larger horizontal distance between the modes (peaks) of the density curves of RF based SAM scores compared to the cross-correlation SAM scores.  
 
-Regarding requirement (R2), \autoref{fig:compare} shows that a single cutoff value does not exist that separates same-source scores from different-source scores across all three studies, without introducing additional errors.
+Regarding requirement (R2), \autoref{fig:compare} shows that a single cutoff value does not exist that separates same-source scores from different-source scores across all three studies, without introducing errors.
 
 There are several approaches for potential improvements: we can try to fine tune the matching algorithm to take make and model of the firearm and ammunition used into account or expand the trainings base of the algorithm to include a wider variety of makes and models. The downside of this is that we need to considerably expand the database used for training. 
 
@@ -694,7 +694,7 @@ knitr::include_graphics(
 Three lands from bullets known to be fired from barrel 8 are affected, producing low scores for barrel 8 in \autoref{fig:h44}. We also see that questioned bullet 'I' is affected, explaining some of the low similarity scores for this bullet.
 
 ### Limitations
-All of the studies involve the same firearm. We see some variations in scores across different models of Rugers. Likely, we are going to see even bigger variations with different brands of firearms, where there might be different number of lands of different lengths. We also know  that different firearms mark differently well \cite{???}. Rugers are among the firearms that mark very well, so we would correspondingly expect to see lowered similarity scores for other firearms. The matching algorithm works on matching lands. Barrels with polygonal rifling, such as Glocks, do not introduce well defined lands on bullets, which makes an application of the matching algorithm impossible.  
+All of the studies involve the same type of firearm. We see some variations in scores across different models of Rugers. Likely, we are going to see even bigger variations with different brands of firearms, where there might be different number of lands of different lengths. We also know  that different firearms mark differently well \cite{???}. Rugers are among the firearms that mark very well, so we would correspondingly expect to see lowered similarity scores for other firearms. The matching algorithm works on matching lands. Barrels with polygonal rifling, such as Glocks, do not introduce well defined lands on bullets, which makes an application of the matching algorithm impossible.  
 
 
 As seen in the earlier discussion, similarity scores are affected by deficiencies on lands. It has been shown \citet{lpr} that parts of lands can be used for successful identifications. The  algorithm proposed by \citet{aoas} is not capable of  automatically detecting parts of lands with well expressed striae. XXX citation for neural network algorithm
