@@ -161,7 +161,8 @@ Quantitative features describing the similarity of two signature are extracted. 
 
 # Validation Sets
 
-The algorithm in \citet{aoas} is trained on scans from Hamby sets 252 and 173 made available through \citet{nist}. Set 173 was originally published as Hamby set 44. This mislabelling has been correct now. The scans used to train the model were taken at 20 fold magnification for a resolution of 1.5625 microns per pixel. \hh{While magnification is generally of interest in microscopy, {\it resolution} -- usually measured in microns per pixel -- is of more interest for 3D topographic measurements, as it determines the operative level of available data.}
+The algorithm in \citet{aoas} is trained on scans from Hamby sets 252 and 173 made available through \citet{nist}. Set 173 was originally published as Hamby set 44. This mislabelling has been correct now. 
+
 
 \hh{XXX We need a gentler intro to the validation sets - maybe some discussion of training and test sets?}
 
@@ -178,7 +179,10 @@ Land engraved areas for each of the six lands of each bullet were scanned by Bil
 This study was set up by Melissa Nally and Kasi Kirksey from FSI Houston. Three test sets based on ten consecutively rifled Ruger LCP barrels (A, B, C, D, E, F, G, H, I, J) and three other, non-consecutively rifled Ruger LCP barrels (R1, R2, R3). Each test set consists of three test fires each from five consecutively rifled barrels. Additionally, ten questioned bullets are provided for each kit. The ammunition used in both test fires and the questioned bullets were Remington UMC 9mm Luger Full Metal Jackets. All three of the test sets are open; that is,\ not every one of the questioned bullets is fired from the five known barrels in each of the test set.
 \end{itemize}
 
-Scans of all land engraved areas were taken on a Sensofar Confocal Light microscope at 20x magnification resulting in a resolution of 0.645 microns per pixel. If not indicated otherwise, scans were taken at the Roy J Carver high resolution microscopy lab at Iowa State University.
+
+The scans used to train the model were taken at 20 fold magnification for a resolution of 1.5625 microns per pixel. While magnification is generally of interest in microscopy, {\it resolution} -- usually measured in microns per pixel -- is of more interest for 3D topographic measurements, as it determines the operative level of available data.
+
+Scans of all land engraved areas for the validation data were taken on a Sensofar Confocal Light microscope at 20x magnification resulting in a resolution of 0.645 microns per pixel. If not indicated otherwise, scans were taken at the Roy J Carver high resolution microscopy lab at Iowa State University.
 
 Case studies were chosen such that difficulty for the matching algorithm increases with each case study: Hamby set 44 is part of the Hamby study. The algorithm in \citet{aoas} was trained on sets 173 and 252, so the bullets in Hamby 44 are of the same type of ammunition and are fired through the same barrels as the bullets in the training set.
 
