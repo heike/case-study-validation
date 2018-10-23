@@ -684,9 +684,9 @@ There are several approaches for potential improvements: we can try to fine tune
 Another solution would be to expand on the aggregation used to get from land-to-land scores to bullet scores: SAM scores only take the scores of the maximum sequence into account and ignore scores associated with pairs of land engraved areas from different sources. Those scores might be useful in establishing a baseline that better expresses similarity between pairs of bullets. One approach that uses scores for both same source pairs and different source pairs are score-based likelihood ratios \citep{Bunch:2013if, Morrison:2018fh}.
 \citet{Morrison:2018km}  stress the need to additionally include the typicality of a signature.
 
-### Comparison of land-to-land scores
+# Digging deeper: comparison of land-to-land scores
 
-\hh{XXX error rates on land to land matches? XXX}
+\hh{XXX error rates on land to land matches? ROC curves in \autoref{fig:rocs} and corresponding AUC results for all studies in \autoref{tab:rocs} XXX}
 
 ```{r, cache=TRUE}
 hounest <- hounest %>% mutate(
@@ -694,7 +694,7 @@ hounest <- hounest %>% mutate(
     .f = function(d) {
       d$sameland = bullet_to_land_predict(
         land1 = d$land1, land2 = d$land2, 
-        d$rfscore, difference=0.1)
+        d$rfscore, difference=0.05)
       d
     })
 )
@@ -741,16 +741,22 @@ all_lands <- all_lands %>%
   )
 ```
 
-```{r rocs, fig.caption="ROC curves for all studies based on land-to-land comparisons."}
+
+```{r rocs, fig.caption="ROC curves for all studies based on land-to-land comparisons.", fig.width = 4.5, fig.height = 3, out.width = ".5\\textwidth"}
 library(plotROC)
 library(pROC)
 all_lands %>% 
-  ggplot(aes(colour = interaction(study, group1))) +
+  ggplot(aes(colour = interaction(study, group1, sep = " "))) +
   geom_roc(aes(m = rfscore, d = as.numeric(sameland)), 
-           labels =FALSE, pointsize = 0) 
+           labels =FALSE, pointsize = 0, alpha = 0.8) +
+  theme_bw() +
+  xlab("Fraction False Positives") +
+  ylab("Fraction True Positives") +
+  scale_colour_manual("Study", values = c("#fe9929", "#8856a7",
+                                         "#74a9cf", "#2b8cbe", "#045a8d"))
 ```
 
-```{r aucs, results="asis"}
+```{r aucs, eval = FALSE}
 aucs <- all_lands %>% group_by(study, group1) %>% nest() %>%
   mutate(
     auc_rf = data %>% purrr::map_dbl(function(d) {
@@ -769,7 +775,22 @@ names(aucs)[5] <- "Cross-correlation"
 print(xtable(aucs %>% select(-data), digits = 3, caption = "Area under the curve (AUC) for each (set) of the studies. At the land level there is no difference in prediction power between RF score and cross-correlation."), include.rownames=FALSE, label="tab:aucs")
 ```
 
-
+\begin{table}[ht]
+\centering
+\begin{tabular}{llrr}
+  \hline
+\bf study & \bf set & \bf AUC(RF score) & \bf AUC(Cross-correlation) \\ 
+  \hline
+\bf Hamby 44 &  & 0.956 & 0.926 \\ 
+\bf   Phoenix PD &  & 0.976 & 0.986 \\ 
+\bf   Houston FSI & G1 & 0.991 & 0.988 \\ 
+\bf   Houston FSI & G2 & 0.898 & 0.902 \\ 
+\bf   Houston FSI & G3 & 0.986 & 0.987 \\ 
+   \hline
+\end{tabular}
+\caption{Area under the curve (AUC) for each (set) of the studies. As seen in the ROC curves, the algorithm performs the least well on set 2 of the Houston FSI study. Overall the perform on all sets is very good to excellent.
+At the land level there is no difference in prediction power between RF score and cross-correlation.} 
+\end{table}
 
 # Discussion and Conclusions
 
