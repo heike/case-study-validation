@@ -161,13 +161,13 @@ Quantitative features describing the similarity of two signature are extracted. 
 
 # Validation Sets
 
-The algorithm in \citet{aoas} is trained on scans from Hamby sets 252 and 173 made available through \citet{nist}. Set 173 was originally published as Hamby set 44. This mislabelling has been correct now. 
+\hh{The automatic matching algorithm is based on a random forest [@breiman], which has a built-in internal testing mechanism to prevent potential overfitting. Error rates reported by random forest algorithms are based on these internal test sets. However, there is some discussion on whether or in which situations these error rates are biased [@rfOver2; @rfOver]. 
+Neither of these papers adresses another issue with internal test sets: internal test sets are constructed to have the same distribution as the training data (apart from sampling variability). For any machine learning method the true test comes with testing the performance of an algorithm on an external test data. Good performance (in terms of low error rates) on external test data validates a ML algorithm. External data allows an assessment of the algorithm's sensitivity to distributional changes.  Using performance on external test data also allows us to test limitations of the algorithm by going outside the parameters of the training data.  }
 
 
-\hh{XXX We need a gentler intro to the validation sets - maybe some discussion of training and test sets?}
+The algorithm in \citet{aoas} is trained on scans from Hamby sets 252 and 173 made available through \citet{nist}. Set 173 was originally published as Hamby set 44. This mislabelling has been corrected now. 
 
-
-Here, we are considering three validation sets: 
+\hh{For the validation of the automatic matching algorithm we are considering three validation sets of -- what should be -- increasing difficulty level:} 
 \begin{itemize}
 \item {\bf Hamby set 44} 
 Hamby set 44 is one set of the Hamby study \citep{hamby}. Each Hamby set  consists of a total of 35 bullets fired through ten consecutively manufactured barrels of Rugers P85. Each set consists of 20 known bullets (two from each of the ten barrels) and 15 questioned bullets of unknown origin. Note that all Hamby sets are closed sets; that is, all questioned bullets are fired through one of the ten barrels. The ammunition used for this set were 9 mm Luger 115 Grain Full Metal Jacket  from the Winchester Ammunition Company.
@@ -177,16 +177,17 @@ Tylor Klep from Phoenix PD provided sets of known test fires and questioned bull
 Land engraved areas for each of the six lands of each bullet were scanned by Bill Henderson (Sensofar).
 \item {\bf Houston FSI}
 This study was set up by Melissa Nally and Kasi Kirksey from FSI Houston. Three test sets based on ten consecutively rifled Ruger LCP barrels (A, B, C, D, E, F, G, H, I, J) and three other, non-consecutively rifled Ruger LCP barrels (R1, R2, R3). Each test set consists of three test fires each from five consecutively rifled barrels. Additionally, ten questioned bullets are provided for each kit. The ammunition used in both test fires and the questioned bullets were Remington UMC 9mm Luger Full Metal Jackets. All three of the test sets are open; that is,\ not every one of the questioned bullets is fired from the five known barrels in each of the test set.
+The structure of these three sets is similar to a forthcoming study by Nally and Kirksey, but the results here come from preliminary test sets made available to us.
 \end{itemize}
 
 
-The scans used to train the model were taken at 20 fold magnification for a resolution of 1.5625 microns per pixel. While magnification is generally of interest in microscopy, {\it resolution} -- usually measured in microns per pixel -- is of more interest for 3D topographic measurements, as it determines the operative level of available data.
+The scans used to train the model were taken at 20 fold magnification for a resolution of 1.5625 microns per pixel. While magnification is generally of interest in microscopy, **resolution** -- usually measured in microns per pixel -- is of more interest for 3D topographic measurements, as it determines the operative level of available data.
 
 Scans of all land engraved areas for the validation data were taken on a Sensofar Confocal Light microscope at 20x magnification resulting in a resolution of 0.645 microns per pixel. If not indicated otherwise, scans were taken at the Roy J Carver high resolution microscopy lab at Iowa State University.
 
 Case studies were chosen such that difficulty for the matching algorithm increases with each case study: Hamby set 44 is part of the Hamby study. The algorithm in \citet{aoas} was trained on sets 173 and 252, so the bullets in Hamby 44 are of the same type of ammunition and are fired through the same barrels as the bullets in the training set.
 
-The Phoenix PD set uses Ruger XXX barrels, which are different from the barrels in the Hamby sets used for training the algorithm, but the barrels are rifled similarly to the Ruger P-85 barrels.  
+The Phoenix PD set uses Ruger P-95 barrels, which are different from the barrels in the Hamby sets used for training the algorithm, but the barrels are rifled similarly to the Ruger P-85 barrels.  
 
 The Houston sets  use Ruger LCP barrels. These barrels are first rifled traditionally, i.e. similar to the Ruger P-85, but are treated to a secondary round of heating after barreling. This second round of heat exposure has the potential to introduce some subclass characteristics, i.e. anomalies that are shared between different barrels manufactured in this manner. This should make the automatic matching harder, and in particular, the classification as different-source land engraved areas/bullets.
 
@@ -513,8 +514,9 @@ Once again, the results from automatic matching correctly pair questioned bullet
 
 ## Houston FSI
 
-\autoref{fig:hou} shows an overview the three sets of the scores for all pairs of questioned bullets with all other bullets in the set. In set 1, five of the questioned bullets can be matched to known bullets in the set. None of the questioned bullets in set 1 match bullets fired from barrels KC or KD. Additionally, two of the questioned bullets which do not match any of the barrels in the set match each other. In set 2, four of the questioned bullets can be matched to known bullets in the set; of the additional four questioned bullets which do not match any known bullets, two were fired from the same barrel. In set 3, six of the questioned bullets match known bullets, and the remaining two questioned bullets match each other but do not match any known bullets in the set. Thus, we can conclude that the algorithm performs well on open set studies, as it can identify matches among questioned bullets which do not match any known bullets.
-
+\autoref{fig:hou} shows an overview of the three sets of scores for all pairs of questioned bullets with all other bullets in the set. In set 1, five of the questioned bullets can be matched to known bullets in the set. None of the questioned bullets in set 1 match bullets fired from barrels KC or KD. Additionally, two of the questioned bullets which do not match any of the barrels in the set match each other. In set 2, four of the questioned bullets can be matched to known bullets in the set; of the additional four questioned bullets which do not match any known bullets, two were fired from the same barrel. In set 3, six of the questioned bullets match known bullets, and the remaining two questioned bullets match each other but do not match any known bullets in the set. 
+%Thus, we can conclude that the algorithm performs well on open set studies, as it can identify matches among questioned bullets which do not match any known bullets. 
+While all bullet-to-bullet matches are correctly identified, and no known matches are missed, it is obvious from the generally lighter shades of the tiles corresponding to matching bullets in \autoref{fig:hou} for set 2 that  the algorithm is not performing as well as for the other sets (see also \autoref{tab:aucs}).
 ```{r hou, fig.width=9, fig.height = 3, fig.cap="Overview of matching scores for all pairs of questioned bullets to known bullets from five barrels (on the left) and questioned bullets to themselves (tiles on the right).", fig.subcap=c("Set 1", "Set 2", "Set 3"), fig.align="middle", fig.ncol=1}
 features <- read.csv("data/fsi-features.csv.gz")
 
@@ -523,10 +525,12 @@ features <- features %>% mutate(
   bullet2 = gsub("ullet ", "", bullet2)
 )
 
-groups <- features %>%
+features <- features %>%
   filter(group1 == group2) %>%
   filter(barrel1 == "Unknowns") %>%
-  filter(barrel1 != barrel2 | bullet1 != bullet2) %>%
+  filter(barrel1 != barrel2 | bullet1 != bullet2) 
+
+groups <- features %>%
   group_by(group1, barrel1, bullet1, barrel2, bullet2) %>%
   nest()
 
@@ -617,6 +621,7 @@ hou2
 hou3
 ```
 
+
 # Comparison of SAM scores
 
 \autoref{fig:compare} shows density curves for the scores of each of the studies, comparing the SAM scores based on cross-correlation (top) and the random forest score (bottom). Color indicates ground truth. Besides densities, small vertical lines below the $x$-axis indicate observed scores in a so-called **rug-plot**. The plot shows that for all three case studies and both measures, i.e. SAM scores based on cross-correlation as well as SAM scores based on the random forest scores, all similarity scores are higher for pairs of bullets from the same source, i.e. bullets fired through the same barrel, than pairs of bullets from different sources (fired through different barrels). 
@@ -625,7 +630,7 @@ hou3
 nests <- rbind(
   h44nest %>%
     select(sam_rf, sam_ccf, samesource) %>%
-    mutate(study = "Hamby-44", group1 = NA),
+    mutate(study = "Hamby 44", group1 = NA),
   pdnest %>%
     select(sam_rf, sam_ccf, samesource) %>%
     mutate(study = "Phoenix PD", group1 = NA),
@@ -633,7 +638,7 @@ nests <- rbind(
     select(sam_rf, sam_ccf, samesource, group1) %>%
     mutate(study = "Houston FSI")
 )
-nests$study <- factor(nests$study, levels = c("Hamby-44", "Phoenix PD", "Houston FSI"))
+nests$study <- factor(nests$study, levels = c("Hamby 44", "Phoenix PD", "Houston FSI"))
 nestslong <- nests %>% gather(key = "measure", value = "value", sam_rf, sam_ccf)
 nestslong$measure <- factor(nestslong$measure)
 levels(nestslong$measure) <- c("Cross-correlation", "RF score")
@@ -641,7 +646,7 @@ levels(nestslong$measure) <- c("Cross-correlation", "RF score")
 labels <- h44nest %>% filter(samesource, sam_rf < 0.5)
 labels$comparison <- with(labels, paste(bullet1, "vs", paste(barrel2, bullet2, sep = "-")))
 labels$measure <- "RF score"
-labels$study <- "Hamby-44"
+labels$study <- "Hamby 44"
 labels$y <- 5 + 4:1
 nestslong %>%
   ggplot(aes(
@@ -679,10 +684,97 @@ There are several approaches for potential improvements: we can try to fine tune
 Another solution would be to expand on the aggregation used to get from land-to-land scores to bullet scores: SAM scores only take the scores of the maximum sequence into account and ignore scores associated with pairs of land engraved areas from different sources. Those scores might be useful in establishing a baseline that better expresses similarity between pairs of bullets. One approach that uses scores for both same source pairs and different source pairs are score-based likelihood ratios \citep{Bunch:2013if, Morrison:2018fh}.
 \citet{Morrison:2018km}  stress the need to additionally include the typicality of a signature.
 
+### Comparison of land-to-land scores
+
+\hh{XXX error rates on land to land matches? XXX}
+
+```{r, cache=TRUE}
+hounest <- hounest %>% mutate(
+  data = data %>% purrr::map(
+    .f = function(d) {
+      d$sameland = bullet_to_land_predict(
+        land1 = d$land1, land2 = d$land2, 
+        d$rfscore, difference=0.1)
+      d
+    })
+)
+houlands <- hounest %>% unnest(data)
+
+h44nest <- h44nest %>% mutate(
+  data = data %>% purrr::map(
+    .f = function(d) {
+      d$sameland = bullet_to_land_predict(
+        land1 = d$land1, land2 = d$land2, 
+        d$rfscore, difference=0.1)
+      d
+    })
+)
+h44lands <- h44nest %>% unnest(data)
+
+pdnest <- pdnest %>% mutate(
+  data = data %>% purrr::map(
+    .f = function(d) {
+      d$sameland = bullet_to_land_predict(
+        land1 = d$land1, land2 = d$land2, 
+        d$rfscore, difference=0.1)
+      d
+    })
+)
+pdlands <- pdnest %>% unnest(data)
+
+
+all_lands <- rbind(
+  h44lands %>%
+    select(rfscore, ccf, sameland, samesource) %>%
+    mutate(study = "Hamby 44", group1 = ""),
+  pdlands %>%
+    select(rfscore, ccf, sameland, samesource) %>%
+    mutate(study = "Phoenix PD", group1 = ""),
+  houlands %>%
+    select(rfscore, ccf, sameland, samesource, group1) %>%
+    mutate(study = "Houston FSI")
+)
+all_lands$study <- factor(all_lands$study, levels = c("Hamby 44", "Phoenix PD", "Houston FSI"))
+all_lands <- all_lands %>%
+  mutate(
+    sameland = replace(sameland, !samesource, FALSE)
+  )
+```
+
+```{r rocs, fig.caption="ROC curves for all studies based on land-to-land comparisons."}
+library(plotROC)
+library(pROC)
+all_lands %>% 
+  ggplot(aes(colour = interaction(study, group1))) +
+  geom_roc(aes(m = rfscore, d = as.numeric(sameland)), 
+           labels =FALSE, pointsize = 0) 
+```
+
+```{r aucs, results="asis"}
+aucs <- all_lands %>% group_by(study, group1) %>% nest() %>%
+  mutate(
+    auc_rf = data %>% purrr::map_dbl(function(d) {
+      auc(d$sameland, d$rfscore)
+    }),
+    auc_ccf = data %>% purrr::map_dbl(function(d) {
+      auc(d$sameland, d$ccf)
+    })
+
+  )
+#
+library(xtable)
+names(aucs)[2] <- "set"
+names(aucs)[4] <- "RF score"
+names(aucs)[5] <- "Cross-correlation"
+print(xtable(aucs %>% select(-data), digits = 3, caption = "Area under the curve (AUC) for each (set) of the studies. At the land level there is no difference in prediction power between RF score and cross-correlation."), include.rownames=FALSE, label="tab:aucs")
+```
+
+
+
 # Discussion and Conclusions
 
 
-What is quite surprising is that what we anticipated to be the easiest case of Hamby 44 turned out to be the hardest to solve. This is likely due to several lands in the Hamby-44 set that have major deficiencies,  such as 'tank rash' (a collision of the bullet after exiting the barrel with a surface causing markings on top of the striations from the barrel) or extreme pitting (holes caused by direct contact with burning gun powder).
+What is quite surprising is that what we anticipated to be the easiest case of Hamby 44 turned out to be the hardest to solve. This is likely due to several lands in Hamby set 44 that have major deficiencies,  such as 'tank rash' (a collision of the bullet after exiting the barrel with a surface causing markings on top of the striations from the barrel) or extreme pitting (holes caused by direct contact with burning gun powder).
 \autoref{fig:tankrash} gives an overview of all lands of bullets in the Hamby-44 set affected. These issues affect the algorithm's ability to identify a stable signature, which impacts the subsequent match scores.
 ```{r tankrash, fig.cap="Overview of bullet lands with prominent deficiency such as tank rash or extreme pitting in the Hamby-44 study.", fig.width=4, fig.height = 2, out.width='47.5%', fig.subcap=c("Br1-B1-L6 (tank rask)", "Br2-B2-L5 (tank rash)", "Br3-B1-L5 (tank rash)", "Br8-B1-L6 (tank rash)", "Br8-B2-L2 (pitting)", "Br8-B2-L6 (tank rash)", "Unk-E-L6 (tank rash)", "Unk-I-L6 (tank rash and break-off)"), fig.align="middle", fig.ncol=2}
 knitr::include_graphics(
