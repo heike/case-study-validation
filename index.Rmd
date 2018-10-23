@@ -162,10 +162,10 @@ Quantitative features describing the similarity of two signature are extracted. 
 # Validation Sets
 
 \hh{The automatic matching algorithm is based on a random forest [@breiman], which has a built-in internal testing mechanism to prevent potential overfitting. Error rates reported by random forest algorithms are based on these internal test sets. However, there is some discussion on whether or in which situations these error rates are biased [@rfOver2; @rfOver]. 
-Neither of these papers adresses another issue with internal test sets: internal test sets are constructed to have the same distribution as the training data (apart from sampling variability). For any machine learning method the true test comes with testing the performance of an algorithm on an external test data. Good performance (in terms of low error rates) on external test data validates a ML algorithm. External data allows an assessment of the algorithm's sensitivity to distributional changes.  Using performance on external test data also allows us to test limitations of the algorithm by going outside the parameters of the training data.  }
+Neither of these papers addresses another issue with internal test sets: internal test sets are constructed to have the same distribution as the training data (apart from sampling variability). For any machine learning method the true test comes with testing the performance of an algorithm on an external test data. Good performance (in terms of low error rates) on external test data validates a ML algorithm. External data allows an assessment of the algorithm's sensitivity to distributional changes.  Using performance on external test data also allows us to test limitations of the algorithm by going outside the parameters of the training data.  }
 
 
-The algorithm in \citet{aoas} is trained on scans from Hamby sets 252 and 173 made available through \citet{nist}. Set 173 was originally published as Hamby set 44. This mislabelling has been corrected now. 
+The algorithm in \citet{aoas} is trained on scans from Hamby sets 252 and 173 made available through \citet{nist}. Set 173 was originally published as Hamby set 44. This mis-labeling has been corrected now. 
 
 \hh{For the validation of the automatic matching algorithm we are considering three validation sets of -- what should be -- increasing difficulty level:} 
 \begin{itemize}
@@ -673,12 +673,12 @@ nestslong %>%
   )
 ```
 
-What we find in \autoref{fig:compare} is that neither of the measure fulfills both of the minimal requirements laid out above. Both measures fulfill (R1), i.e. all  scores  of  different-source pairs are lower than scores of same-source pairs for SAM scores based on cross-correlation and RF scores.
+What we find in \autoref{fig:compare} is that neither of the measures fulfill both of the minimal requirements laid out above. Both measures fulfill (R1), i.e. all  scores  of  different-source pairs are lower than scores of same-source pairs for SAM scores based on cross-correlation and RF scores.
 However, SAM scores based on the multivariate random forest score show better separation between same-source and different-source scores than SAM scores based on cross-correlation. This can be seen from the larger horizontal distance between the modes (peaks) of the density curves of RF based SAM scores compared to the cross-correlation SAM scores.  
 
 Regarding requirement (R2), \autoref{fig:compare} shows that a single cutoff value does not exist that separates same-source scores from different-source scores across all three studies, without introducing errors.
 
-There are several approaches for potential improvements: we can try to fine tune the matching algorithm to take make and model of the firearm and ammunition used into account or expand the trainings base of the algorithm to include a wider variety of makes and models. The downside of this is that we need to considerably expand the database used for training. 
+There are several approaches for potential improvements: we can try to fine tune the matching algorithm to take make and model of the firearm and ammunition used into account or expand the training base of the algorithm to include a wider variety of makes and models. The downside of this is that we need to considerably expand the database used for training. 
 
 
 Another solution would be to expand on the aggregation used to get from land-to-land scores to bullet scores: SAM scores only take the scores of the maximum sequence into account and ignore scores associated with pairs of land engraved areas from different sources. Those scores might be useful in establishing a baseline that better expresses similarity between pairs of bullets. One approach that uses scores for both same source pairs and different source pairs are score-based likelihood ratios \citep{Bunch:2013if, Morrison:2018fh}.
