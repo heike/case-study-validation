@@ -742,7 +742,7 @@ all_lands <- all_lands %>%
 ```
 
 
-```{r rocs, fig.caption="ROC curves for all studies based on land-to-land comparisons.", fig.width = 4.5, fig.height = 3, out.width = ".5\\textwidth"}
+```{r rocs, fig.cap="ROC curves for all studies based on land-to-land comparisons.", fig.width = 4.5, fig.height = 3, out.width = ".5\\textwidth"}
 library(plotROC)
 library(pROC)
 all_lands %>% 
@@ -789,7 +789,7 @@ print(xtable(aucs %>% select(-data), digits = 3, caption = "Area under the curve
    \hline
 \end{tabular}
 \caption{Area under the curve (AUC) for each (set) of the studies. As seen in the ROC curves, the algorithm performs the least well on set 2 of the Houston FSI study. Overall the perform on all sets is very good to excellent.
-At the land level there is no difference in prediction power between RF score and cross-correlation.} 
+At the land level there is no difference in prediction power between RF score and cross-correlation.\label{tab:aucs}} 
 \end{table}
 
 # Discussion and Conclusions
