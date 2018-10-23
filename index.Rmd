@@ -752,7 +752,7 @@ all_lands %>%
   theme_bw() +
   xlab("Fraction False Positives") +
   ylab("Fraction True Positives") +
-  scale_colour_manual("Study", values = c("#fe9929", "#8856a7",
+  scale_colour_manual("Study", values = c("#fe9929", "#aa0000",
                                          "#74a9cf", "#2b8cbe", "#045a8d"))
 ```
 
