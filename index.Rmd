@@ -788,8 +788,8 @@ print(xtable(aucs %>% select(-data), digits = 3, caption = "Area under the curve
 \bf   Houston FSI & G3 & 0.986 & 0.987 \\ 
    \hline
 \end{tabular}
-\caption{Area under the curve (AUC) for each (set) of the studies. As seen in the ROC curves, the algorithm performs the least well on set 2 of the Houston FSI study. Overall the perform on all sets is very good to excellent.
-At the land level there is no difference in prediction power between RF score and cross-correlation.\label{tab:aucs}} 
+\caption{Area under the curve (AUC) for each (set) of the studies. As seen in the ROC curves, the algorithm performs the least well on set 2 of the Houston FSI study. Overall the performance on all sets is very good to excellent.
+At the land level there is no difference in prediction power between RF score and cross-correlation. \svp{It has been observed \citep{marzban_roc_2004} that AUC differentiates good models from bad, but does not effectively distinguish between good models to determine which model is better.} \label{tab:aucs}} 
 \end{table}
 
 # Discussion and Conclusions
