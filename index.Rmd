@@ -621,10 +621,9 @@ hou2
 hou3
 ```
 
-
 # Comparison of SAM scores
 
-\autoref{fig:compare} shows density curves for the scores of each of the studies, comparing the SAM scores based on cross-correlation (top) and the random forest score (bottom). Color indicates ground truth. Besides densities, small vertical lines below the $x$-axis indicate observed scores in a so-called **rug-plot**. The plot shows that for all three case studies and both measures, i.e. SAM scores based on cross-correlation as well as SAM scores based on the random forest scores, all similarity scores are higher for pairs of bullets from the same source, i.e. bullets fired through the same barrel, than pairs of bullets from different sources (fired through different barrels). 
+\autoref{fig:compare} shows density curves for the scores bullet-to-bullet matches of each of the studies, comparing the SAM scores based on cross-correlation (top) and the random forest score (bottom). Color indicates ground truth. Besides densities, small vertical lines below the $x$-axis indicate observed scores in a **rug-plot**. The plot shows that for all three case studies and both measures, i.e. SAM scores based on cross-correlation as well as SAM scores based on the random forest scores, all similarity scores are higher for pairs of bullets from the same source, i.e. bullets fired through the same barrel, than pairs of bullets from different sources (fired through different barrels). 
  
 ```{r compare, fig.width = 8, fig.height = 5, fig.cap="Density curves of similarity scores from cross-correlation (top) and RF scores (bottom). Different colors indicate same source versus different source. Ideally all scores of different source pairs should be much lower than scores for same source pairs."}
 nests <- rbind(
