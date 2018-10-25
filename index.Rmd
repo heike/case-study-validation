@@ -188,7 +188,7 @@ Case studies were chosen such that difficulty for the matching algorithm increas
 
 The Phoenix PD set uses Ruger P-95 barrels, which are different from the barrels in the Hamby sets used for training the algorithm, but the barrels are rifled similarly to the Ruger P-85 barrels.  
 
-The Houston sets  use Ruger LCP barrels. These barrels are first rifled traditionally, i.e. similar to the Ruger P-85, but are treated to a secondary round of heating after barreling. This second round of heat exposure has the potential to introduce some subclass characteristics, i.e. anomalies that are shared between different barrels manufactured in this manner. This should make the automatic matching harder, and in particular, the classification as different-source land engraved areas/bullets.
+The Houston sets  use Ruger LCP barrels. These barrels are first rifled traditionally, i.e. similar to the Ruger P-85, but are treated to a secondary round of heating after barreling. This second round of heat exposure has the potential to introduce some subclass characteristics, i.e. anomalies that are shared between different barrels manufactured in this manner. This should make the automatic matching harder, and in particular, \svp{is expected to complicate} the classification as different-source land engraved areas/bullets.
 
 # From land-to-land scores to bullet summary scores
 
