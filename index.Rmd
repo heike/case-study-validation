@@ -820,8 +820,9 @@ At the land level there is no difference in the predictive power between RF scor
 
 \svp{In \autoref{fig:rocs}, the Houston FSI G1 and G3 curves and the Phoenix PD curve show excellent performance; Houston FSI G2 and Hamby 44 show relatively good performance. Area under the curve (AUC) values, which summarize ROC curves, are shown in \autoref{tab:aucs}. AUC values are useful for differentiating between poor, good, and excellent model performance, but are not particularly useful when determining which of several models with approximately the same level of performance should be used \citep{marzban_roc_2004}. Hamby 44 and Phoenix PD are the only studies with a somewhat noticable difference between the AUC score for RF compared to ccf, and even those differences are relatively small: .03 and -.01, respectively.}
 
-\hh{XXX error rates on land to land matches? ROC curves in \autoref{fig:rocs} and corresponding AUC results for all studies in \autoref{tab:aucs} XXX}
+<!-- \hh{XXX error rates on land to land matches? ROC curves in \autoref{fig:rocs} and corresponding AUC results for all studies in \autoref{tab:aucs} XXX} -->
 
+\svp{XXX show ROC for bullet-to-bullet is perfect, just for emphasis?}
 
 # Discussion and Conclusions
 
