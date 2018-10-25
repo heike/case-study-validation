@@ -877,7 +877,7 @@ all_lands %>%
                                          "#74a9cf", "#2b8cbe", "#045a8d"))
 ```
 
-```{r aucs, eval = TRUE, results = 'asis'}
+```{r aucs, eval = FALSE, results = 'asis'}
 
 aucs <- all_lands %>% group_by(study, group1) %>% nest() %>%
   mutate(
