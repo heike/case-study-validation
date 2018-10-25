@@ -827,7 +827,7 @@ At the land level there is no difference in the predictive power between RF scor
 # Discussion and Conclusions
 
 
-What is quite surprising is that what we anticipated to be the easiest case of Hamby 44 turned out to be the hardest to solve. This is likely due to several lands in Hamby set 44 that have major deficiencies,  such as 'tank rash' (a collision of the bullet after exiting the barrel with a surface causing markings on top of the striations from the barrel) or extreme pitting (holes caused by direct contact with burning gun powder).
+What is quite surprising is that \svp{while} we anticipated \svp{Hamby 44 would be the easiest set to work with, but it} turned out to be the hardest to solve. This is likely due to several lands in Hamby set 44 that have major deficiencies,  such as 'tank rash' (a collision of the bullet after exiting the barrel with a surface causing markings on top of the striations from the barrel) or extreme pitting (holes caused by direct contact with burning gun powder).
 \autoref{fig:tankrash} gives an overview of all lands of affected bullets in the Hamby-44 set. These issues affect the algorithm's ability to identify a stable signature, which impacts the subsequent match scores.
 ```{r tankrash, fig.cap="Overview of bullet lands with prominent deficiency such as tank rash or extreme pitting in the Hamby-44 study.", fig.width=4, fig.height = 2, out.width='47.5%', fig.subcap=c("Br1-B1-L6 (tank rask)", "Br2-B2-L5 (tank rash)", "Br3-B1-L5 (tank rash)", "Br8-B1-L6 (tank rash)", "Br8-B2-L2 (pitting)", "Br8-B2-L6 (tank rash)", "Unk-E-L6 (tank rash)", "Unk-I-L6 (tank rash and break-off)"), fig.align="middle", fig.ncol=2}
 knitr::include_graphics(
