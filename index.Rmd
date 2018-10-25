@@ -267,7 +267,7 @@ df2 %>%
   theme(legend.position = "bottom")
 ```
 
-Looking back at Figure \ref{fig:b2b}, we see that for the two bullets from the same barrel, the sequence average for 
+Looking back at \autoref{fig:b2b}, we see that for the two bullets from the same barrel, the sequence average for 
 $k=2$ is higher than the other sequence averages, and also higher than the sequence averages for the other pair of bullets shown on the right of the figure.
 
 SAM scores allow us to define a single quantity for each pair of bullets that describes the similarity between these two bullets. 
