@@ -653,22 +653,24 @@ nestslong %>%
     colour = samesource
   )) +
   geom_density(alpha = 0.6) +
-  geom_rug(alpha = 0.5) +
+  geom_rug(alpha = 0.5, show.legend = F) +
   facet_grid(measure ~ study) +
   theme_bw() +
   scale_fill_manual("Same source", values = c("darkgrey", "darkorange")) +
   scale_colour_manual("Same source", values = c("darkgrey", "darkorange")) +
   scale_x_continuous("SAM scores", limits = c(0, 1)) +
   theme(legend.position = "bottom") +
-  geom_hline(yintercept = 0) +
+  geom_hline(yintercept = 0, show.legend = F) +
   geom_text(aes(x = sam_rf, y = y, label = comparison),
-    hjust = 0,
-    data = labels
+            show.legend = F,
+            hjust = 0,
+            data = labels
   ) +
   geom_segment(aes(x = sam_rf, xend = sam_rf, y = 0, yend = y),
-    size = 0.1,
-    colour = "grey20",
-    data = labels
+               show.legend = F,
+               size = 0.1,
+               colour = "grey20",
+               data = labels
   )
 ```
 
@@ -836,7 +838,8 @@ knitr::include_graphics(
 Three lands from bullets known to be fired from barrel 8 are affected, producing low scores for barrel 8 in \autoref{fig:h44}. We also see that questioned bullet 'I' is affected, explaining some of the low similarity scores for this bullet.
 
 ### Limitations
-All of the studies \svp{presented here} involve the same type of firearm. We see some variations in scores across different models of Rugers, and it is probable that we will see even bigger variations with different brands of firearms that vary in number of lands and land length. We also know that different firearms and ammunition combinations mark differently well \citep{bolton-king_preventing_2016}. Rugers are among the firearms that mark very well, so we would correspondingly expect to see lowered similarity scores for other firearms. The matching algorithm works on matching lands. Barrels with polygonal rifling, such as Glocks, do not introduce well defined lands on bullets, which makes an application of the matching algorithm impossible.  
+
+All of the studies \svp{presented here} involve the same type of firearm. We see some variations in scores across different models of Rugers, and it is probable that we will see even bigger variations with different brands of firearms that vary in number of lands and land length. We also know that different firearms and ammunition combinations mark differently well \citep{bolton-king_preventing_2016, bonfanti_influence_1999}. Rugers are among the firearms that mark very well, so we would correspondingly expect to see lowered similarity scores for other firearms. The matching algorithm works on matching lands. Barrels with polygonal rifling, such as Glocks, do not introduce well defined lands on bullets, which makes an application of the matching algorithm impossible.  
 
 
 As seen in the earlier discussion, similarity scores are affected by deficiencies on lands. It has been shown \citet{lpr} that parts of lands can be used for successful identifications. The algorithm proposed by \citet{aoas} is not capable of  automatically detecting parts of lands with well expressed striae. \svp{It may be useful to couple the \citet{aoas} algorithm with an algorithm which assesses the quality of the input data and determines which portions of the data to use for comparison. This would emulate the process used by examiners, who first assess the quality of the evidence and whether there is enough information present to attempt a match.} XXX citation for neural network algorithm \svp{Do you want to release this idea into the wild at this point? }
