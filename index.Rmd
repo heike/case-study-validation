@@ -685,7 +685,13 @@ Another solution would be to expand on the aggregation used to get from land-to-
 
 # Digging deeper: comparison of land-to-land scores
 
-\hh{XXX error rates on land to land matches? ROC curves in \autoref{fig:rocs} and corresponding AUC results for all studies in \autoref{tab:rocs} XXX}
+\svp{Examining land-to-land scores provides more details about the matching algorithm's performance. Figure \ref{fig:compare-land-to-land} shows density curves and rug plots for each study. There is some overlap between known matching and known non-matching land-to-land scores; in many cases the random forest scores for these overlapping values are more extreme than the corresponding ccf scores. This suggests that the matching algorithm is sensitive to the presence of LEAs which have low land-to-land match scores, such as the matches of bullets `I' and `F' in the Hamby 44 study. }
+
+\svp{When evaluating classifier performance, it is common to use a receiver operating curve, which plots the false positives against the true positives for each possible value of the cutoff between the two classes (in this case, known match and known non-match). The ROC curves for the land-to-land scores are shown in \autoref{fig:rocs}. A perfect classifier would have 100\% true positives and 0\% false positives, e.g. the ROC curve would be a right angle at (0, 1). Classifiers with better performance will be closer to this corner of the plot. A random classifier would have an ROC curve that was a straight diagonal line through (0,0) and (1,1).}
+
+\svp{In \autoref{fig:rocs}, the Houston FSI G1 and G3 curves and the Phoenix PD curve show excellent performance; Houston FSI G2 and Hamby 44 show relatively good performance. Area under the curve (AUC) values, which summarize ROC curves, are shown in \autoref{tab:aucs}. AUC values are useful for differentiating between poor, good, and excellent model performance, but are not particularly useful when determining which of several models with approximately the same level of performance should be used \citep{marzban_roc_2004}. Hamby 44 is the only study with a somewhat noticable difference between the AUC score for RF compared to ccf, and even that difference is relatively small.}
+
+\hh{XXX error rates on land to land matches? ROC curves in \autoref{fig:rocs} and corresponding AUC results for all studies in \autoref{tab:aucs} XXX}
 
 ```{r, cache=TRUE}
 hounest <- hounest %>% mutate(
@@ -741,7 +747,27 @@ all_lands <- all_lands %>%
 ```
 
 
-```{r rocs, fig.cap="ROC curves for all studies based on land-to-land comparisons.", fig.width = 4.5, fig.height = 3, out.width = ".5\\textwidth"}
+```{r compare-land-to-land, fig.width = 8, fig.height = 4, fig.cap="Density curves of land-to-land similarity scores from cross-correlation (top) and RF scores (bottom). Different colors indicate same source and phase versus different source or out-of-phase matches. The random forest scores tend to be more extreme than the cross correlation scores alone."}
+all_lands %>% 
+  gather(key = "measure", value = "value", ccf, rfscore) %>%
+  mutate(measure = factor(measure, levels = c("ccf", "rfscore"),
+                          labels = c("Cross-correlation", "RF score")),
+         study = paste(study, group1) %>% str_trim() %>% factor(levels = c("Hamby 44", "Phoenix PD", "Houston FSI G1", "Houston FSI G2", "Houston FSI G3"))) %>%
+  ggplot(aes(
+    x = value, fill = sameland,
+    colour = sameland
+  )) +
+  geom_density(alpha = 0.6) +
+  geom_rug(alpha = 0.5/12, show.legend = F) +
+  facet_grid(measure ~ study) +
+  theme_bw() +
+  scale_fill_manual("Same source & best sequence", values = c("darkgrey", "darkorange")) +
+  scale_colour_manual("Same source & best sequence", values = c("darkgrey", "darkorange")) +
+  scale_x_continuous("Land-to-Land scores", limits = c(0, 1)) +
+  theme(legend.position = "bottom") +
+  geom_hline(yintercept = 0, show.legend = F)
+```
+```{r rocs, fig.cap="ROC curves for all studies based on land-to-land comparisons \\svp{of the random forest score}.", fig.width = 4.5, fig.height = 3, out.width = ".5\\textwidth"}
 library(plotROC)
 library(pROC)
 all_lands %>% 
@@ -778,7 +804,7 @@ print(xtable(aucs %>% select(-data), digits = 3, caption = "Area under the curve
 \centering
 \begin{tabular}{llrr}
   \hline
-\bf study & \bf set & \bf AUC(RF score) & \bf AUC(Cross-correlation) \\ 
+\bf Study & \bf Set & \bf AUC(RF score) & \bf AUC(Cross-correlation) \\ 
   \hline
 \bf Hamby 44 &  & 0.956 & 0.926 \\ 
 \bf   Phoenix PD &  & 0.976 & 0.986 \\ 
@@ -788,7 +814,7 @@ print(xtable(aucs %>% select(-data), digits = 3, caption = "Area under the curve
    \hline
 \end{tabular}
 \caption{Area under the curve (AUC) for each (set) of the studies. As seen in the ROC curves, the algorithm performs the least well on set 2 of the Houston FSI study. Overall the performance on all sets is very good to excellent.
-At the land level there is no difference in prediction power between RF score and cross-correlation. \svp{It has been observed \citep{marzban_roc_2004} that AUC differentiates good models from bad, but does not effectively distinguish between good models to determine which model is better.} \label{tab:aucs}} 
+At the land level there is no difference in the predictive power between RF score and cross-correlation. \label{tab:aucs}} 
 \end{table}
 
 # Discussion and Conclusions
