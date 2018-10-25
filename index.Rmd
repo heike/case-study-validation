@@ -687,13 +687,7 @@ Another solution would be to expand on the aggregation used to get from land-to-
 
 # Digging deeper: comparison of land-to-land scores
 
-\svp{Examining land-to-land scores provides more details about the matching algorithm's performance. Figure \ref{fig:compare-land-to-land} shows density curves and rug plots for each study. There is some overlap between known matching and known non-matching land-to-land scores; in many cases the random forest scores for these overlapping values are more extreme than the corresponding ccf scores. This suggests that the matching algorithm is sensitive to the presence of LEAs which have low land-to-land match scores, such as the matches of bullets `I' and `F' in the Hamby 44 study. }
-
-\svp{When evaluating classifier performance, it is common to use a receiver operating curve, which plots the false positives against the true positives for each possible value of the cutoff between the two classes (in this case, known match and known non-match). The ROC curves for the land-to-land scores are shown in \autoref{fig:rocs}. A perfect classifier would have 100\% true positives and 0\% false positives, e.g. the ROC curve would be a right angle at (0, 1). Classifiers with better performance will be closer to this corner of the plot. A random classifier would have an ROC curve that was a straight diagonal line through (0,0) and (1,1).}
-
-\svp{In \autoref{fig:rocs}, the Houston FSI G1 and G3 curves and the Phoenix PD curve show excellent performance; Houston FSI G2 and Hamby 44 show relatively good performance. Area under the curve (AUC) values, which summarize ROC curves, are shown in \autoref{tab:aucs}. AUC values are useful for differentiating between poor, good, and excellent model performance, but are not particularly useful when determining which of several models with approximately the same level of performance should be used \citep{marzban_roc_2004}. Hamby 44 is the only study with a somewhat noticable difference between the AUC score for RF compared to ccf, and even that difference is relatively small.}
-
-\hh{XXX error rates on land to land matches? ROC curves in \autoref{fig:rocs} and corresponding AUC results for all studies in \autoref{tab:aucs} XXX}
+\svp{Examining land-to-land scores provides more details about the matching algorithm's performance. \autoref{fig:compare-land-to-land} shows density curves and rug plots for each study. There is some overlap between known matching and known non-matching land-to-land scores; in many cases the random forest scores for these overlapping values are more extreme than the corresponding ccf scores. This suggests that the matching algorithm is sensitive to the presence of LEAs which have low land-to-land match scores, such as the matches of bullets `I' and `F' in the Hamby 44 study. Comparing this to the bullet-to-bullet score density plot shown in \autoref{fig:compare}, we see that there is much greater separation between the same-source and different-source densities for each study in the bullet-to-bullet comparisons than in the land-to-land comparisons, that is, one or two poorly matching lands does not prevent the bullet from showing a matching score, though if there are only weak matches on a few lands, such as the marked Hamby 44 comparisons in \autoref{fig:compare}, the overall score may be affected. }
 
 ```{r, cache=TRUE}
 hounest <- hounest %>% mutate(
@@ -769,6 +763,10 @@ all_lands %>%
   theme(legend.position = "bottom") +
   geom_hline(yintercept = 0, show.legend = F)
 ```
+
+\svp{When evaluating classifier performance, it is common to use a receiver operating curve, which plots the false positives against the true positives for each possible value of the cutoff between the two classes (in this case, known match and known non-match). The ROC curves for the land-to-land scores are shown in \autoref{fig:rocs}. A perfect classifier would have 100\% true positives and 0\% false positives, e.g. the ROC curve would be a right angle at (0, 1). Classifiers with better performance will be closer to this corner of the plot. A random classifier would have an ROC curve that was a straight diagonal line through (0,0) and (1,1).}
+
+
 ```{r rocs, fig.cap="ROC curves for all studies based on land-to-land comparisons \\svp{of the random forest score}.", fig.width = 4.5, fig.height = 3, out.width = ".5\\textwidth"}
 library(plotROC)
 library(pROC)
@@ -818,6 +816,12 @@ print(xtable(aucs %>% select(-data), digits = 3, caption = "Area under the curve
 \caption{Area under the curve (AUC) for each (set) of the studies. As seen in the ROC curves, the algorithm performs the least well on set 2 of the Houston FSI study. Overall the performance on all sets is very good to excellent.
 At the land level there is no difference in the predictive power between RF score and cross-correlation. \label{tab:aucs}} 
 \end{table}
+
+
+\svp{In \autoref{fig:rocs}, the Houston FSI G1 and G3 curves and the Phoenix PD curve show excellent performance; Houston FSI G2 and Hamby 44 show relatively good performance. Area under the curve (AUC) values, which summarize ROC curves, are shown in \autoref{tab:aucs}. AUC values are useful for differentiating between poor, good, and excellent model performance, but are not particularly useful when determining which of several models with approximately the same level of performance should be used \citep{marzban_roc_2004}. Hamby 44 and Phoenix PD are the only studies with a somewhat noticable difference between the AUC score for RF compared to ccf, and even those differences are relatively small: .03 and -.01, respectively.}
+
+\hh{XXX error rates on land to land matches? ROC curves in \autoref{fig:rocs} and corresponding AUC results for all studies in \autoref{tab:aucs} XXX}
+
 
 # Discussion and Conclusions
 
