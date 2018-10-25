@@ -61,7 +61,7 @@ library(gridExtra)
 library(kableExtra)
 ```
 
-```{r functions}
+```{r functions, eval=FALSE}
 estimateBeta <- function(x, method = "mm", probs = c(0.25, 0.75)) {
   if (method == "mm") {
     mu <- mean(x, na.rm = TRUE)
@@ -284,9 +284,9 @@ This leads us to two minimal requirements the scores should fulfill:
 ```{r h44, echo=FALSE, fig.width = 10, fig.height=5, fig.cap="Hamby set 44: overview of all bullet-to-bullet matches between all pairs of questioned bullets ($y$-axis) and known test fires from ten barrels ($x$ axis)."}
 h44features <- read.csv("data/h44-features.csv")
 # tank rash lands:
-h44features <- h44features %>% mutate(
-  rfscore = replace(rfscore, (bullet1 == "I" & land1 == 6) | (bullet2 == "I" & land2 == 6), NA)
-)
+#h44features <- h44features %>% mutate(
+#  rfscore = replace(rfscore, (bullet1 == "I" & land1 == 6) | (bullet2 == #"I" & land2 == 6), NA)
+#)
 h44features <- h44features %>% mutate(
   rfscore = replace(rfscore, (barrel1 == 8 & bullet1 == "1" & land1 == 6) | (barrel2 == 8 & bullet2 == "1" & land2 == 6), NA)
 )
@@ -309,6 +309,10 @@ h44nest <- h44nest %>% mutate(
   }),
   sam_rf = data %>% purrr::map_dbl(.f = function(d) {
     scores <- bulletxtrctr::compute_average_scores(d$land1, d$land2, d$rfscore)
+    max(scores)
+  }),
+  sam_cms = data %>% purrr::map_dbl(.f = function(d) {
+    scores <- bulletxtrctr::compute_average_scores(d$land1, d$land2, d$cms)
     max(scores)
   })
 )
@@ -450,13 +454,13 @@ f3 <- rbind(
   f2 %>%
     select(
       b1, b2, barrel1, bullet1,
-      land1, bullet2, land2, ccf, rfscore, KM
+      land1, bullet2, land2, ccf, rfscore, cms, KM
     ) %>%
     mutate(barrel2 = "Unknown"),
   unknowns %>%
     select(
       b1, b2, bullet1,
-      land1, bullet2, land2, ccf, rfscore
+      land1, bullet2, land2, ccf, rfscore, cms, 
     ) %>%
     mutate(barrel1 = "Unknown", barrel2 = "Unknown", KM = FALSE)
 )
@@ -473,6 +477,10 @@ pdnest <- pdnest %>% mutate(
   }),
   KM = data %>% purrr::map_lgl(.f = function(d) {
     any(d$KM)
+  }),
+  sam_cms = data %>% purrr::map_dbl(.f = function(d) {
+    scores <- bulletxtrctr::compute_average_scores(d$land1, d$land2, d$cms)
+    max(scores)
   })
 )
 
@@ -542,6 +550,10 @@ hounest <- groups %>% mutate(
   }),
   sam_rf = data %>% purrr::map_dbl(.f = function(d) {
     scores <- bulletxtrctr::compute_average_scores(d$land1, d$land2, d$rfscore)
+    max(scores)
+  }),
+  sam_cms = data %>% purrr::map_dbl(.f = function(d) {
+    scores <- bulletxtrctr::compute_average_scores(d$land1, d$land2, d$cms)
     max(scores)
   })
 )
@@ -634,13 +646,13 @@ nests <- rbind(
     select(sam_rf, sam_ccf, samesource) %>%
     mutate(study = "Phoenix PD", group1 = NA),
   hounest %>%
-    select(sam_rf, sam_ccf, samesource, group1) %>%
+    select(sam_rf, sam_ccf,  samesource, group1) %>%
     mutate(study = "Houston FSI")
 )
 nests$study <- factor(nests$study, levels = c("Hamby 44", "Phoenix PD", "Houston FSI"))
 nestslong <- nests %>% gather(key = "measure", value = "value", sam_rf, sam_ccf)
 nestslong$measure <- factor(nestslong$measure)
-levels(nestslong$measure) <- c("Cross-correlation", "RF score")
+levels(nestslong$measure) <- c("Cross-correlation",  "RF score")
 
 labels <- h44nest %>% filter(samesource, sam_rf < 0.5)
 labels$comparison <- with(labels, paste(bullet1, "vs", paste(barrel2, bullet2, sep = "-")))
@@ -658,7 +670,7 @@ nestslong %>%
   theme_bw() +
   scale_fill_manual("Same source", values = c("darkgrey", "darkorange")) +
   scale_colour_manual("Same source", values = c("darkgrey", "darkorange")) +
-  scale_x_continuous("SAM scores", limits = c(0, 1)) +
+  scale_x_continuous("SAM scores", limits=c(0,1)) +
   theme(legend.position = "bottom") +
   geom_hline(yintercept = 0, show.legend = F) +
   geom_text(aes(x = sam_rf, y = y, label = comparison),
@@ -689,7 +701,7 @@ Another solution would be to expand on the aggregation used to get from land-to-
 
 \svp{Examining land-to-land scores provides more details about the matching algorithm's performance. \autoref{fig:compare-land-to-land} shows density curves and rug plots for each study. There is some overlap between known matching and known non-matching land-to-land scores; in many cases the random forest scores for these overlapping values are more extreme than the corresponding ccf scores. This suggests that the matching algorithm is sensitive to the presence of LEAs which have low land-to-land match scores, such as the matches of bullets `I' and `F' in the Hamby 44 study. Comparing this to the bullet-to-bullet score density plot shown in \autoref{fig:compare}, we see that there is much greater separation between the same-source and different-source densities for each study in the bullet-to-bullet comparisons than in the land-to-land comparisons, that is, one or two poorly matching lands does not prevent the bullet from showing a matching score, though if there are only weak matches on a few lands, such as the marked Hamby 44 comparisons in \autoref{fig:compare}, the overall score may be affected. }
 
-```{r, cache=TRUE}
+```{r, cache=FALSE}
 hounest <- hounest %>% mutate(
   data = data %>% purrr::map(
     .f = function(d) {
@@ -701,12 +713,25 @@ hounest <- hounest %>% mutate(
 )
 houlands <- hounest %>% unnest(data)
 
+set.seed(20140501)
+h44nest$samesource <- h44nest$sam_rf > 0.3
+h44nest <- h44nest %>% 
+  mutate(
+    data = purrr::map2(.x = data, .y = samesource, .f = function(d, y) {
+      d$samesource <- y
+      d
+  }
+  ))
+
 h44nest <- h44nest %>% mutate(
   data = data %>% purrr::map(
     .f = function(d) {
+      if (any(d$samesource)) {
       d$sameland = bullet_to_land_predict(
         land1 = d$land1, land2 = d$land2, 
-        d$rfscore, difference=0.1)
+        d$rfscore, difference=0.01, alpha =1)
+      } else d$sameland <- FALSE
+      d <- d %>% select(-samesource)
       d
     })
 )
@@ -717,7 +742,7 @@ pdnest <- pdnest %>% mutate(
     .f = function(d) {
       d$sameland = bullet_to_land_predict(
         land1 = d$land1, land2 = d$land2, 
-        d$rfscore, difference=0.1)
+        d$rfscore, difference=0, alpha =1)
       d
     })
 )
@@ -726,13 +751,13 @@ pdlands <- pdnest %>% unnest(data)
 
 all_lands <- rbind(
   h44lands %>%
-    select(rfscore, ccf, sameland, samesource) %>%
+    select(rfscore, ccf, cms, sameland, samesource) %>%
     mutate(study = "Hamby 44", group1 = ""),
   pdlands %>%
-    select(rfscore, ccf, sameland, samesource) %>%
+    select(rfscore, ccf, cms, sameland, samesource) %>%
     mutate(study = "Phoenix PD", group1 = ""),
   houlands %>%
-    select(rfscore, ccf, sameland, samesource, group1) %>%
+    select(rfscore, ccf, cms, sameland, samesource, group1) %>%
     mutate(study = "Houston FSI")
 )
 all_lands$study <- factor(all_lands$study, levels = c("Hamby 44", "Phoenix PD", "Houston FSI"))
@@ -740,6 +765,77 @@ all_lands <- all_lands %>%
   mutate(
     sameland = replace(sameland, !samesource, FALSE)
   )
+```
+
+```{r check44, eval=FALSE}
+h44lands <- h44lands %>%
+  mutate(
+    sameland = replace(sameland, !samesource, FALSE)
+  )
+h44lands %>% 
+  ggplot(aes(x = land1, y = land2, fill = ccf)) +
+  geom_tile() +
+  geom_tile(aes(colour = sameland), size = 1, 
+            data = h44lands %>% filter(sameland)) +
+  scale_fill_gradient2("RF score: ", midpoint=0.5, low = "darkgrey", high = "darkorange", limits = c(0, 1)) +
+  scale_colour_manual(values="darkorange") +
+  facet_grid(bullet1~barrel2+bullet2)
+  
+```
+
+```{r checkpd, eval=FALSE}
+pdlands <- pdlands %>%
+  mutate(
+    sameland = replace(sameland, !samesource, FALSE)
+  )
+pdlands %>% 
+  ggplot(aes(x = land1, y = land2, fill = ccf)) +
+  geom_tile() +
+  geom_tile(aes(colour = sameland), size = 1, 
+            data = pdlands %>% filter(sameland)) +
+  scale_fill_gradient2("RF score: ", midpoint=0.5, low = "darkgrey", high = "darkorange", limits = c(0, 1)) +
+  scale_colour_manual(values="darkorange") +
+  facet_grid(bullet1~barrel2+bullet2)
+  
+```
+
+```{r checkhou, eval=FALSE}
+houlands <- houlands %>%
+  mutate(
+    sameland = replace(sameland, !samesource, FALSE)
+  )
+hou1 <- houlands %>% filter(group1==group2, group1=="G1") 
+
+hou1 %>%
+  ggplot(aes(x = land1, y = land2, fill = ccf)) +
+  geom_tile() +
+  geom_tile(aes(colour = sameland), size = 1, 
+            data = hou1 %>% filter(sameland)) +
+  scale_fill_gradient2("RF score: ", midpoint=0.5, low = "darkgrey", high = "darkorange", limits = c(0, 1)) +
+  scale_colour_manual(values="darkorange") +
+  facet_grid(bullet1~barrel2+bullet2)
+
+hou2 <- houlands %>% filter(group1==group2, group1=="G2") 
+
+hou2 %>%
+  ggplot(aes(x = land1, y = land2, fill = ccf)) +
+  geom_tile() +
+  geom_tile(aes(colour = sameland), size = 1, 
+            data = hou2 %>% filter(sameland)) +
+  scale_fill_gradient2("RF score: ", midpoint=0.5, low = "darkgrey", high = "darkorange", limits = c(0, 1)) +
+  scale_colour_manual(values="darkorange") +
+  facet_grid(bullet1~barrel2+bullet2)  
+
+hou3 <- houlands %>% filter(group1==group2, group1=="G3") 
+
+hou3 %>%
+  ggplot(aes(x = land1, y = land2, fill = ccf)) +
+  geom_tile() +
+  geom_tile(aes(colour = sameland), size = 1, 
+            data = hou3 %>% filter(sameland)) +
+  scale_fill_gradient2("RF score: ", midpoint=0.5, low = "darkgrey", high = "darkorange", limits = c(0, 1)) +
+  scale_colour_manual(values="darkorange") +
+  facet_grid(bullet1~barrel2+bullet2)  
 ```
 
 
@@ -781,7 +877,8 @@ all_lands %>%
                                          "#74a9cf", "#2b8cbe", "#045a8d"))
 ```
 
-```{r aucs, eval = FALSE}
+```{r aucs, eval = TRUE, results = 'asis'}
+
 aucs <- all_lands %>% group_by(study, group1) %>% nest() %>%
   mutate(
     auc_rf = data %>% purrr::map_dbl(function(d) {
@@ -789,6 +886,27 @@ aucs <- all_lands %>% group_by(study, group1) %>% nest() %>%
     }),
     auc_ccf = data %>% purrr::map_dbl(function(d) {
       auc(d$sameland, d$ccf)
+    }),
+    auc_cms = data %>% purrr::map_dbl(function(d) {
+      auc(d$sameland, d$cms)
+    }),
+    auc_rf_ci_low = data %>% purrr::map_dbl(function(d) {
+      ci.auc(d$sameland, d$rfscore)[1]
+    }),
+    auc_rf_ci_upper = data %>% purrr::map_dbl(function(d) {
+      ci.auc(d$sameland, d$rfscore)[3]
+    }),
+    auc_ccf_ci_lower = data %>% purrr::map_dbl(function(d) {
+      ci.auc(d$sameland, d$ccf)[1]
+    }),
+    auc_ccf_ci_upper = data %>% purrr::map_dbl(function(d) {
+      ci.auc(d$sameland, d$ccf)[3]
+    }),
+    auc_cms_ci_lower = data %>% purrr::map_dbl(function(d) {
+      ci.auc(d$sameland, d$cms)[1]
+    }),
+    auc_cms_ci_upper = data %>% purrr::map_dbl(function(d) {
+      ci.auc(d$sameland, d$cms)[3]
     })
 
   )
@@ -797,32 +915,49 @@ library(xtable)
 names(aucs)[2] <- "set"
 names(aucs)[4] <- "RF score"
 names(aucs)[5] <- "Cross-correlation"
-print(xtable(aucs %>% select(-data), digits = 3, caption = "Area under the curve (AUC) for each (set) of the studies. At the land level there is no difference in prediction power between RF score and cross-correlation."), include.rownames=FALSE, label="tab:aucs")
+names(aucs)[6] <- "CMS"
+
+aucs <- as.data.frame(aucs)
+aucs[,4] <- sprintf("%.3f (%.3f, %.3f)", aucs[,4], aucs[,7], aucs[,8])
+aucs[,5] <- sprintf("%.3f (%.3f, %.3f)", aucs[,5], aucs[,9], aucs[,10])
+aucs[,6] <- sprintf("%.3f (%.3f, %.3f)", aucs[,6], aucs[,11], aucs[,12])
+print(xtable(aucs[,1:6] %>% select(-data), digits = 3, caption = "Area under the curve (AUC) for each (set) of the studies. At the land level there is no difference in prediction power between RF score and cross-correlation."), include.rownames=FALSE, label="tab:aucs")
 ```
+
 
 \begin{table}[ht]
 \centering
-\begin{tabular}{llrr}
+\begin{tabular}{llrrr}
   \hline
-\bf Study & \bf Set & \bf AUC(RF score) & \bf AUC(Cross-correlation) \\ 
+ && \multicolumn{3}{l}{\bf AUC (95\% Conf. Int)}\\
+\bf Study & \bf Set & \bf RF score & \bf Cross-correlation & \bf CMS \\
   \hline
-\bf Hamby 44 &  & 0.956 & 0.926 \\ 
-\bf   Phoenix PD &  & 0.976 & 0.986 \\ 
-\bf   Houston FSI & G1 & 0.991 & 0.988 \\ 
-\bf   Houston FSI & G2 & 0.898 & 0.902 \\ 
-\bf   Houston FSI & G3 & 0.986 & 0.987 \\ 
+\bf Hamby 44 &  & 0.937 (0.917, 0.957) & 0.916 (0.891, 0.941) & 0.820 (0.787, 0.854) \\
+\bf  Phoenix PD &  & 0.976 (0.957, 0.994) & 0.986 (0.975, 0.996) & 0.879 (0.838, 0.919) \\
+\bf  Houston FSI & Set 1 & 0.991 (0.983, 0.999) & 0.988 (0.979, 0.997) & 0.785 (0.727, 0.842) \\
+\bf  Houston FSI & Set 2 & 0.898 (0.853, 0.943) & 0.902 (0.861, 0.943) & 0.749 (0.684, 0.814) \\
+\bf  Houston FSI & Set 3 & 0.986 (0.973, 0.999) & 0.987 (0.978, 0.997) & 0.911 (0.880, 0.941) \\
    \hline
 \end{tabular}
-\caption{Area under the curve (AUC) for each (set) of the studies. As seen in the ROC curves, the algorithm performs the least well on set 2 of the Houston FSI study. Overall the performance on all sets is very good to excellent.
-At the land level there is no difference in the predictive power between RF score and cross-correlation. \label{tab:aucs}} 
+\caption{Area under the curve (AUC) for each (set) of the studies for the random forest score, cross-correlation and CMS. Overall the perform on all sets is very good to excellent for cross-correlation and the random forest score.  As seen in the ROC curves, the algorithm performs the least well on set 2 of the Houston FSI study.  At the land level there is no significant difference in prediction power between RF score and cross-correlation.} \label{tab:aucs}}
 \end{table}
 
 
 \svp{In \autoref{fig:rocs}, the Houston FSI G1 and G3 curves and the Phoenix PD curve show excellent performance; Houston FSI G2 and Hamby 44 show relatively good performance. Area under the curve (AUC) values, which summarize ROC curves, are shown in \autoref{tab:aucs}. AUC values are useful for differentiating between poor, good, and excellent model performance, but are not particularly useful when determining which of several models with approximately the same level of performance should be used \citep{marzban_roc_2004}. Hamby 44 and Phoenix PD are the only studies with a somewhat noticable difference between the AUC score for RF compared to ccf, and even those differences are relatively small: .03 and -.01, respectively.}
 
-<!-- \hh{XXX error rates on land to land matches? ROC curves in \autoref{fig:rocs} and corresponding AUC results for all studies in \autoref{tab:aucs} XXX} -->
-
 \svp{XXX show ROC for bullet-to-bullet is perfect, just for emphasis?}
+
+
+
+
+```{r why, fig.cap="Density plots for all measures "}
+all_lands %>% gather(measure, score, ccf, cms, rfscore) %>%
+ggplot(aes(x = score, fill = interaction(measure, sameland))) + 
+  geom_density(alpha = 0.5) +
+  scale_fill_brewer(palette = "Paired") +
+  facet_grid(measure~study+group1, scales="free_x") 
+```
+
 
 # Discussion and Conclusions
 
