@@ -161,9 +161,8 @@ Quantitative features describing the similarity of two signature are extracted. 
 
 # Validation Sets
 
-\hh{The automatic matching algorithm is based on a random forest [@breiman], which has a built-in internal testing mechanism to prevent potential overfitting. Error rates reported by random forest algorithms are based on these internal test sets. However, there is some discussion on whether or in which situations these error rates are biased [@rfOver2; @rfOver]. 
+\hh{The automatic matching algorithm is based on a random forest \citep{breiman}, which has a built-in internal testing mechanism to prevent potential overfitting. Error rates reported by random forest algorithms are based on these internal test sets. However, there is some discussion on whether or in which situations these error rates are biased \citep{rfOver2, rfOver}. 
 Neither of these papers addresses another issue with internal test sets: internal test sets are constructed to have the same distribution as the training data (apart from sampling variability). For any machine learning method the true test comes with testing the performance of an algorithm on an external test data. Good performance (in terms of low error rates) on external test data validates a ML algorithm. External data allows an assessment of the algorithm's sensitivity to distributional changes.  Using performance on external test data also allows us to test limitations of the algorithm by going outside the parameters of the training data.  }
-
 
 The algorithm in \citet{aoas} is trained on scans from Hamby sets 252 and 173 made available through \citet{nist}. Set 173 was originally published as Hamby set 44. This mis-labeling has been corrected now. 
 
