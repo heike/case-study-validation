@@ -951,12 +951,20 @@ print(xtable(aucs[,1:6] %>% select(-data), digits = 3, caption = "Area under the
 
 
 
-```{r why, fig.cap="Density plots for all measures "}
+```{r l2l, fig.cap="Density curves of similarity scores based on land-to-land comparisons for cross-correlation (top) and RF scores (bottom). Different colors indicate same source versus different source. RF scores for different source comparisons are generally well below 0.5. Some same-source comparisons are also below 0.5 for RF scores, indicating potential problems with at least one of the lands involved in the comparison."}
 all_lands %>% gather(measure, score, ccf, rfscore) %>%
-ggplot(aes(x = score, fill = interaction(measure, sameland))) + 
-  geom_density(alpha = 0.5) +
-  scale_fill_brewer(palette = "Paired") +
-  facet_grid(measure~study+group1, scales="free_x") 
+  mutate(
+    measure = factor(measure, labels=c("Cross-correlation", "RF score"))
+  ) %>%
+ggplot(aes(x = score, fill = sameland, colour =sameland)) + 
+  geom_density(alpha = 0.6) +
+  facet_grid(measure ~ study + group1) +
+  theme_bw() +
+  scale_fill_manual("Same source", values = c("darkgrey", "darkorange")) +
+  scale_colour_manual("Same source", values = c("darkgrey", "darkorange")) +
+  scale_x_continuous("Land-to-land scores", limits=c(0,1)) +
+  theme(legend.position = "bottom") +
+  geom_hline(yintercept = 0, show.legend = F) 
 ```
 
 
