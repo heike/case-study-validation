@@ -866,11 +866,12 @@ all_lands %>%
 ```{r rocs, fig.cap="ROC curves for all studies based on land-to-land comparisons \\svp{of the random forest score}.", fig.width = 4.5, fig.height = 3, out.width = ".5\\textwidth"}
 library(plotROC)
 library(pROC)
-all_lands %>% 
-  ggplot(aes(colour = interaction(study, group1, sep = " "))) +
-  geom_roc(aes(m = rfscore, d = as.numeric(sameland)), 
+all_lands %>% gather(measure, score, rfscore, ccf) %>%
+  ggplot(aes(linetype=measure, colour = interaction(study, group1, sep = " "))) +
+  geom_roc(aes(m = score, d = as.numeric(sameland)), 
            labels =FALSE, pointsize = 0, alpha = 0.8) +
   theme_bw() +
+  facet_wrap(~study) +
   xlab("Fraction False Positives") +
   ylab("Fraction True Positives") +
   scale_colour_manual("Study", values = c("#fe9929", "#aa0000",
@@ -951,7 +952,7 @@ print(xtable(aucs[,1:6] %>% select(-data), digits = 3, caption = "Area under the
 
 
 ```{r why, fig.cap="Density plots for all measures "}
-all_lands %>% gather(measure, score, ccf, cms, rfscore) %>%
+all_lands %>% gather(measure, score, ccf, rfscore) %>%
 ggplot(aes(x = score, fill = interaction(measure, sameland))) + 
   geom_density(alpha = 0.5) +
   scale_fill_brewer(palette = "Paired") +
