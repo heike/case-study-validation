@@ -729,7 +729,7 @@ h44nest <- h44nest %>% mutate(
       if (any(d$samesource)) {
       d$sameland = bullet_to_land_predict(
         land1 = d$land1, land2 = d$land2, 
-        d$rfscore, difference=0.01, alpha =1)
+        d$rfscore, difference=0.01)
       } else d$sameland <- FALSE
       d <- d %>% select(-samesource)
       d
@@ -742,7 +742,7 @@ pdnest <- pdnest %>% mutate(
     .f = function(d) {
       d$sameland = bullet_to_land_predict(
         land1 = d$land1, land2 = d$land2, 
-        d$rfscore, difference=0, alpha =1)
+        d$rfscore, difference=0)
       d
     })
 )
@@ -939,7 +939,7 @@ print(xtable(aucs[,1:6] %>% select(-data), digits = 3, caption = "Area under the
 \bf  Houston FSI & Set 3 & 0.986 (0.973, 0.999) & 0.987 (0.978, 0.997) & 0.911 (0.880, 0.941) \\
    \hline
 \end{tabular}
-\caption{Area under the curve (AUC) for each (set) of the studies for the random forest score, cross-correlation and CMS. Overall the perform on all sets is very good to excellent for cross-correlation and the random forest score.  As seen in the ROC curves, the algorithm performs the least well on set 2 of the Houston FSI study.  At the land level there is no significant difference in prediction power between RF score and cross-correlation.} \label{tab:aucs}}
+\caption{Area under the curve (AUC) for each (set) of the studies for the random forest score, cross-correlation and CMS. Overall the perform on all sets is very good to excellent for cross-correlation and the random forest score.  As seen in the ROC curves, the algorithm performs the least well on set 2 of the Houston FSI study.  At the land level there is no significant difference in prediction power between RF score and cross-correlation.} \label{tab:aucs}
 \end{table}
 
 
@@ -982,7 +982,7 @@ Three lands from bullets known to be fired from barrel 8 are affected, producing
 All of the studies \svp{presented here} involve the same type of firearm. We see some variations in scores across different models of Rugers, and it is probable that we will see even bigger variations with different brands of firearms that vary in number of lands and land length. We also know that different firearms and ammunition combinations mark differently well \citep{bolton-king_preventing_2016, bonfanti_influence_1999}. Rugers are among the firearms that mark very well, so we would correspondingly expect to see lowered similarity scores for other firearms. The matching algorithm works on matching lands. Barrels with polygonal rifling, such as Glocks, do not introduce well defined lands on bullets, which makes an application of the matching algorithm impossible.  
 
 
-As seen in the earlier discussion, similarity scores are affected by deficiencies on lands. It has been shown \citet{lpr} that parts of lands can be used for successful identifications. The algorithm proposed by \citet{aoas} is not capable of  automatically detecting parts of lands with well expressed striae. \svp{It may be useful to couple the \citet{aoas} algorithm with an algorithm which assesses the quality of the input data and determines which portions of the data to use for comparison. This would emulate the process used by examiners, who first assess the quality of the evidence and whether there is enough information present to attempt a match.} XXX citation for neural network algorithm \svp{Do you want to release this idea into the wild at this point? }
+As seen in the earlier discussion, similarity scores are affected by deficiencies on lands. It has been shown \citet{lpr} that parts of lands can be used for successful identifications. The algorithm proposed by \citet{aoas} is not capable of  automatically detecting parts of lands with well expressed striae. \svp{It may be useful to couple the \citet{aoas} algorithm with an algorithm which assesses the quality of the input data and determines which portions of the data to use for comparison. This would emulate the process used by examiners, who first assess the quality of the evidence and whether there is enough information present to attempt a match.} 
 
 
 
