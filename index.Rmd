@@ -939,7 +939,7 @@ print(xtable(aucs[,1:6] %>% select(-data), digits = 3, caption = "Area under the
 \bf  Houston FSI & Set 3 & 0.986 (0.973, 0.999) & 0.987 (0.978, 0.997) & 0.911 (0.880, 0.941) \\
    \hline
 \end{tabular}
-\caption{Area under the curve (AUC) for each (set) of the studies for the random forest score, cross-correlation and CMS. Overall the perform on all sets is very good to excellent for cross-correlation and the random forest score.  As seen in the ROC curves, the algorithm performs the least well on set 2 of the Houston FSI study.  At the land level there is no significant difference in prediction power between RF score and cross-correlation.} \label{tab:aucs}
+\caption{\svp{Can we turn this into a picture? It's really dense and hard to interpret...}Area under the curve (AUC) for each (set) of the studies for the random forest score, cross-correlation and CMS. Overall the perform on all sets is very good to excellent for cross-correlation and the random forest score.  As seen in the ROC curves, the algorithm performs the least well on set 2 of the Houston FSI study.  At the land level there is no significant difference in prediction power between RF score and cross-correlation.} \label{tab:aucs}
 \end{table}
 
 
