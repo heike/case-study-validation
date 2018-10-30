@@ -10,15 +10,19 @@
 }
 
 @article{rfOver,
-  autor = {Janitza S, Hornung R},
-  year = 2018,
-  title={On the overestimation of random forest???s out-of-bag error},
-  journal = {PLoS ONE},
-  volume = 13,
-  number={8},
-  doi = {https://doi.org/10.1371/journal.pone.0201904}
+    author = {Janitza, Silke AND Hornung, Roman},
+    journal = {PLOS ONE},
+    publisher = {Public Library of Science},
+    title = {On the overestimation of random forest's out-of-bag error},
+    year = {2018},
+    month = {08},
+    volume = {13},
+    url = {https://doi.org/10.1371/journal.pone.0201904},
+    pages = {1-31},
+    abstract = {The ensemble method random forests has become a popular classification tool in bioinformatics and related fields. The out-of-bag error is an error estimation technique often used to evaluate the accuracy of a random forest and to select appropriate values for tuning parameters, such as the number of candidate predictors that are randomly drawn for a split, referred to as mtry. However, for binary classification problems with metric predictors it has been shown that the out-of-bag error can overestimate the true prediction error depending on the choices of random forests parameters. Based on simulated and real data this paper aims to identify settings for which this overestimation is likely. It is, moreover, questionable whether the out-of-bag error can be used in classification tasks for selecting tuning parameters like mtry, because the overestimation is seen to depend on the parameter mtry. The simulation-based and real-data based studies with metric predictor variables performed in this paper show that the overestimation is largest in balanced settings and in settings with few observations, a large number of predictor variables, small correlations between predictors and weak effects. There was hardly any impact of the overestimation on tuning parameter selection. However, although the prediction performance of random forests was not substantially affected when using the out-of-bag error for tuning parameter selection in the present studies, one cannot be sure that this applies to all future data. For settings with metric predictor variables it is therefore strongly recommended to use stratified subsampling with sampling fractions that are proportional to the class sizes for both tuning parameter selection and error estimation in random forests. This yielded less biased estimates of the true prediction error. In unbalanced settings, in which there is a strong interest in predicting observations from the smaller classes well, sampling the same number of observations from each class is a promising alternative.},
+    number = {8},
+    doi = {10.1371/journal.pone.0201904}
 }
-
 @article{breiman,
 title = {Random {Forests}},
 	volume = {45},
