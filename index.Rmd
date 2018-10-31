@@ -16,7 +16,7 @@ keywords:
 - 3 to 6 keywords
 - that do not appear in the title
 
-abstract: |
+abstract: Recent advances in microscopy have made it possible to collect 3d topographic data, enabling virtual comparisons based on the collected 3D data next to traditional comparison microscopy. Automatic matching algorithms have been introduced for various scenarios, such as matching cartridge cases (Tai and Eddy 2018) or matching bullet striae (Hare et al. 2017b,  Chu et al 2013,  De Kinder and Bonfanti 1999). One key aspect of validating automatic matching algorithms is to evaluate the performance of the algorithm on external tests. Here, we are presenting a discussion of the performance of the matching algorithm (Hare et al. 2017b) in three studies. We are considering matching performance based on the Random forest score, cross-correlation, and consecutive matching striae (CMS) at the land-to-land level and, using Sequential Average Maxima scores, also at the bullet-to bullet level. Cross-correlation and Random Forest scores both result in perfect discrimination of same-source and different-source bullets. At the land-to-land level, discrimination (based on area under the curve, AUC) is excellent (??? 0.90). 
 
 bibliography: bibliography
 biblio-style: apsr
@@ -839,7 +839,7 @@ hou3 %>%
 ```
 
 
-```{r compare-land-to-land, fig.width = 8, fig.height = 4, fig.cap="Density curves of land-to-land similarity scores from cross-correlation (top) and RF scores (bottom). Different colors indicate same source and phase versus different source or out-of-phase matches. The random forest scores tend to be more extreme than the cross correlation scores alone."}
+```{r compare-land-to-land, fig.width = 8, fig.height = 4, fig.cap="Density curves of land-to-land similarity scores from cross-correlation (top) and RF scores (bottom). Different colors indicate same source versus different source for each land. RF scores for different source comparisons are generally well below 0.5. Some same-source comparisons are also below 0.5 for RF scores, indicating potential problems with at least one of the lands involved in the comparison."}
 all_lands %>% 
   gather(key = "measure", value = "value", ccf, rfscore) %>%
   mutate(measure = factor(measure, levels = c("ccf", "rfscore"),
@@ -853,8 +853,8 @@ all_lands %>%
   geom_rug(alpha = 0.5/12, show.legend = F) +
   facet_grid(measure ~ study) +
   theme_bw() +
-  scale_fill_manual("Same source & best sequence", values = c("darkgrey", "darkorange")) +
-  scale_colour_manual("Same source & best sequence", values = c("darkgrey", "darkorange")) +
+  scale_fill_manual("Same source", values = c("darkgrey", "darkorange")) +
+  scale_colour_manual("Same source", values = c("darkgrey", "darkorange")) +
   scale_x_continuous("Land-to-Land scores", limits = c(0, 1)) +
   theme(legend.position = "bottom") +
   geom_hline(yintercept = 0, show.legend = F)
@@ -863,93 +863,97 @@ all_lands %>%
 \svp{When evaluating classifier performance, it is common to use a receiver operating curve, which plots the false positives against the true positives for each possible value of the cutoff between the two classes (in this case, known match and known non-match). The ROC curves for the land-to-land scores are shown in \autoref{fig:rocs}. A perfect classifier would have 100\% true positives and 0\% false positives, e.g. the ROC curve would be a right angle at (0, 1). Classifiers with better performance will be closer to this corner of the plot. A random classifier would have an ROC curve that was a straight diagonal line through (0,0) and (1,1).}
 
 
-```{r rocs, fig.cap="ROC curves for all studies based on land-to-land comparisons \\svp{of the random forest score}.", fig.width = 4.5, fig.height = 3, out.width = ".5\\textwidth"}
+
+
+```{r rocs, fig.cap="ROC curves for all studies based on land-to-land comparisons of the random forest score.", fig.width = 6, fig.height = 10, out.width = ".5\\textwidth"}
 library(plotROC)
 library(pROC)
-all_lands %>% gather(measure, score, rfscore, ccf) %>%
+rocpic <- all_lands %>% gather(measure, score, rfscore, ccf, cms) %>%
+  mutate(
+    measure = factor(measure, labels = c("CC", "CMS", "RF"))
+  ) %>%
   ggplot(aes(linetype=measure, colour = interaction(study, group1, sep = " "))) +
   geom_roc(aes(m = score, d = as.numeric(sameland)), 
            labels =FALSE, pointsize = 0, alpha = 0.8) +
   theme_bw() +
-  facet_wrap(~study) +
+  facet_wrap(~study+group1, nrow=3) +
   xlab("Fraction False Positives") +
   ylab("Fraction True Positives") +
   scale_colour_manual("Study", values = c("#fe9929", "#aa0000",
-                                         "#74a9cf", "#2b8cbe", "#045a8d"))
+                                         "#74a9cf", "#2b8cbe", "#045a8d"),
+                      guide=FALSE) +
+  theme(legend.position="bottom",
+        legend.key.width = unit(1.5, "cm")) +
+  scale_linetype_manual("Measure", values=c(1,3,2)) 
 ```
 
-```{r aucs, eval = FALSE, results = 'asis'}
 
-aucs <- all_lands %>% group_by(study, group1) %>% nest() %>%
+```{r aucs-pic, fig.width=6, fig.height = 6, out.width='.5\\textwidth', fig.cap=""}
+aucs <- all_lands %>% gather(measure, score, rfscore, ccf, cms) %>% 
+  group_by(study, group1, measure) %>% nest() %>%
   mutate(
-    auc_rf = data %>% purrr::map_dbl(function(d) {
-      auc(d$sameland, d$rfscore)
+    auc = data %>% purrr::map_dbl(function(d) {
+      auc(d$sameland, d$score)
     }),
-    auc_ccf = data %>% purrr::map_dbl(function(d) {
-      auc(d$sameland, d$ccf)
+    auc_ci_low = data %>% purrr::map_dbl(function(d) {
+      ci.auc(d$sameland, d$score)[1]
     }),
-    auc_cms = data %>% purrr::map_dbl(function(d) {
-      auc(d$sameland, d$cms)
-    }),
-    auc_rf_ci_low = data %>% purrr::map_dbl(function(d) {
-      ci.auc(d$sameland, d$rfscore)[1]
-    }),
-    auc_rf_ci_upper = data %>% purrr::map_dbl(function(d) {
-      ci.auc(d$sameland, d$rfscore)[3]
-    }),
-    auc_ccf_ci_lower = data %>% purrr::map_dbl(function(d) {
-      ci.auc(d$sameland, d$ccf)[1]
-    }),
-    auc_ccf_ci_upper = data %>% purrr::map_dbl(function(d) {
-      ci.auc(d$sameland, d$ccf)[3]
-    }),
-    auc_cms_ci_lower = data %>% purrr::map_dbl(function(d) {
-      ci.auc(d$sameland, d$cms)[1]
-    }),
-    auc_cms_ci_upper = data %>% purrr::map_dbl(function(d) {
-      ci.auc(d$sameland, d$cms)[3]
+    auc_ci_high = data %>% purrr::map_dbl(function(d) {
+      ci.auc(d$sameland, d$score)[3]
     })
-
   )
-#
-library(xtable)
-names(aucs)[2] <- "set"
-names(aucs)[4] <- "RF score"
-names(aucs)[5] <- "Cross-correlation"
-names(aucs)[6] <- "CMS"
 
-aucs <- as.data.frame(aucs)
-aucs[,4] <- sprintf("%.3f (%.3f, %.3f)", aucs[,4], aucs[,7], aucs[,8])
-aucs[,5] <- sprintf("%.3f (%.3f, %.3f)", aucs[,5], aucs[,9], aucs[,10])
-aucs[,6] <- sprintf("%.3f (%.3f, %.3f)", aucs[,6], aucs[,11], aucs[,12])
-print(xtable(aucs[,1:6] %>% select(-data), digits = 3, caption = "Area under the curve (AUC) for each (set) of the studies. At the land level there is no difference in prediction power between RF score and cross-correlation."), include.rownames=FALSE, label="tab:aucs")
+aucpic <- aucs %>% 
+  mutate(
+    measure = factor(measure, levels = c("cms", "ccf", "rfscore")),
+    measure = factor(measure, labels = c("CMS", "CC", "RF"))
+  ) %>%
+  ggplot(aes(x = auc, y = measure, colour = interaction(study, group1), linetype=measure)) +
+  facet_grid(study+group1~.) +
+  geom_errorbarh(aes(xmin=auc_ci_low, xmax=auc_ci_high), size=1, height=0.3) +
+  geom_point() +
+  theme_bw() +
+  xlab("AUC and 95% confidence intervals") +
+  xlim(c(0.5, 1)) +
+  ylab("") +
+    scale_colour_manual("Study", values = c("#fe9929", "#aa0000",
+                                         "#74a9cf", "#2b8cbe", "#045a8d"),
+                        guide = FALSE) +
+  theme(legend.position = "bottom",
+        legend.key.width = unit(1.5, "cm")) +
+  scale_linetype_manual("Measure", values = c(3,1,2))
+
 ```
 
+<!-- \begin{table}[ht] -->
+<!-- \centering -->
+<!-- \begin{tabular}{llrrr} -->
+<!--   \hline -->
+<!--  && \multicolumn{3}{l}{\bf AUC (95\% Conf. Int)}\\ -->
+<!-- \bf Study & \bf Set & \bf RF score & \bf Cross-correlation & \bf CMS \\ -->
+<!--   \hline -->
+<!-- \bf Hamby 44 &  & 0.937 (0.917, 0.957) & 0.916 (0.891, 0.941) & 0.820 (0.787, 0.854) \\ -->
+<!-- \bf  Phoenix PD &  & 0.976 (0.957, 0.994) & 0.986 (0.975, 0.996) & 0.879 (0.838, 0.919) \\ -->
+<!-- \bf  Houston FSI & Set 1 & 0.991 (0.983, 0.999) & 0.988 (0.979, 0.997) & 0.785 (0.727, 0.842) \\ -->
+<!-- \bf  Houston FSI & Set 2 & 0.898 (0.853, 0.943) & 0.902 (0.861, 0.943) & 0.749 (0.684, 0.814) \\ -->
+<!-- \bf  Houston FSI & Set 3 & 0.986 (0.973, 0.999) & 0.987 (0.978, 0.997) & 0.911 (0.880, 0.941) \\ -->
+<!--    \hline -->
+<!-- \end{tabular} -->
+<!-- \caption{\svp{Can we turn this into a picture? It's really dense and hard to interpret...}Area under the curve (AUC) for each (set) of the studies for the random forest score, cross-correlation and CMS. Overall the perform on all sets is very good to excellent for cross-correlation and the random forest score.  As seen in the ROC curves, the algorithm performs the least well on set 2 of the Houston FSI study.  At the land level there is no significant difference in prediction power between RF score and cross-correlation.} \label{tab:aucs} -->
+<!-- \end{table} -->
 
-\begin{table}[ht]
-\centering
-\begin{tabular}{llrrr}
-  \hline
- && \multicolumn{3}{l}{\bf AUC (95\% Conf. Int)}\\
-\bf Study & \bf Set & \bf RF score & \bf Cross-correlation & \bf CMS \\
-  \hline
-\bf Hamby 44 &  & 0.937 (0.917, 0.957) & 0.916 (0.891, 0.941) & 0.820 (0.787, 0.854) \\
-\bf  Phoenix PD &  & 0.976 (0.957, 0.994) & 0.986 (0.975, 0.996) & 0.879 (0.838, 0.919) \\
-\bf  Houston FSI & Set 1 & 0.991 (0.983, 0.999) & 0.988 (0.979, 0.997) & 0.785 (0.727, 0.842) \\
-\bf  Houston FSI & Set 2 & 0.898 (0.853, 0.943) & 0.902 (0.861, 0.943) & 0.749 (0.684, 0.814) \\
-\bf  Houston FSI & Set 3 & 0.986 (0.973, 0.999) & 0.987 (0.978, 0.997) & 0.911 (0.880, 0.941) \\
-   \hline
-\end{tabular}
-\caption{\svp{Can we turn this into a picture? It's really dense and hard to interpret...}Area under the curve (AUC) for each (set) of the studies for the random forest score, cross-correlation and CMS. Overall the perform on all sets is very good to excellent for cross-correlation and the random forest score.  As seen in the ROC curves, the algorithm performs the least well on set 2 of the Houston FSI study.  At the land level there is no significant difference in prediction power between RF score and cross-correlation.} \label{tab:aucs}
-\end{table}
 
+```{r echo = FALSE, out.width = "0.49\\textwidth", fig.subcap=c("ROC curves", "Area under the curve (AUC)"), fig.cap="ROC curves and AUC for each (set) of the studies for the random forest score (RF), cross-correlation (CC) and consecutively matching striae (CMS).   As seen in the ROC curves, the algorithm performs the least well on set 2 of the Houston FSI study. Based on AUC, the overall performance on all sets is very good to excellent for cross-correlation and the random forest score. At the land level there is no significant difference in prediction power between RF score and cross-correlation."}
+  rocpic
+  aucpic
+```
 
 In \autoref{fig:rocs}, the Houston FSI G1 and G3 curves and the Phoenix PD curve show excellent performance; Houston FSI G2 and Hamby 44 show relatively good performance. Area under the curve (AUC) values, which summarize ROC curves, are shown in \autoref{tab:aucs}. AUC values are useful for differentiating between poor, good, and excellent model performance, but are not particularly useful when determining which of several models with approximately the same level of performance should be used \citep{marzban_roc_2004}. Hamby 44 and Phoenix PD are the only studies with a somewhat noticable difference between the AUC score for RF compared to ccf, and even those differences are relatively small: .03 and -.01, respectively.
 
 
 
 
-```{r l2l, fig.cap="Density curves of similarity scores based on land-to-land comparisons for cross-correlation (top) and RF scores (bottom). Different colors indicate same source versus different source. RF scores for different source comparisons are generally well below 0.5. Some same-source comparisons are also below 0.5 for RF scores, indicating potential problems with at least one of the lands involved in the comparison."}
+```{r l2l, eval=FALSE, fig.cap="Density curves of similarity scores based on land-to-land comparisons for cross-correlation (top) and RF scores (bottom). Different colors indicate same source versus different source. RF scores for different source comparisons are generally well below 0.5. Some same-source comparisons are also below 0.5 for RF scores, indicating potential problems with at least one of the lands involved in the comparison."}
 all_lands %>% gather(measure, score, ccf, rfscore) %>%
   mutate(
     measure = factor(measure, labels=c("Cross-correlation", "RF score"))
@@ -983,6 +987,7 @@ knitr::include_graphics(
 ```
 
 Three lands from bullets known to be fired from barrel 8 are affected, producing low scores for barrel 8 in \autoref{fig:h44}. We also see that questioned bullet 'I' is affected, explaining some of the low similarity scores for this bullet.
+\hh{None of the lands of any of the bullets in the other studies are affected by tank rash in a similar manner.}
 
 ### Limitations
 
