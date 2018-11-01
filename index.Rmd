@@ -92,6 +92,8 @@ In current practice, firearms and toolmark examiners (FTE) evaluate the similari
 ## 3D Imaging Technology
 More explicit characterization of bullet surfaces has been discussed since at least 1958 (\citeauthor{davis1968introduction}), but the technology was not sufficiently advanced for analysis based on 3D measurements to be a viable option. \svp{Use of a scanning electron microscope to quantitatively examine and compare bullet striae was demonstrated in \citet{ComputerIdentificationBullets1978}}. More recently, approaches using 3D measurement data were explicitly described in 1999 (\citeauthor{dekinderAutomatedComparisonsBullet1999}), and have been further developed by \citet{bachrachDevelopment3DbasedAutomated2002,xieAutomatedBulletidentificationSystem2009, chuPilotStudyAutomated2010}. These approaches utilize 3D surface measurements directly to characterize the topology of land engraved areas (LEAs), rather than using visual or image comparison techniques. In many cases, they also provide some level of automation of the comparison process, with the goal of reducing human biases by augmenting the visual information with 3D measurements. Utilizing the 3D measurements allows for examination not only of the peaks in the bullet signature, but also for comparison of the valleys, which are more difficult to assess visually except in relation to the peaks. \svp{In addition, there is significantly more information to be gained from quantitative assessment of peak height and valley depth than from the qualitative assessment of the same information.}
 
+## Identification Process
+
 Commonly, approaches derived from 3D surface measurements use some features which are \svp{similar to those qualitatively analyzed by FTEs}\citep{luAutomatedBulletIdentification2014}. Class characteristics, which are shared by a group of firearms with the same rifling design, manufacturer, and tooling process, are typically evaluated first, as a mismatch on class charcteristics is sufficient for an exclusion. Automated approaches to estimation of width of the land engraved area and twist angle were described in \citet{chuPilotStudyAutomated2010}. Individual characteristics, which are not shared by all members of a class, can also be automatically assessed from 3D surface measurements. One of the most common features used to assess the strength of a match based on individual characteristics is the cross-correlation function (ccf), which is described in several studies \citep{maNISTBulletSignature2004, vorburgerApplicationsCrosscorrelationFunctions2011, chuPilotStudyAutomated2010}. Additional features proposed for automatically assessing match strength also include signature distance \citep{maNISTBulletSignature2004}, striae depth and width \citep{ComputerIdentificationBullets1978}, and consecutive matching striae \citep{chuAutomaticIdentificationBullet2013}.
 
 In the matching algorithm proposed in \citet{aoas}, several of the features described above are combined using a random forest\citep{breiman} to produce a similarity score based on 3d topographic scans of land engraved areas (LEAs). From each land engraved area a signature is derived by
@@ -158,6 +160,12 @@ signatures %>%
 ```
 
 Quantitative features describing the similarity of two signature are extracted. Features include characteristics of the signature that firearms and toolmark examiners base their visual assessment on, such as striae depth, number of matching striae, and the number of consecutively matching striae (CMS). We also include statistical features, such as cross-correlation and Euclidean distance between the signatures. 
+
+## Explain RF score, CC and CMS
+
+\hh{We already have a start on this above, but we should focus on these three measures in more detail.}
+
+\hh{In the result section we should probably also include a discussion of EER and the threshold for EER for the three measures. Another threshold of interest is CMS=6, because that's what FTEs use often. }
 
 # Validation Sets
 
@@ -850,12 +858,12 @@ all_lands %>%
     colour = sameland
   )) +
   geom_density(alpha = 0.6) +
-  geom_rug(alpha = 0.5/12, show.legend = F) +
+#  geom_rug(alpha = 0.5/12, show.legend = F) +
   facet_grid(measure ~ study) +
   theme_bw() +
   scale_fill_manual("Same source", values = c("darkgrey", "darkorange")) +
   scale_colour_manual("Same source", values = c("darkgrey", "darkorange")) +
-  scale_x_continuous("Land-to-Land scores", limits = c(0, 1)) +
+  scale_x_continuous("Land-to-Land scores", limits = c(0, 1), labels = c(0, 0.25, 0.5, 0.75, 1)) +
   theme(legend.position = "bottom") +
   geom_hline(yintercept = 0, show.legend = F)
 ```
@@ -931,23 +939,6 @@ aucpic <- aucs %>%
   scale_linetype_manual("Measure", values = c(3,1,2), guide = F)
 
 ```
-
-<!-- \begin{table}[ht] -->
-<!-- \centering -->
-<!-- \begin{tabular}{llrrr} -->
-<!--   \hline -->
-<!--  && \multicolumn{3}{l}{\bf AUC (95\% Conf. Int)}\\ -->
-<!-- \bf Study & \bf Set & \bf RF score & \bf Cross-correlation & \bf CMS \\ -->
-<!--   \hline -->
-<!-- \bf Hamby 44 &  & 0.937 (0.917, 0.957) & 0.916 (0.891, 0.941) & 0.820 (0.787, 0.854) \\ -->
-<!-- \bf  Phoenix PD &  & 0.976 (0.957, 0.994) & 0.986 (0.975, 0.996) & 0.879 (0.838, 0.919) \\ -->
-<!-- \bf  Houston FSI & Set 1 & 0.991 (0.983, 0.999) & 0.988 (0.979, 0.997) & 0.785 (0.727, 0.842) \\ -->
-<!-- \bf  Houston FSI & Set 2 & 0.898 (0.853, 0.943) & 0.902 (0.861, 0.943) & 0.749 (0.684, 0.814) \\ -->
-<!-- \bf  Houston FSI & Set 3 & 0.986 (0.973, 0.999) & 0.987 (0.978, 0.997) & 0.911 (0.880, 0.941) \\ -->
-<!--    \hline -->
-<!-- \end{tabular} -->
-<!-- \caption{\svp{Can we turn this into a picture? It's really dense and hard to interpret...}Area under the curve (AUC) for each (set) of the studies for the random forest score, cross-correlation and CMS. Overall the perform on all sets is very good to excellent for cross-correlation and the random forest score.  As seen in the ROC curves, the algorithm performs the least well on set 2 of the Houston FSI study.  At the land level there is no significant difference in prediction power between RF score and cross-correlation.} \label{tab:aucs} -->
-<!-- \end{table} -->
 
 
 ```{r roc-auc, echo = FALSE, out.width = c("0.49\\textwidth", ".45\\textwidth"), out.height = c("0.6\\textwidth", "0.6\\textwidth"), fig.width = c(5, 6), fig.height = c(7.5, 7.5), fig.subcap=c("ROC curves", "Area under the curve (AUC)"), fig.cap="ROC curves and AUC for each (set) of the studies for the random forest score (RF), cross-correlation (CC) and consecutively matching striae (CMS).   As seen in the ROC curves, the algorithm performs the least well on set 2 of the Houston FSI study. Based on AUC, the overall performance on all sets is very good to excellent for cross-correlation and the random forest score. At the land level there is no significant difference in prediction power between RF score and cross-correlation."}
