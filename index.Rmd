@@ -5,12 +5,12 @@ title: Case study validations of automatic bullet matching
 blinded: 0
 
 authors: 
-- name: Author 1
-  thanks: The authors gratefully acknowledge XXX NIST funding for CSAFE XXX access to bullets from Hamby set 44, XXX Tylor, Melissa and Kasi. Scanning. Hamby advice. 
-  affiliation: Department of YYY, University of XXX
+- name: Heike Hofmann
+  thanks: This work was partially funded by the Center for Statistics and Applications in Forensic Evidence (CSAFE) through Cooperative Agreement \#70NANB15H176 between NIST and Iowa State University, which includes activities carried out at Carnegie Mellon University, University of California Irvine, and University of Virginia. The authors wish to thank Jim Hamby, Tylor Klep (Phoenix PD), and Melissa Nally and Kasi Kirksey (FSI Houston) for access to test set bullets. XXX Scanning. Hamby advice. 
+  affiliation: Department of Statistics, Iowa State University
   
-- name: Author 2
-  affiliation: Department of ZZZ, University of WWW
+- name: Susan VanderPlas
+  affiliation: Department of Statistics, Iowa State University
 
 keywords:
 - 3 to 6 keywords
@@ -163,7 +163,7 @@ Quantitative features describing the similarity of two signature are extracted. 
 
 ## Statistics for Matching Aligned Signatures
 
-\svp{Firearms examiners often use consecutive matching striae (CMS) to describe the strength of a match. CMS as used by examiners counts only peaks as striae, as it is difficult to assess vallleys and peaks separately when using a comparison scope.  If there are at least 6 consecutive matching striae, the bullets are considered to be a good match \citep{biasotti_firearms_1997,nichols_scientific_2006}, according to criteria used by FTEs. There are some differences between CMS as defined by FTEs and the method used in \citet{asos} includes both peaks and valleys, as it is easier to assess the features separately using cross-sections. XXX Should we go into this, or just leave it as is?
+\svp{Firearms examiners often use consecutive matching striae (CMS) to describe the strength of a match. CMS as used by examiners counts only peaks as striae, as it is difficult to assess vallleys and peaks separately when using a comparison scope.  If there are at least 6 consecutive matching striae, the bullets are considered to be a good match \citep{biasotti_firearms_1997,nichols_scientific_2006}, according to criteria used by FTEs. There are some differences between CMS as defined by FTEs and the method used in \citet{aoas}. The computational method includes counts both peaks and valleys as striae, as it is easier to assess the features separately using cross-sections than it is to do so usingn visual examination. XXX Should we go into this, or just leave it as is?
 }
 
 \svp{Cross-correlation between two signatures $S_1(x)$ and $S_2(x)$, $$CC(S_1, S_2, z) = \lim_{L\rightarrow\infty}\left(\frac{1}{L} \int_{-L/2}^{L/2} S_1(x)S_2(x + z) dx \right)/[R_1R_2]$$ where $z$ is the shift difference between the two sequences and $R_1$ and $R_2$ are the root mean square roughness for the two signature \citep{vorburgerApplicationsCrosscorrelationFunctions2011}. We maximize $CC$ over values of $z$ to determine the best alignment; this maximal value is used to assess the match strength between the two sequences. XXX algorithm for calculating with missing values?}
