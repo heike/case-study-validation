@@ -163,16 +163,24 @@ Quantitative features describing the similarity of two signature are extracted. 
 
 ## Statistics for Matching Aligned Signatures
 
-\svp{Firearms examiners often use consecutive matching striae (CMS) to describe the strength of a match. CMS as used by examiners counts only peaks as striae, as it is difficult to assess vallleys and peaks separately when using a comparison scope.  If there are at least 6 consecutive matching striae, the bullets are considered to be a good match \citep{biasotti_firearms_1997,nichols_scientific_2006}, according to criteria used by FTEs. There are some differences between CMS as defined by FTEs and the method used in \citet{asos} includes both peaks and valleys, as it is easier to assess the features separately using cross-sections. XXX Should we go into this, or just leave it as is?
-}
+\hh{XXX define signatures mathematically here - as random spatial process; extracted from crosscut by removing big structure first and then applying (cross-validated, \citet{aoas}) 'roughness' filter. 'roughness' defined by NIST paper. }
+
+One of the measures used by firearms examiners to describe the strength of a match quantitatively is the number of consecutive matching striae (CMS) as defined by \citet{biasotti}.
+If there are at least 6 consecutive matching striae, the bullets are considered to be a good match \citep{biasotti_firearms_1997,nichols_scientific_2006}, according to criteria used by FTEs. 
+CMS in this setting are counted as the number of consecutive peaks in signatures of two lands that match. 
+
+
+\hh{HH: let's not go into what we do not do, and instead focus on what we do}
+~~  There are some differences between CMS as defined by FTEs and the method used in \citet{aoas} includes both peaks and valleys, as it is easier to assess the features separately using cross-sections. XXX Should we go into this, or just leave it as is?~~
+
 
 \svp{Cross-correlation between two signatures $S_1(x)$ and $S_2(x)$, $$CC(S_1, S_2, z) = \lim_{L\rightarrow\infty}\left(\frac{1}{L} \int_{-L/2}^{L/2} S_1(x)S_2(x + z) dx \right)/[R_1R_2]$$ where $z$ is the shift difference between the two sequences and $R_1$ and $R_2$ are the root mean square roughness for the two signature \citep{vorburgerApplicationsCrosscorrelationFunctions2011}. We maximize $CC$ over values of $z$ to determine the best alignment; this maximal value is used to assess the match strength between the two sequences. XXX algorithm for calculating with missing values?}
 
-\svp{XXX No idea what to say about the RF other than what's above?}
+\svp{XXX No idea what to say about the RF other than what's above? } 
+\hh{XXX that's what I thought, too.}
 
 \hh{We already have a start on this above, but we should focus on these three measures in more detail.}
 
-\hh{In the result section we should probably also include a discussion of EER and the threshold for EER for the three measures. Another threshold of interest is CMS=6, because that's what FTEs use often. }
 
 # Validation Sets
 
@@ -298,6 +306,10 @@ This leads us to two minimal requirements the scores should fulfill:
 
 ```{r h44, echo=FALSE, fig.width = 10, fig.height=5, fig.cap="Hamby set 44: overview of all bullet-to-bullet matches between all pairs of questioned bullets ($y$-axis) and known test fires from ten barrels ($x$ axis)."}
 h44features <- read.csv("data/h44-features.csv")
+h44features <- h44features %>% mutate(
+  lys = overlap*signature_length*1000/.645,
+  cms = cms2 *lys*.645/1000
+)
 # tank rash lands:
 #h44features <- h44features %>% mutate(
 #  rfscore = replace(rfscore, (bullet1 == "I" & land1 == 6) | (bullet2 == #"I" & land2 == 6), NA)
@@ -453,7 +465,10 @@ The right side of \autoref{fig:h44} shows the relationship between all pairs of 
 
 ```{r pd, echo=FALSE, fig.width = 9, fig.height=4, fig.cap="Phoenix study: overview of all bullet-to-bullet matches between all pairs of questioned bullets ($y$-axis) and known test fires from ten barrels ($x$ axis). The order of the bullets on the $y$ axis is determined by matching barrel."}
 features <- read.csv("data/pd-features.csv.gz")
-
+features <- features %>% mutate(
+  lys = overlap*signature_length*1000/.645,
+  cms = cms2 *lys*.645/1000
+)
 f2 <- features %>%
   separate(first, into = c("foo1", "foo2", "barrel1", "bullet1", "land1", "foo3"), remove = FALSE) %>%
   separate(second, into = c("foo4", "foo5", "bullet2", "land2", "foo6"), remove = FALSE) %>%
@@ -542,6 +557,10 @@ Once again, the results from automatic matching correctly pair questioned bullet
 While all bullet-to-bullet matches are correctly identified, and no known matches are missed, it is obvious from the generally lighter shades of the tiles corresponding to matching bullets in \autoref{fig:hou} for set 2 that  the algorithm is not performing as well as for the other sets (see also \autoref{tab:aucs}).
 ```{r hou, fig.width=9, fig.height = 3, fig.cap="Overview of matching scores for all pairs of questioned bullets to known bullets from five barrels (on the left) and questioned bullets to themselves (tiles on the right).", fig.subcap=c("Set 1", "Set 2", "Set 3"), fig.align="middle", fig.ncol=1}
 features <- read.csv("data/fsi-features.csv.gz")
+features <- features %>% mutate(
+  lys = overlap*signature_length*1000/.645,
+  cms = cms2 *lys*.645/1000
+)
 
 features <- features %>% mutate(
   bullet1 = gsub("ullet ", "", bullet1),
