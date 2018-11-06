@@ -470,10 +470,29 @@ features <- features %>% mutate(
   lys = overlap*signature_length*1000/.645,
   cms = cms2 *lys*.645/1000
 )
+# change labels for land 3 and land 4 of bullet B3 in P7
+features <- features %>% mutate(
+  first = as.character(first),
+  first = replace(first, first=="Gun 1-P7/B3/L4.dat", "XXX"),
+  first = replace(first, first=="Gun 1-P7/B3/L3.dat", "Gun 1-P7/B3/L4.dat"),
+  first = replace(first, first=="XXX", "Gun 1-P7/B3/L3.dat")
+)
+
+features <- features %>% mutate(
+  KM = replace(KM, first %in% c("Gun 1-P7/B3/L3.dat", "Gun 1-P7/B3/L4.dat"), FALSE)
+)
+features <- features %>% mutate(
+  KM = ifelse(first == "Gun 1-P7/B3/L3.dat", (second == "Unknown 1-J/L3.dat"), KM),
+  KM = ifelse(first == "Gun 1-P7/B3/L4.dat", (second == "Unknown 1-J/L4.dat"), KM)
+)
+
+
+
 f2 <- features %>%
   separate(first, into = c("foo1", "foo2", "barrel1", "bullet1", "land1", "foo3"), remove = FALSE) %>%
   separate(second, into = c("foo4", "foo5", "bullet2", "land2", "foo6"), remove = FALSE) %>%
   select(-foo1, -foo2, -foo3, -foo4, -foo5, -foo6)
+
 
 unknowns <- read.csv("data/pd-features-unknown.csv")
 unknowns <- unknowns %>% filter(bullet1 != bullet2)
@@ -495,6 +514,7 @@ f3 <- rbind(
     ) %>%
     mutate(barrel1 = "Unknown", barrel2 = "Unknown", KM = FALSE)
 )
+
 pdnest <- f3 %>% group_by(bullet2, barrel1, bullet1) %>% nest()
 
 pdnest <- pdnest %>% mutate(
@@ -990,7 +1010,7 @@ aucpic <- aucs %>%
   aucpic
 ```
 
-In \autoref{fig:roc-auc} (a), the Houston FSI G1 and G3 curves and the Phoenix PD curve show excellent performance; Houston FSI G2 and Hamby 44 show relatively good performance. Area under the curve (AUC) values, which summarize ROC curves, are shown in \autoref{fig:roc-auc} (b). AUC values are useful for differentiating between poor, good, and excellent model performance, but are not particularly useful when determining which of several models with approximately the same level of performance should be used \citep{marzban_roc_2004}. Hamby 44 and Phoenix PD are the only studies with a somewhat noticable difference between the AUC score for RF compared to ccf, and even those differences are not statistically significant.
+In \autoref{fig:roc-auc} (a), the Houston FSI G1 and G3 curves and the Phoenix PD curve show excellent performance; Houston FSI G2 and Hamby 44 show still a very  good performance. Area under the curve (AUC) values, which summarize ROC curves, are shown in \autoref{fig:roc-auc} (b). AUC values are useful for differentiating between poor, good, and excellent model performance, but are not particularly useful when determining which of several models with approximately the same level of performance should be used \citep{marzban_roc_2004}. Hamby 44 and Phoenix PD are the only studies with a somewhat noticable difference between the AUC score for RF compared to cross-correlation, but even those differences are not statistically significant.
 
 
 
@@ -1012,9 +1032,9 @@ ggplot(aes(x = score, fill = sameland, colour =sameland)) +
 ```
 
 \hh{\autoref{fig:eer} shows an overview of Equal Error Rates (EER) based on the ROC curves of figure \ref{fig:roc-auc}. EERs are error rates when sensitivity and specificity of a test are equal, i.e. we see the same error rates of missing an identification for a land-to-land comparison  and wrong identifications, when it is determined that two land engraved areas come from the same source when they are, in fact, known to be from a different source. Equal error rates based on CMS of two lands are significantly higher than equal error rates based on cross-correlation or the RF score. At best, RF score and cross-correlation have an equal error rate of around 5\% for land-to-land comparisons. 
-Interestingly, for consecutively matching striae, an equal error rate is reached for just two matching striae, which from a practical point of view is not sustainable. A  CMS of  6 or above is an established cutoff used in identifications. This leads to 0 wrong identifications but only identifies 21 out of  715 known same-source lands. XXX check after file names are corrected. }
+Interestingly, for consecutively matching striae, an equal error rate is reached for just two matching striae, which from a practical point of view is not sustainable. A  CMS of  6 or above is an established cutoff used in identifications. This leads to 16 wrong identifications (out of 49286; for an error rate of about 3 in 10,000) but only identifies 115 out of  715 known same-source lands, for an error rate of 16 in 100. XXX check after file names are corrected. }
 ```{r eval=FALSE}
-xtabs(~sameland+I(cms>=12), data = all_lands)
+xtabs(~sameland+I(cms>=6), data = all_lands)
 ```
 
 ```{r eer, fig.cap="Equal Error Rates for all measures (RF score, Cross-correlation and CMS) under all five (sub-)studies. CMS is signifcantly worse than both Cross-correlation and the RF score. At best, Cross-correlation and RF score have errors for land-to-land comparison of around 5\\%.", out.width = '.5\\textwidth'}
