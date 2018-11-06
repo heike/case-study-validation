@@ -34,6 +34,15 @@ output:
 \newcommand{\svp}[1]{{\textcolor{teal}{#1}}}
 \noindent
 
+\hh{
+Cleanup TO-DO
+\begin{itemize}
+\item define false positives and false negatives once and stick to those definitions. We should avoid false positive and false negatives, because that only makes sense in a test setting, which we have not defined formally.
+Let's use instead wrong identification and missed identification. 
+\item color: let's not mention 'orange' anywhere in the manuscript - I don't know, whether the printed version of the paper will be in color. 
+\end{itemize}
+}
+
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 library(knitr)
@@ -1010,9 +1019,7 @@ aucpic <- aucs %>%
   aucpic
 ```
 
-In \autoref{fig:roc-auc} (a), the Houston FSI G1 and G3 curves and the Phoenix PD curve show excellent performance; Houston FSI G2 and Hamby 44 show still a very  good performance. Area under the curve (AUC) values, which summarize ROC curves, are shown in \autoref{fig:roc-auc} (b). AUC values are useful for differentiating between poor, good, and excellent model performance, but are not particularly useful when determining which of several models with approximately the same level of performance should be used \citep{marzban_roc_2004}. Hamby 44 and Phoenix PD are the only studies with a somewhat noticable difference between the AUC score for RF compared to cross-correlation, but even those differences are not statistically significant.
-
-
+In \autoref{fig:roc-auc}a, the Houston FSI G1 and G3 curves and the Phoenix PD curve show excellent performance; Houston FSI G2 and Hamby 44 show still a very  good performance. Area under the curve (AUC) values, which summarize ROC curves, are shown in \autoref{fig:roc-auc}b. AUC values are useful for differentiating between poor, good, and excellent model performance, but are not particularly useful when determining which of several models with approximately the same level of performance should be used \citep{marzban_roc_2004}. Hamby 44 and Phoenix PD are the only studies with a somewhat noticable difference between the AUC score for RF compared to cross-correlation, but even those differences are not statistically significant.
 
 
 ```{r l2l, eval=FALSE, fig.cap="Density curves of similarity scores based on land-to-land comparisons for cross-correlation (top) and RF scores (bottom). Different colors indicate same source versus different source. RF scores for different source comparisons are generally well below 0.5. Some same-source comparisons are also below 0.5 for RF scores, indicating potential problems with at least one of the lands involved in the comparison."}
@@ -1031,19 +1038,27 @@ ggplot(aes(x = score, fill = sameland, colour =sameland)) +
   geom_hline(yintercept = 0, show.legend = F) 
 ```
 
-\hh{\autoref{fig:eer} shows an overview of Equal Error Rates (EER) based on the ROC curves of figure \ref{fig:roc-auc}. EERs are error rates when sensitivity and specificity of a test are equal, i.e. we see the same error rates of missing an identification for a land-to-land comparison  and wrong identifications, when it is determined that two land engraved areas come from the same source when they are, in fact, known to be from a different source. Equal error rates based on CMS of two lands are significantly higher than equal error rates based on cross-correlation or the RF score. At best, RF score and cross-correlation have an equal error rate of around 5\% for land-to-land comparisons. 
-Interestingly, for consecutively matching striae, an equal error rate is reached for just two matching striae, which from a practical point of view is not sustainable. A  CMS of  6 or above is an established cutoff used in identifications. This leads to 16 wrong identifications (out of 49286; for an error rate of about 3 in 10,000) but only identifies 115 out of  715 known same-source lands, for an error rate of 16 in 100. XXX check after file names are corrected. }
+\hh{\autoref{fig:eer} shows an overview of Equal Error Rates (EER) and their thresholds based on the ROC curves of \autoref{fig:roc-auc}. EERs are error rates when sensitivity and specificity of a test are equal, i.e. we see the same error rates of missing an identification for a land-to-land comparison  and wrong identifications, when it is determined that two land engraved areas come from the same source when they are, in fact, known to be from a different source. Equal error rates based on CMS of two lands are significantly higher than equal error rates based on cross-correlation or the RF score. At best, RF score and cross-correlation have an equal error rate of around 5\% for land-to-land comparisons. 
+Interestingly, for consecutively matching striae, an equal error rate is reached for just two matching striae, which from a practical point of view is not sustainable. A  CMS of  6 or above is an established cutoff used in identifications. This leads to 21 wrong identifications (out of 49286; for an error rate of 4 in 10,000) but only identifies 139 out of  715 known same-source lands, for an error rate of 80.6\%. }
 ```{r eval=FALSE}
-xtabs(~sameland+I(cms>=6), data = all_lands)
+xtabs(~sameland+I(round(cms)>=6), data = all_lands)
 ```
 
-```{r eer, fig.cap="Equal Error Rates for all measures (RF score, Cross-correlation and CMS) under all five (sub-)studies. CMS is signifcantly worse than both Cross-correlation and the RF score. At best, Cross-correlation and RF score have errors for land-to-land comparison of around 5\\%.", out.width = '.5\\textwidth'}
-aucs %>% ggplot(aes(y = studyg, x = eer, colour=measure, shape = measure)) + 
+```{r eer, fig.width=7, fig.height = 4, fig.cap="Equal Error Rates and thresholds for all measures (RF score, Cross-correlation and CMS) under all five (sub-)studies. CMS has an EER threshold of 2 for all studies. CMS is signifcantly worse than both Cross-correlation and the RF score. At best, Cross-correlation and RF score have errors for land-to-land comparison of around 5\\%.", out.width = '.8\\textwidth'}
+aucs %>% gather(eer_thresh, value, eer, threshold) %>%
+  filter(!(measure=="CMS" & eer_thresh=="threshold")) %>%
+  mutate(
+    eer_thresh = factor(eer_thresh, labels=c("EER", "Threshold for EER"))
+  ) %>%
+  ggplot(aes(y = studyg, x = value, colour=measure, shape = measure)) + 
   geom_point(size = 3) +theme_bw() +
-  xlim(c(0, .35)) +
-  xlab("Equal Error Rates (EER)") +
+#  xlim(c(0, .35)) +
+  xlab("Equal Error Rates (left) and EER thresholds (right)") +
   ylab("") +
-  scale_color_brewer(palette = "Set2")
+  scale_color_brewer(palette = "Set2") +
+  theme(legend.position = "bottom") +
+  facet_grid(.~eer_thresh, scales="free") +
+  xlim(c(0, NA))
 ```
 
 
