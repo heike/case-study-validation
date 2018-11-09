@@ -104,11 +104,11 @@ In the matching algorithm proposed in \citet{aoas}, several of the features desc
 From each land engraved area a signature is derived \hh{using the process described in detail in \citet{aoas}:}
 
 \begin{itemize}
-\item[(a)] Identify an area on the LEA, striae are expressed. 
-XXXX get from area to crosscut XXXX
-\hh{
-Let $z(t)$ describe a digitized toolmark for the striation marks on a land engraved area.
-$z(t)$ is then a spatial process indexed by $t$, where $t, t = 1,...,T$ denotes equally spaced pixel locations for a total length of $T$. }
+\item[(a)] Identify an area on the LEA with expressed striae. Locate a stable crosscut (see \citet{aoas}) in the identified area. 
+<!-- XXXX get from area to crosscut XXXX -->
+<!-- \hh{ -->
+<!-- Let $z(t)$ describe a digitized toolmark for the striation marks on a land engraved area. -->
+<!-- $z(t)$ is then a spatial process indexed by $t$, where $t, t = 1,...,T$ denotes equally spaced pixel locations for a total length of $T$. } -->
 
 \item[(b)] discarding extraneous/contaminated data, such as data from groove engraved area and areas affected by break-off or contact with objects after the bullet exited the barrel  (``tank rash"), 
 \item[(c)] removing bullet curvature. 
