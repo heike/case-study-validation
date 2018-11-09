@@ -16,7 +16,7 @@ keywords:
 - 3 to 6 keywords
 - that do not appear in the title
 
-abstract: Recent advances in microscopy have made it possible to collect 3d topographic data, enabling virtual comparisons based on the collected 3D data next to traditional comparison microscopy. Automatic matching algorithms have been introduced for various scenarios, such as matching cartridge cases (Tai and Eddy 2018) or matching bullet striae (Hare et al. 2017b,  Chu et al 2013,  De Kinder and Bonfanti 1999). One key aspect of validating automatic matching algorithms is to evaluate the performance of the algorithm on external tests. Here, we are presenting a discussion of the performance of the matching algorithm (Hare et al. 2017b) in three studies. We are considering matching performance based on the Random forest score, cross-correlation, and consecutive matching striae (CMS) at the land-to-land level and, using Sequential Average Maxima scores, also at the bullet-to bullet level. Cross-correlation and Random Forest scores both result in perfect discrimination of same-source and different-source bullets. At the land-to-land level, discrimination (based on area under the curve, AUC) is excellent (??? 0.90). 
+abstract: Recent advances in microscopy have made it possible to collect 3d topographic data, enabling virtual comparisons based on the collected 3D data next to traditional comparison microscopy. Automatic matching algorithms have been introduced for various scenarios, such as matching cartridge cases (Tai and Eddy 2018) or matching bullet striae (Hare et al. 2017b,  Chu et al 2013,  De Kinder and Bonfanti 1999). One key aspect of validating automatic matching algorithms is to evaluate the performance of the algorithm on external tests. Here, we are presenting a discussion of the performance of the matching algorithm (Hare et al. 2017b) in three studies. We are considering matching performance based on the Random forest score, cross-correlation, and consecutive matching striae (CMS) at the land-to-land level and, using Sequential Average Maxima scores, also at the bullet-to bullet level. Cross-correlation and Random Forest scores both result in perfect discrimination of same-source and different-source bullets. At the land-to-land level, discrimination (based on area under the curve, AUC) is excellent ($ge$ 0.90). 
 
 bibliography: bibliography
 biblio-style: apsr
@@ -100,10 +100,16 @@ More explicit characterization of bullet surfaces has been discussed since at le
 
 Commonly, approaches derived from 3D surface measurements use some features which are \svp{similar to those visually assessed by FTEs}\citep{luAutomatedBulletIdentification2014}. Class characteristics, which are shared by a group of firearms with the same rifling design, manufacturer, and tooling process, are typically evaluated first, as a mismatch on class charcteristics is sufficient for an exclusion. Automated approaches to estimation of width of the land engraved area and twist angle were described in \citet{chuPilotStudyAutomated2010}. Individual characteristics, which are not shared by all members of a class, can also be automatically assessed from 3D surface measurements. One of the most common features used to assess the strength of a match based on individual characteristics is the cross-correlation function (ccf), which is described in several studies \citep{maNISTBulletSignature2004, vorburgerApplicationsCrosscorrelationFunctions2011, chuPilotStudyAutomated2010}. Additional features proposed for automatically assessing match strength also include signature distance \citep{maNISTBulletSignature2004}, striae depth and width \citep{ComputerIdentificationBullets1978}, and consecutive matching striae \citep{chuAutomaticIdentificationBullet2013}.
 
-In the matching algorithm proposed in \citet{aoas}, several of the features described above are combined using a random forest\citep{breiman} to produce a similarity score based on 3d topographic scans of land engraved areas (LEAs). From each land engraved area a signature is derived by
+In the matching algorithm proposed in \citet{aoas}, several of the features described above are combined using a random forest \citep{breiman} to produce a similarity score based on 3d topographic scans of land engraved areas (LEAs).
+From each land engraved area a signature is derived \hh{using the process described in detail in \citet{aoas}:}
 
 \begin{itemize}
-\item[(a)] identifying an area where striae are expressed, 
+\item[(a)] Identify an area on the LEA, striae are expressed. 
+XXXX get from area to crosscut XXXX
+\hh{
+Let $z(t)$ describe a digitized toolmark for the striation marks on a land engraved area.
+$z(t)$ is then a spatial process indexed by $t$, where $t, t = 1,...,T$ denotes equally spaced pixel locations for a total length of $T$. }
+
 \item[(b)] discarding extraneous/contaminated data, such as data from groove engraved area and areas affected by break-off or contact with objects after the bullet exited the barrel  (``tank rash"), 
 \item[(c)] removing bullet curvature. 
 \end{itemize}
