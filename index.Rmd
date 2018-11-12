@@ -39,7 +39,6 @@ Cleanup TO-DO
 \begin{itemize}
 \item define false positives and false negatives once and stick to those definitions. We should avoid false positive and false negatives, because that only makes sense in a test setting, which we have not defined formally.
 Let's use instead wrong identification and missed identification. 
-<!-- \item color: let's not mention 'orange' anywhere in the manuscript - I don't know, whether the printed version of the paper will be in color.  -->
 \end{itemize}
 }
 
@@ -91,25 +90,25 @@ estimateBeta <- function(x, method = "mm", probs = c(0.25, 0.75)) {
 ```
 
 # Introduction and Background
-In current practice, firearms and toolmark examiners (FTE) evaluate the similarity of striae on bullets by placing the evidence together with a bullet from the suspected gun under a comparison microscope. XXX this could be a second bullet from the crime scene XXX They then visually classify similarity according to the theory of firearms identification \citep{identification} as one of identification, inconclusive or exclusion. Exact guidelines for this classification vary from lab to lab, e.g.\ some labs will exclude only on the basis of non-matching class characteristics, such as direction of the twist in rifling, land length or number of lands, or type of rifling. In some labs,  CMS (consecutively matching striae) as defined by \citet{biasotti} is used as a measure to quantify the strength of a match.
+In current practice, firearms and toolmark examiners (FTE) evaluate the similarity of striae on bullets by placing the evidence together with a bullet from the suspected gun under a comparison microscope. XXX this could be a second bullet from the crime scene XXX They then visually classify similarity according to the theory of firearms identification \citep{identification} as one of identification, inconclusive or exclusion. Exact guidelines for this classification vary from lab to lab; some labs will exclude only on the basis of non-matching class characteristics, such as direction of the twist in rifling, land length or number of lands, or type of rifling. In other labs, CMS (consecutively matching striae) as defined by \citet{biasotti} is used as a measure to quantify the strength of a match.
 
 ## 3D Imaging Technology
-More explicit characterization of bullet surfaces has been discussed since at least 1958 (\citeauthor{davis1968introduction}), but at the time technology was not sufficiently advanced to make an analysis based on 3D measurements a viable option. \svp{Use of a scanning electron microscope to quantitatively examine and compare bullet striae was demonstrated in \citet{ComputerIdentificationBullets1978}}. More recently, approaches using 3D measurement data were explicitly described in 1999 (\citeauthor{dekinderAutomatedComparisonsBullet1999}), and have been further developed by \citet{bachrachDevelopment3DbasedAutomated2002,xieAutomatedBulletidentificationSystem2009, chuPilotStudyAutomated2010}. These approaches utilize 3D surface measurements directly to characterize the topology of land engraved areas (LEAs), rather than using visual or image comparison techniques. In many cases, these papers also provide some level of automation of the comparison process, with the goal of reducing human biases by augmenting the visual information with 3D measurements. Utilizing the 3D measurements allows for examination not only of the peaks in the bullet signature, but also for comparison of the valleys, which are more difficult to assess visually except in relation to the peaks. 
+More explicit characterization of bullet surfaces has been discussed since at least 1958 (\citeauthor{davis1968introduction}), but at the time technology was not sufficiently advanced to make an analysis based on 3D measurements or surface traces a viable option. \svp{Use of a scanning electron microscope to quantitatively examine and compare bullet striae was demonstrated in \citet{ComputerIdentificationBullets1978}}. More recently, approaches using 3D measurement data were explicitly described in 1999 (\citeauthor{dekinderAutomatedComparisonsBullet1999}), and have been further developed by \citet{bachrachDevelopment3DbasedAutomated2002,xieAutomatedBulletidentificationSystem2009, chuPilotStudyAutomated2010}. These approaches utilize 3D surface measurements directly to characterize the topology of land engraved areas (LEAs), rather than using visual or image comparison techniques. In many cases, these papers also provide some level of automation of the comparison process, with the goal of reducing human biases by augmenting the visual information with 3D measurements. Utilizing the 3D measurements allows for examination not only of the peaks in the bullet signature, but also for comparison of the valleys, which are more difficult to assess visually except in relation to the peaks. 
 
 ## Identification Process
 
-Commonly, approaches derived from 3D surface measurements use some features which are \svp{similar to those visually assessed by FTEs}\citep{luAutomatedBulletIdentification2014}. Class characteristics, which are shared by a group of firearms with the same rifling design, manufacturer, and tooling process, are typically evaluated first, as a mismatch on class charcteristics is sufficient for an exclusion. Automated approaches to estimation of width of the land engraved area and twist angle were described in \citet{chuPilotStudyAutomated2010}. Individual characteristics, which are not shared by all members of a class, can also be automatically assessed from 3D surface measurements. One of the most common features used to assess the strength of a match based on individual characteristics is the cross-correlation function (ccf), which is described in several studies \citep{maNISTBulletSignature2004, vorburgerApplicationsCrosscorrelationFunctions2011, chuPilotStudyAutomated2010}. Additional features proposed for automatically assessing match strength also include signature distance \citep{maNISTBulletSignature2004}, striae depth and width \citep{ComputerIdentificationBullets1978}, and consecutive matching striae \citep{chuAutomaticIdentificationBullet2013}.
+Commonly, approaches derived from 3D surface measurements use some features which are \svp{similar to those visually assessed by FTEs} \citep{luAutomatedBulletIdentification2014}. Class characteristics, which are shared by a group of firearms with the same rifling design, manufacturer, and tooling process, are typically evaluated first, as a mismatch on class charcteristics is sufficient for an exclusion. Automated approaches to estimation of width of the land engraved area and twist angle were described in \citet{chuPilotStudyAutomated2010}. Individual characteristics, which are not shared by all members of a class, can also be automatically assessed from 3D surface measurements. One of the most common features used to assess the strength of a match based on individual characteristics is the cross-correlation function (ccf), which is described in several studies \citep{maNISTBulletSignature2004, vorburgerApplicationsCrosscorrelationFunctions2011, chuPilotStudyAutomated2010}. Additional features proposed for automatically assessing match strength also include signature distance \citep{maNISTBulletSignature2004}, striae depth and width \citep{ComputerIdentificationBullets1978}, and consecutive matching striae \citep{chuAutomaticIdentificationBullet2013}.
 
 In the matching algorithm proposed in \citet{aoas}, several of the features described above are combined using a random forest \citep{breiman} to produce a similarity score based on 3d topographic scans of land engraved areas (LEAs).
 From each land engraved area a signature is derived \hh{using the process described in detail in \citet{aoas}:}
 
-\begin{itemize}
-\item[(a)] Identify an area on the LEA with expressed striae. Locate a stable crosscut (see \citet{aoas}) in the identified area. 
 <!-- XXXX get from area to crosscut XXXX -->
 <!-- \hh{ -->
 <!-- Let $z(t)$ describe a digitized toolmark for the striation marks on a land engraved area. -->
 <!-- $z(t)$ is then a spatial process indexed by $t$, where $t, t = 1,...,T$ denotes equally spaced pixel locations for a total length of $T$. } -->
 
+\begin{itemize}
+\item[(a)] Identify an area on the LEA with expressed striae. Locate a stable crosscut (see \citet{aoas}) in the identified area.
 \item[(b)] discarding extraneous/contaminated data, such as data from groove engraved area and areas affected by break-off or contact with objects after the bullet exited the barrel  (``tank rash"), 
 \item[(c)] removing bullet curvature. 
 \end{itemize}
@@ -182,27 +181,30 @@ Quantitative features describing the similarity of two signature are extracted. 
 One of the measures used by firearms examiners to describe the strength of a match quantitatively is the number of consecutive matching striae (CMS) as defined by \citet{biasotti}.
 If there are at least 6 consecutive matching striae, the bullets are considered to be a good match \citep{biasotti_firearms_1997,nichols_scientific_2006}, according to criteria used by FTEs. 
 CMS in this setting are counted as the number of consecutive peaks in signatures of two lands that match. 
-\hh{Note that because signatures are moved into phase based on the maximum cross-correlation rather than matching striation marks. This can result in a consecutive matching striae of 0. }
+\hh{Note that because signatures are moved into phase based on the maximum cross-correlation rather than matching striation marks. This can result in a consecutive matching striae of 0. } \svp{CMS are generally considered to be a very conservative criteria, in that bullets fired through the same barrel may not have a high number of consecutively matching striae; in this sense, CMS may be more likely to produce an inconclusive result.}
 
-
-
-\svp{XXX No idea what to say about the RF other than what's above? } 
-\hh{XXX that's what I thought, too.}
-
-\hh{We already have a start on this above, but we should focus on these three measures in more detail.}
-
+\svp{The random forest presented in \citet{aoas} takes as input the following characteristics derived from a pair of aligned sequences:
+\begin{itemize}
+\item Cross-correlation 
+\item Number of matching striae 
+\item Total depth of joint striations 
+\item Number of non-matching striae 
+\item Euclidian distance between the sequences 
+\item Consecutive Matching Striae 
+\item Consecutive Non-matching Striae
+\end{itemize}
+The output of the random forest is a score between 0 and 1 representing the algorithm's assessment of the strength of the match, where 1 indicates that the algorithm believes it to be highly likely that the aligned signatures match, and 0 indicates that the aligned signatures are highly likely to originate from different lands.}
 
 # Validation Sets
 
-\hh{The automatic matching algorithm is based on a random forest \citep{breiman}, which has a built-in internal testing mechanism to prevent potential overfitting. Error rates reported by random forest algorithms are based on these internal test sets. However, there is some discussion on whether or in which situations these error rates are biased \citep{rfOver2, rfOver}. 
-Neither of these papers addresses another issue with internal test sets: internal test sets are constructed to have the same distribution as the training data (apart from sampling variability). For any machine learning method the true test comes with testing the performance of an algorithm on external test data. Good performance (in terms of low error rates) on external test data validates a ML algorithm. External data allows an assessment of the algorithm's sensitivity to distributional changes.  Using performance on external test data also allows us to test limitations of the algorithm by going outside the parameters of the training data.  }
+\svp{Random forests \citep{breiman} have} \hh{a built-in internal testing mechanism to prevent potential overfitting. Error rates reported by random forest algorithms are based on these internal test sets. However, there is some discussion on whether or in which situations these error rates are biased \citep{rfOver2, rfOver}. 
+Neither of these papers addresses another issue with internal test sets: internal test sets are constructed to have the same distribution as the training data (apart from sampling variability).} \svp{For any machine learning method, a true benchmark of the performance of an algorithm requires testing its' performance on external test data.} \hh{Good performance (in terms of low error rates) on external test data validates a ML algorithm. External data also allows an assessment of the algorithm's sensitivity to distributional changes} \svp{as well as testing the algorithm's robustness by going outside the parameters of the training data.  }
 
 The algorithm in \citet{aoas} is trained on scans from Hamby sets 252 and 173 made available through \citet{nist}. Set 173 was originally published as Hamby set 44. This mis-labeling has been corrected now. 
 
 \hh{For the validation of the automatic matching algorithm we are considering three validation sets of -- what should be -- increasing difficulty level:} 
 \begin{itemize}
-\item {\bf Hamby set 44} 
-Hamby set 44 is one set of the Hamby study \citep{hamby}. Each Hamby set  consists of a total of 35 bullets fired through ten consecutively manufactured barrels of Rugers P85. Each set consists of 20 known bullets (two from each of the ten barrels) and 15 questioned bullets of unknown origin. Note that all Hamby sets are closed sets; that is, all questioned bullets are fired through one of the ten barrels. The ammunition used for this set were 9 mm Luger 115 Grain Full Metal Jacket  from the Winchester Ammunition Company.
+\item {\bf Hamby set 44} is one set of the Hamby study \citep{hamby}. Each Hamby set  consists of a total of 35 bullets fired through ten consecutively manufactured barrels of Rugers P85. Each set consists of 20 known bullets (two from each of the ten barrels) and 15 questioned bullets of unknown origin. Note that all Hamby sets are closed sets; that is, all questioned bullets are fired through one of the ten barrels. The ammunition used for this set were 9 mm Luger 115 Grain Full Metal Jacket  from the Winchester Ammunition Company.
 \item {\bf Phoenix PD}
 Tylor Klep from Phoenix PD provided sets of known test fires and questioned bullets: the set of known bullets consists of three test fires (B1, B2, B3) from each of eight different Ruger P-95 barrels (A9, C8, F6, L5, M2, P7, R3, U10). Ten questioned bullets were provided (B, E, H, J, K N, Q, T, Y, Z). This set is an open set; that is,\ it is not known in advance whether all (or any) of the questioned bullets are fired from the known barrels. \svp{The ammunition used for this set were 9mm Luger copper jacket from American Eagle.}
 Land engraved areas for each of the six lands of each bullet were scanned by Bill Henderson (Sensofar).
@@ -392,7 +394,7 @@ h44nest$samesource <- h44nest$sam_rf > 0.3
 h44
 ``` 
 
-\autoref{fig:h44} shows an overview of all scores from pairs of questioned bullets with all other bullets. On the left of \autoref{fig:h44} there are ten strips labelled 1 through 10. These strips correspond to known barrels 1 through 10. \svp{Each barrel was test-fired twice, so }each of the colored tiles corresponds to a \svp{comparison} between a questioned bullet (shown along the $y$-axis) and one of the \svp{known} bullets. The similarity score is encoded in color: light grey colors correspond to low similarity scores, dark colors correspond to high similarity scores. Ground truth is encoded in this figure as a thin, dark, colored frame for all pairs of same-source bullets. 
+\autoref{fig:h44} shows an overview of all scores from pairs of questioned bullets with all other bullets. On the left of \autoref{fig:h44} there are ten strips labelled 1 through 10. These strips correspond to known barrels 1 through 10. \svp{Each barrel was test-fired twice, so each of the questioned bullets (shown along the $y$ axis) matches two bullets fired from a known barrel. Colored tiles are used to show the strength of the comparison; light grey colors correspond to low similarity scores, dark colors correspond to high similarity scores.  squares with a colored frame indicate ground truth. } Ground truth is encoded in this figure as a thin, dark, colored frame for all pairs of same-source bullets. 
 \svp{We want to see one barrel with two dark-filled, dark-framed tiles for each questioned bullet, and light grey tiles for all other barrels, indicating a match between a questioned bullet and a single barrel.} This expectation is met for all questioned bullets, i.e. the automatic matching  identifies the correct barrel for all questioned bullets. For two of the questioned bullets, 'I' and 'F', the similarity scores to the matching barrels are considerably smaller than for the other questioned bullets. 
 
 The right side of \autoref{fig:h44} shows the relationship between all pairs of questioned bullets. Note that questioned bullets are not compared to themselves, leaving white squares on the diagonal. Some of the questioned bullets match the same barrel, e.g.\ questioned bullets 'P' and 'J' both match barrel 5. Therefore bullets 'P' and 'J' also match each other in the square on the right hand side.
