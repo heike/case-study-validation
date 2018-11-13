@@ -284,7 +284,7 @@ This leads us to two minimal requirements the scores should fulfill:
 \item[(R2)] {\bf Stability:} the same score leads to the same conclusion. 
 \end{itemize}
 
-\svp{In this paper, we validate the algorithm described in \citet{aoas} on three external test sets. We assess the results on each set and evaluate whether the minimal requirements described above are fulfilled. We compare the random forest algorithm's performance to the performance of other suggested measures for quantitative assessment of match strength, such as cross-correlation and consecutive matching striae.}
+\svp{In this paper, we validate the algorithm described in \citet{aoas} on three external test sets. We assess the results on each set and evaluate whether the minimal requirements described above are fulfilled for bullet-to-bullet SAM scores. We compare the random forest algorithm's performance to the performance of other suggested measures for quantitative assessment of match strength, such as cross-correlation and consecutive matching striae. }
 
 # Validation Sets
 
@@ -307,14 +307,10 @@ The structure of these three sets is similar to a forthcoming study by Nally and
 
 Scans of all land engraved areas for the validation data were taken on a Sensofar Confocal Light microscope at 20x magnification resulting in a resolution of 0.645 microns per pixel. If not indicated otherwise, scans were taken at the Roy J Carver high resolution microscopy lab at Iowa State University.
 
-Case studies were chosen such that difficulty for the matching algorithm increases with each case study: Hamby set 44 is part of the Hamby study. The algorithm in \citet{aoas} was trained on sets 173 and 252, so the bullets in Hamby 44 are of the same type of ammunition and are fired through the same barrels as the bullets in the training set.
-
-The Phoenix PD set uses Ruger P-95 barrels, which are different from the barrels in the Hamby sets used for training the algorithm, but the barrels are rifled similarly to the Ruger P-85 barrels.  
-
-The Houston sets use Ruger LCP barrels. These barrels are first rifled traditionally, i.e. similar to the Ruger P-85, but are treated to a secondary round of heating after barreling. This second round of heat exposure has the potential to introduce some subclass characteristics, i.e. anomalies that are shared between different barrels manufactured in this manner. This should make the automatic matching harder, and in particular, \svp{is expected to complicate} the classification as different-source land engraved areas/bullets.
+Case studies were chosen such that difficulty for the matching algorithm increases with each case study: Hamby set 44 is part of the Hamby study. The algorithm in \citet{aoas} was trained on sets 173 and 252, so the bullets in Hamby 44 are of the same type of ammunition and are fired through the same barrels as the bullets in the training set. The Phoenix PD set uses Ruger P-95 barrels, which are different from the barrels in the Hamby sets used for training the algorithm, but the barrels are rifled similarly to the Ruger P-85 barrels. The Houston sets use Ruger LCP barrels. These barrels are first rifled traditionally, i.e. similar to the Ruger P-85, but are treated to a secondary round of heating after \svp{rifling}. This second round of heat exposure has the potential to introduce some subclass characteristics, i.e. anomalies that are shared between different barrels manufactured in this manner. This should make the automatic matching harder, and in particular, \svp{is expected to complicate} the classification as different-source land engraved areas/bullets.
 
 
-# Results from the validation sets
+# Results
 
 ## Hamby Set 44
 
@@ -588,7 +584,7 @@ Once again, the results from automatic matching correctly pair questioned bullet
 
 \autoref{fig:hou} shows an overview of the three sets of scores for all pairs of questioned bullets with all other bullets in the set. In set 1, five of the questioned bullets can be matched to known bullets in the set. None of the questioned bullets in set 1 match bullets fired from barrels KC or KD. Additionally, two of the questioned bullets which do not match any of the barrels in the set match each other. In set 2, four of the questioned bullets can be matched to known bullets in the set; of the additional four questioned bullets which do not match any known bullets, two were fired from the same barrel. In set 3, six of the questioned bullets match known bullets, and the remaining two questioned bullets match each other but do not match any known bullets in the set. 
 <!--Thus, we can conclude that the algorithm performs well on open set studies, as it can identify matches among questioned bullets which do not match any known bullets. -->
-While all bullet-to-bullet matches are correctly identified, and no known matches are missed, it is obvious from the generally lighter shades of the tiles corresponding to matching bullets in \autoref{fig:hou} for set 2 that  the algorithm is not performing as well as for the other sets (see also \autoref{tab:aucs}).
+While all bullet-to-bullet matches are correctly identified, and no known matches are missed, it is obvious from the generally lighter shades of the tiles corresponding to matching bullets in \autoref{fig:hou}(b) \svp{that the algorithm is not performing as well on set 2 as it performs on sets 1 and 3.}
 ```{r hou, fig.width=9, fig.height = 3, fig.cap="Overview of matching scores for all pairs of questioned bullets to known bullets from five barrels (on the left) and questioned bullets to themselves (tiles on the right).", fig.subcap=c("Set 1", "Set 2", "Set 3"), fig.align="middle", fig.ncol=1}
 features <- read.csv("data/fsi-features.csv.gz")
 features <- features %>% mutate(
@@ -703,7 +699,7 @@ hou3
 
 # Comparison of SAM scores
 
-\autoref{fig:compare} shows density curves for the scores bullet-to-bullet matches of each of the studies, comparing the SAM scores based on cross-correlation (top) and the random forest score (bottom). Color indicates ground truth. Besides densities, small vertical lines below the $x$-axis indicate observed scores in a **rug-plot**. The plot shows that for all three case studies and both measures, i.e. SAM scores based on cross-correlation as well as SAM scores based on the random forest scores, all similarity scores are higher for pairs of bullets from the same source, i.e. bullets fired through the same barrel, than pairs of bullets from different sources (fired through different barrels). 
+\autoref{fig:compare} shows density curves for the scores bullet-to-bullet matches of each of the studies, comparing the SAM scores based on cross-correlation (top) and the random forest score (bottom). Color indicates ground truth. Small vertical lines below the $x$-axis indicate observed scores in a **rug-plot**. The plot shows that for all three case studies and both continuous measures, i.e. SAM scores based on cross-correlation as well as SAM scores based on the random forest scores, all similarity scores are higher for pairs of bullets from the same source, i.e. bullets fired through the same barrel, than pairs of bullets from different sources (fired through different barrels). 
  
 ```{r compare, fig.width = 8, fig.height = 5, fig.cap="Density curves of similarity scores from cross-correlation (top) and RF scores (bottom). Different colors indicate same source versus different source. Ideally all scores of different source pairs should be much lower than scores for same source pairs."}
 nests <- rbind(
@@ -754,7 +750,7 @@ nestslong %>%
   )
 ```
 
-What we find in \autoref{fig:compare} is that neither of the measures fulfill both of the minimal requirements laid out above. Both measures fulfill (R1), i.e. all  scores  of  different-source pairs are lower than scores of same-source pairs for SAM scores based on cross-correlation and RF scores.
+\autoref{fig:compare} shows that neither of the measures fulfill both of the minimal requirements laid out\svp{ in \autoref{land-to-land-comparisons}}. Both measures fulfill (R1), i.e. all  scores  of  different-source pairs are lower than scores of same-source pairs for SAM scores based on cross-correlation and RF scores.
 However, SAM scores based on the multivariate random forest score show better separation between same-source and different-source scores than SAM scores based on cross-correlation. This can be seen from the larger horizontal distance between the modes (peaks) of the density curves of RF based SAM scores compared to the cross-correlation SAM scores.  
 
 Regarding requirement (R2), \autoref{fig:compare} shows that a single cutoff value does not exist that separates same-source scores from different-source scores across all three studies, without introducing errors.
