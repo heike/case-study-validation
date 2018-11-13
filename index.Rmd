@@ -286,6 +286,9 @@ This leads us to two minimal requirements the scores should fulfill:
 
 \svp{In this paper, we validate the algorithm described in \citet{aoas} on three external test sets. We assess the results on each set and evaluate whether the minimal requirements described above are fulfilled for bullet-to-bullet SAM scores. We compare the random forest algorithm's performance to the performance of other suggested measures for quantitative assessment of match strength, such as cross-correlation and consecutive matching striae. }
 
+## Identification Errors
+\svp{XXX define wrong identification and missed identification here XXX}
+
 # Validation Sets
 
 \svp{Random forests \citep{breiman} have} \hh{a built-in internal testing mechanism to prevent potential overfitting. Error rates reported by random forest algorithms are based on these internal test sets. However, there is some discussion on whether or in which situations these error rates are biased \citep{rfOver2, rfOver}. 
@@ -584,7 +587,7 @@ Once again, the results from automatic matching correctly pair questioned bullet
 
 \autoref{fig:hou} shows an overview of the three sets of scores for all pairs of questioned bullets with all other bullets in the set. In set 1, five of the questioned bullets can be matched to known bullets in the set. None of the questioned bullets in set 1 match bullets fired from barrels KC or KD. Additionally, two of the questioned bullets which do not match any of the barrels in the set match each other. In set 2, four of the questioned bullets can be matched to known bullets in the set; of the additional four questioned bullets which do not match any known bullets, two were fired from the same barrel. In set 3, six of the questioned bullets match known bullets, and the remaining two questioned bullets match each other but do not match any known bullets in the set. 
 <!--Thus, we can conclude that the algorithm performs well on open set studies, as it can identify matches among questioned bullets which do not match any known bullets. -->
-While all bullet-to-bullet matches are correctly identified, and no known matches are missed, it is obvious from the generally lighter shades of the tiles corresponding to matching bullets in \autoref{fig:hou}(b) \svp{that the algorithm is not performing as well on set 2 as it performs on sets 1 and 3.}
+While all bullet-to-bullet matches are correctly identified, and no known matches are missed, it is obvious from the generally lighter shades of the tiles corresponding to matching bullets in \autoref{fig:hou}\svp{(b) that the algorithm is not performing as well on set 2 as it performs on sets 1 and 3.}
 ```{r hou, fig.width=9, fig.height = 3, fig.cap="Overview of matching scores for all pairs of questioned bullets to known bullets from five barrels (on the left) and questioned bullets to themselves (tiles on the right).", fig.subcap=c("Set 1", "Set 2", "Set 3"), fig.align="middle", fig.ncol=1}
 features <- read.csv("data/fsi-features.csv.gz")
 features <- features %>% mutate(
@@ -697,8 +700,13 @@ hou2
 hou3
 ```
 
-# Comparison of SAM scores
 
+# Evaluating the Random Forest Algorithm
+\svp{The random forest SAM scores correctly separate known matches from known non-matches, using SAM scores to aggregate land-to-land scores into a bullet-to-bullet comparison. With no errors at the bullet-to-bullet level, we now need to evaluate the scores in light of the criteria described in \autoref{land-to-land-comparisons}. In this section, we will compare the random forest scores to cross-correlation scores; cross-correlation is one of the components of the random forest, but has also been used to quantify the strength of a match in its own right \citep{chuPilotStudyAutomated2010}. In addition, both scoring methods use the same scale (0 to 1) and are continuous along that interval; other evaluation methods, such as consecutive matching striae are discrete and more difficult to directly compare to continuous measurements.}
+
+\svp{XXX We may want to add in SAM scores for CMS as well, but that's going to make the the scales on the density plots (and the density plots themselves) a bit wonky. Thoughts?}
+
+## Comparison of SAM scores
 \autoref{fig:compare} shows density curves for the scores bullet-to-bullet matches of each of the studies, comparing the SAM scores based on cross-correlation (top) and the random forest score (bottom). Color indicates ground truth. Small vertical lines below the $x$-axis indicate observed scores in a **rug-plot**. The plot shows that for all three case studies and both continuous measures, i.e. SAM scores based on cross-correlation as well as SAM scores based on the random forest scores, all similarity scores are higher for pairs of bullets from the same source, i.e. bullets fired through the same barrel, than pairs of bullets from different sources (fired through different barrels). 
  
 ```{r compare, fig.width = 8, fig.height = 5, fig.cap="Density curves of similarity scores from cross-correlation (top) and RF scores (bottom). Different colors indicate same source versus different source. Ideally all scores of different source pairs should be much lower than scores for same source pairs."}
@@ -750,20 +758,19 @@ nestslong %>%
   )
 ```
 
-\autoref{fig:compare} shows that neither of the measures fulfill both of the minimal requirements laid out\svp{ in \autoref{land-to-land-comparisons}}. Both measures fulfill (R1), i.e. all  scores  of  different-source pairs are lower than scores of same-source pairs for SAM scores based on cross-correlation and RF scores.
+\svp{According to \autoref{fig:compare}, neither cross-correlation nor random forest score} fulfill both of the minimal requirements laid out \svp{in \autoref{land-to-land-comparisons}}. Both measures fulfill (R1), i.e. all  scores  of  different-source pairs are lower than scores of same-source pairs for SAM scores based on cross-correlation and RF scores.
 However, SAM scores based on the multivariate random forest score show better separation between same-source and different-source scores than SAM scores based on cross-correlation. This can be seen from the larger horizontal distance between the modes (peaks) of the density curves of RF based SAM scores compared to the cross-correlation SAM scores.  
 
 Regarding requirement (R2), \autoref{fig:compare} shows that a single cutoff value does not exist that separates same-source scores from different-source scores across all three studies, without introducing errors.
 
-There are several approaches for potential improvements: we can try to fine tune the matching algorithm to take make and model of the firearm and ammunition used into account or expand the training base of the algorithm to include a wider variety of makes and models. The downside of this is that we need to considerably expand the database used for training. 
+There are several approaches for potential improvements: we can try to fine tune the matching algorithm to take make and model of the firearm and ammunition used into account or expand the training base of the algorithm to include a wider variety of makes and models. The downside of \svp{either of these options} is that we \svp{would} need to considerably expand the database used for training. Another solution would be to \svp{augment} the aggregation used to get from land-to-land scores to bullet scores: SAM scores only take the scores of the maximum sequence into account and ignore scores associated with pairs of land engraved areas from different sources. Those scores might be useful in establishing a baseline that better expresses similarity between pairs of bullets. One approach that uses scores for both same source pairs and different source pairs are score-based likelihood ratios \citep{Bunch:2013if, Morrison:2018fh}.
 
-
-Another solution would be to expand on the aggregation used to get from land-to-land scores to bullet scores: SAM scores only take the scores of the maximum sequence into account and ignore scores associated with pairs of land engraved areas from different sources. Those scores might be useful in establishing a baseline that better expresses similarity between pairs of bullets. One approach that uses scores for both same source pairs and different source pairs are score-based likelihood ratios \citep{Bunch:2013if, Morrison:2018fh}.
+\svp{XXX This is a bit of an incomplete thought. I think I know where you were going, but can you expand on it a bit so that I'm not putting words in your mouth? XXX}
 \citet{Morrison:2018km}  stress the need to additionally include the typicality of a signature.
 
-# Digging deeper: comparison of land-to-land scores
+## Digging deeper: comparison of land-to-land scores
 
-\svp{Examining land-to-land scores provides more details about the matching algorithm's performance. \autoref{fig:compare-land-to-land} shows density curves and rug plots for each study. There is some overlap between known matching and known non-matching land-to-land scores; in many cases the random forest scores for these overlapping values are more extreme than the corresponding ccf scores. This suggests that the matching algorithm is sensitive to the presence of LEAs which have low land-to-land match scores, such as the matches of bullets `I' and `F' in the Hamby 44 study. Comparing this to the bullet-to-bullet score density plot shown in \autoref{fig:compare}, we see that there is much greater separation between the same-source and different-source densities for each study in the bullet-to-bullet comparisons than in the land-to-land comparisons, that is, one or two poorly matching lands does not prevent the bullet from showing a matching score, though if there are only weak matches on a few lands, such as the marked Hamby 44 comparisons in \autoref{fig:compare}, the overall score may be affected. }
+\svp{Examining land-to-land scores provides more details about the matching algorithm's performance. \autoref{fig:compare-land-to-land} shows density curves and rug plots for each study. There is some overlap between known matching and known non-matching land-to-land scores; in many cases the random forest scores for these overlapping values are more extreme than the corresponding ccf scores. This suggests that the matching algorithm is sensitive to the presence of LEAs which have low land-to-land match scores, such as the matches of bullets `I' and `F' in the Hamby 44 study. Comparing this to the bullet-to-bullet score density plot shown in \autoref{fig:compare}, we see that there is much greater separation between the same-source and different-source densities for each study in the bullet-to-bullet comparisons than in the land-to-land comparisons, that is, one or two poorly matching lands does not prevent the bullet from showing a matching score, though if there are weak matches on several lands, such as the marked Hamby 44 comparisons in \autoref{fig:compare}, the overall score may be affected. }
 
 ```{r, cache=FALSE}
 hounest <- hounest %>% mutate(
@@ -924,7 +931,7 @@ all_lands %>%
   geom_hline(yintercept = 0, show.legend = F)
 ```
 
-When evaluating classifier performance, it is common to use a receiver operating curve, which plots the false positives against the true positives for each possible value of the cutoff between the two classes (in this case, known match and known non-match). The ROC curves for the land-to-land scores are shown in \autoref{fig:roc-auc} (a). A perfect classifier would have 100\% true positives and 0\% false positives, e.g. the ROC curve would be a right angle at (0, 1). Classifiers with better performance will be closer to this corner of the plot. A random classifier would have an ROC curve that was a straight diagonal line through (0,0) and (1,1).
+\svp{When evaluating classifier performance, it is common to use a receiver operating curve, which plots the false positives against the true positives for each possible value of the cutoff between the two classes (in this case, known match and known non-match).} \svp{As the land-to-land scores are not perfectly separated, we can use ROC curves to evaluate their performance.} \svp{The ROC curves for the land-to-land scores are shown in \autoref{fig:roc-auc} (a). A perfect classifier would have 100\% true positives and 0\% false positives, e.g. the ROC curve would be a right angle at (0, 1). Classifiers with better performance will be closer to this corner of the plot. A random classifier would have an ROC curve that was a straight diagonal line through (0,0) and (1,1).}
 
 
 
@@ -1021,41 +1028,25 @@ aucpic <- aucs %>%
 
 In \autoref{fig:roc-auc}a, the Houston FSI G1 and G3 curves and the Phoenix PD curve show excellent performance; Houston FSI G2 and Hamby 44 show still a very  good performance. Area under the curve (AUC) values, which summarize ROC curves, are shown in \autoref{fig:roc-auc}b. AUC values are useful for differentiating between poor, good, and excellent model performance, but are not particularly useful when determining which of several models with approximately the same level of performance should be used \citep{marzban_roc_2004}. Hamby 44 and Phoenix PD are the only studies with a somewhat noticable difference between the AUC score for RF compared to cross-correlation, but even those differences are not statistically significant.
 
-
-```{r l2l, eval=FALSE, fig.cap="Density curves of similarity scores based on land-to-land comparisons for cross-correlation (top) and RF scores (bottom). Different colors indicate same source versus different source. RF scores for different source comparisons are generally well below 0.5. Some same-source comparisons are also below 0.5 for RF scores, indicating potential problems with at least one of the lands involved in the comparison."}
-all_lands %>% gather(measure, score, ccf, rfscore) %>%
-  mutate(
-    measure = factor(measure, labels=c("Cross-correlation", "RF score"))
-  ) %>%
-ggplot(aes(x = score, fill = sameland, colour =sameland)) + 
-  geom_density(alpha = 0.6) +
-  facet_grid(measure ~ study + group1) +
-  theme_bw() +
-  scale_fill_manual("Same source", values = c("darkgrey", "darkorange")) +
-  scale_colour_manual("Same source", values = c("darkgrey", "darkorange")) +
-  scale_x_continuous("Land-to-land scores", limits=c(0,1)) +
-  theme(legend.position = "bottom") +
-  geom_hline(yintercept = 0, show.legend = F) 
-```
-
 \hh{\autoref{fig:eer} shows an overview of Equal Error Rates (EER) and their thresholds based on the ROC curves of \autoref{fig:roc-auc}. EERs are error rates when sensitivity and specificity of a test are equal, i.e. we see the same error rates of missing an identification for a land-to-land comparison  and wrong identifications, when it is determined that two land engraved areas come from the same source when they are, in fact, known to be from a different source. Equal error rates based on CMS of two lands are significantly higher than equal error rates based on cross-correlation or the RF score. At best, RF score and cross-correlation have an equal error rate of around 5\% for land-to-land comparisons. 
 Interestingly, for consecutively matching striae, an equal error rate is reached for just two matching striae, which from a practical point of view is not sustainable. A  CMS of  6 or above is an established cutoff used in identifications. This leads to 21 wrong identifications (out of 49286; for an error rate of 4 in 10,000) but only identifies 139 out of  715 known same-source lands, for an error rate of 80.6\%. }
 ```{r eval=FALSE}
 xtabs(~sameland+I(round(cms)>=6), data = all_lands)
 ```
 
-```{r eer, fig.width=7, fig.height = 4, fig.cap="Equal Error Rates and thresholds for all measures (RF score, Cross-correlation and CMS) under all five (sub-)studies. CMS has an EER threshold of 2 for all studies. CMS is signifcantly worse than both Cross-correlation and the RF score. At best, Cross-correlation and RF score have errors for land-to-land comparison of around 5\\%.", out.width = '.8\\textwidth'}
+```{r eer, fig.width=7, fig.height = 4, fig.cap="Equal Error Rates and thresholds for all measures (RF score, Cross-correlation and CMS) under all five (sub-)studies. CMS has an EER threshold of 2 for all studies. CMS is signifcantly worse than both Cross-correlation and the RF score. At best, Cross-correlation and RF score have errors for land-to-land comparison of around 5\\%.\\svp{I'm uncomfortable using the same scale for EER threshold given that CMS has a different scale; leaving CMS out also seems odd though}", out.width = '.8\\textwidth'}
 aucs %>% gather(eer_thresh, value, eer, threshold) %>%
   filter(!(measure=="CMS" & eer_thresh=="threshold")) %>%
   mutate(
     eer_thresh = factor(eer_thresh, labels=c("EER", "Threshold for EER"))
   ) %>%
   ggplot(aes(y = studyg, x = value, colour=measure, shape = measure)) + 
-  geom_point(size = 3) +theme_bw() +
+  geom_point(size = 4) +theme_bw() +
 #  xlim(c(0, .35)) +
   xlab("Equal Error Rates (left) and EER thresholds (right)") +
   ylab("") +
   scale_color_brewer(palette = "Set2") +
+  scale_shape_discrete(solid = F) + 
   theme(legend.position = "bottom") +
   facet_grid(.~eer_thresh, scales="free") +
   xlim(c(0, NA))
@@ -1081,14 +1072,17 @@ knitr::include_graphics(
 Three lands from bullets known to be fired from barrel 8 are affected, producing low scores for barrel 8 in \autoref{fig:h44}. We also see that questioned bullet 'I' is affected, explaining some of the low similarity scores for this bullet.
 \hh{None of the lands of any of the bullets in the other studies are affected by tank rash in a similar manner.}
 
-### Limitations
+## Limitations
 
 All of the studies presented here involve the same type of firearm. We see some variations in scores across different models of Rugers, and it is probable that we will see even bigger variations with different brands of firearms that vary in number of lands and land length. We also know that different firearms and ammunition combinations mark differently well \citep{bolton-king_preventing_2016, bonfanti_influence_1999}. Rugers are among the firearms that mark very well, so we would correspondingly expect to see lowered similarity scores for other firearms. The matching algorithm works on matching lands. Barrels with polygonal rifling, such as Glocks, do not introduce well defined lands on bullets, which makes an application of the matching algorithm impossible.  
 
 
-As seen in the earlier discussion, similarity scores are affected by deficiencies on lands. It has been shown \citet{lpr} that parts of lands can be used for successful identifications. The algorithm proposed by \citet{aoas} is not capable of  automatically detecting parts of lands with well expressed striae. It may be useful to couple the \citet{aoas} algorithm with an algorithm which assesses the quality of the input data and determines which portions of the data to use for comparison. This would emulate the process used by examiners, who first assess the quality of the evidence and whether there is enough information present to attempt a match.
+As seen in the earlier discussion, similarity scores are affected by deficiencies on lands. It has been shown \citet{lpr} that parts of lands can be used for successful identifications. The algorithm proposed by \citet{aoas} is not capable of  automatically detecting parts of lands with well expressed striae. It may be useful to couple the \citet{aoas} algorithm with an algorithm which assesses the quality of the input data and determines which portions of the data to use for comparison. This would emulate the process used by examiners, who first assess the quality of the evidence and whether there is enough information present to attempt a match. \svp{One major disadvantage of an automated algorithm is that all of the decisions humans make without further thought (recognizing degraded land areas, excluding those areas from consideration, matching only the remaining areas) must be explicitly characterized; however, this explicit characterization means that the process can be scientifically validated to a much higher degree than the human perceptual process
+. }
 
+## Conclusion
 
+\svp{The random forest matching algorithm presented in \citet{aoas} performs well on three different external test sets. While a single cutoff value cannot be used to distinguish matches and non-matches across the different test sets, the algorithm makes no errors when a set-specific cutoff value is used on bullet-to-bullet scores aggregated using sequence average maximum. XXX Need more here XXX}
 
 
 # References
