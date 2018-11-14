@@ -39,6 +39,7 @@ Cleanup TO-DO
 \begin{itemize}
 \item define false positives and false negatives once and stick to those definitions. We should avoid false positive and false negatives, because that only makes sense in a test setting, which we have not defined formally.
 Let's use instead wrong identification and missed identification. 
+\item error rates: we are using rates exchangeably with percentages. We need to fix that. I think percentages might be easier understood. 
 \end{itemize}
 }
 
