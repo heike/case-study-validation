@@ -289,6 +289,7 @@ This leads us to two minimal requirements the scores should fulfill:
 \svp{XXX define wrong identification and missed identification here XXX}
 \svp{When evaluating algorithm performance, it is useful to distinguish between two types of errors, which we will refer to as \textbf{wrong identification} and \textbf{missed identification} in this paper. Wrong identifications are those in which two bullets from different sources are determined to be from the same source. Missed identifications are those in which two bullets from the same source are determined to be from different sources.}
 \svp{XXX Relate to AFTE Theory of Examination criteria? How to handle ``inconclusive"?}
+\svp{XXX May want to have the error type table/chart as a visual representation? XXX}
 
 
 \svp{In this paper, we validate the algorithm described in \citet{aoas} on three external test sets. We assess the results on each set and evaluate whether the minimal requirements described above are fulfilled for bullet-to-bullet SAM scores. We compare the random forest algorithm's performance to the performance of other suggested measures for quantitative assessment of match strength, such as cross-correlation and consecutive matching striae. }
