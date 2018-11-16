@@ -109,7 +109,7 @@ From each land engraved area a signature is derived using the process described 
 \begin{itemize}
 \item[(a)] Identify an area on the LEA with expressed striae. Locate a stable crosscut (see \citet{aoas}) in the identified area.
 \item[(b)] Discard extraneous/contaminated data, such as data from groove engraved area and areas affected by break-off or contact with objects after the bullet exited the barrel  (``tank rash").
-\item[(c)] Remove bullet curvature \hh{using a Gaussian filter\cite{nist} or non-parametric smooth \citep{aoas}}. 
+\item[(c)] Remove bullet curvature \hh{using a Gaussian filter \cite{chu?} or non-parametric smooth \citep{aoas}}. 
 \end{itemize}
 A signature for a land engraved area is then defined as the sequence $S(x)$, $x = 1, ..., I$, where $I$ is the number of observed locations across the base of the bullet. \autoref{fig:signatures} shows a set of six signatures corresponding to the six land engraved areas of bullets 1 and 2 from barrel 1 of set 44 of the Hamby study \citep{hamby}. 
 
@@ -167,21 +167,24 @@ signatures %>%
   xlab("Relative Location (in millimeters)")
 ```
 
-\svp{Once signatures have been extracted from stable regions with expressed striae, they must be aligned in order to assess their match strength. \citet{aoas} align signatures by maximizing the cross-correlation between the signatures. }
+\svp{Once signatures have been extracted from stable regions with expressed striae, they must be aligned in order to assess their match strength.} \hh{Maximized cross-correlation is used to pair-wise align signatures \citet{aoas,vorburgerApplicationsCrosscorrelationFunctions2011}. }
 
-The cross-correlation function (ccf) between two signatures $S_1(x)$ and $S_2(x)$ is defined as $$CC(S_1, S_2, z) = \text{cor}\left(S_1(x), S_2(x + z)\right)$$ where \hh{$x$ and $x+z$ are integer values appropriately defined within the domains of $S_1$ and $S_2$ and }  $z$ is the lag between the two sequences. We maximize $CC$ over values of $z$ to determine the best alignment  \citep{aoas,vorburgerApplicationsCrosscorrelationFunctions2011}; the maximal value of $CC$ is  used to assess the match strength between the two sequences. When signatures contain missing values, pairwise complete observations are used to calculate the cross-correlation.
+The cross-correlation function (ccf) between two signatures $S_1(x)$ and $S_2(x)$ is defined as $$CC(S_1, S_2, z) = \text{cor}\left(S_1(x), S_2(x + z)\right)$$ where \hh{$x$ and $x+z$ are integer values appropriately defined within the domains of $S_1$ and $S_2$ and }  $z$ is the lag between the two sequences. The lag $z$ used to achieve maximum $CC$ is used to determine the best alignment; the maximal value of $CC$ is  used to assess the match strength between the two sequences. When signatures contain missing values, pairwise complete observations are used to calculate the cross-correlation.
 
 ## Statistics for Matching Aligned Signatures
 <!-- \hh{XXX define signatures mathematically here - as random spatial process; extracted from crosscut by removing big structure first and then applying (cross-validated, \citet{aoas}) 'roughness' filter. 'roughness' defined by NIST paper. } -->
 
-After two signatures are aligned, quantitative features describing the similarity of two signature are extracted. Features include characteristics of the signature that firearms and toolmark examiners base their visual assessment on, such as striae depth, number of matching striae, and the number of consecutively matching striae (CMS). Statistical features such as cross-correlation and Euclidean distance between the signatures are also extracted and used to assess the strength of the correspondence between the aligned signatures. 
+Once two signatures are aligned, quantitative features describing the similarity of two signature are extracted. Features include characteristics of the signature that firearms and toolmark examiners base their visual assessment on, such as striae depth, number of matching striae, and the number of consecutively matching striae (CMS). Statistical features such as cross-correlation and Euclidean distance between the signatures are also extracted and used to assess the strength of the correspondence between the aligned signatures. 
 
 One of the measures firearms examiners use to describe the strength of a match quantitatively is the number of consecutive matching striae (CMS) as defined by \citet{biasotti}.
 If there are at least 6 consecutive matching striae, the bullets are considered to be a good match \citep{biasotti_firearms_1997,nichols_scientific_2006}. 
 CMS in this setting are counted as the number of consecutive peaks in signatures of two lands that match\svp{, in part because it is difficult to visually assess valleys except as relative to peaks}. 
 \hh{Note that because signatures are moved into phase based on the maximum cross-correlation rather than matching striation marks,}\svp{it is possible for two lands to }\hh{have a consecutive matching striae of 0. } \svp{CMS are generally considered to be a very conservative criteria, in that bullets fired through the same barrel may not have a high number of consecutively matching striae; in this sense, CMS may be more likely to produce an inconclusive result.}
 
+\hh{XXX for CMS we need to define peaks, and matching peaks, and for that we need to define the additional filter/smooth.}
+
 \svp{The random forest presented in \citet{aoas} takes as input the following characteristics derived from a pair of aligned sequences:}
+\hh{We need to think what to do about the list - we could either just say that the random forest is based on multiple features, such as, ... and list three (and refer to the paper). Or we expand quite a bit and define the features in mathy detail using our notation above.}
 \svp{\begin{itemize}
 \item Cross-correlation 
 \item Number of matching striae 
@@ -194,7 +197,9 @@ CMS in this setting are counted as the number of consecutive peaks in signatures
 \svp{The output of the random forest is a score between 0 and 1 representing the algorithm's assessment of the strength of the match, where 1 indicates that the algorithm believes it to be highly likely that the aligned signatures match, and 0 indicates that the aligned signatures are highly likely to originate from different lands.}
 
 # Assessing Match Strength
-\svp{Each of the features described in the previous section, as well as the random forest score, describe comparisons on a land-to-land basis. While these comparisons are useful, it is typically more useful to assess the entire physical object (e.g. all lands on a single bullet) to describe the correspondance between two pieces of physical evidence.}
+Each of the features described in the previous section, as well as the random forest score, describe comparisons on a land-to-land basis. While these comparisons are useful, \hh{the question of interest typically involves }  the entire physical object (e.g. all lands on a single bullet).
+
+<!--to describe the correspondence between two pieces of physical evidence.-->
 <!-- \svp{In order to aggregate land-to-land match scores, we must consider the physical structure of the evidence; that is, that the sequence of lands stems from spatial information, but the numbering of each land represents the scan order and start point rather than encoding useful information. } --><!--This last bit might be redundant-->
 
 ```{r, echo=FALSE, results = 'hide', warning = FALSE, message = FALSE}
