@@ -167,7 +167,7 @@ signatures %>%
   xlab("Relative Location (in millimeters)")
 ```
 
-Once signatures have been extracted from stable regions with expressed striae, they must be aligned in order to assess their match strength. Maximized cross-correlation is used to pair-wise align signatures \citet{aoas,vorburgerApplicationsCrosscorrelationFunctions2011}. 
+Once signatures have been extracted from stable regions with expressed striae, they must be aligned in order to assess their match strength. Maximized cross-correlation is used to pair-wise align signatures \citep{aoas,vorburgerApplicationsCrosscorrelationFunctions2011}. 
 
 The cross-correlation function (ccf) between two signatures $S_1(x)$ and $S_2(x)$ is defined as $$CC(S_1, S_2, z) = \text{cor}\left(S_1(x), S_2(x + z)\right)$$ where \hh{$x$ and $x+z$ are integer values appropriately defined within the domains of $S_1$ and $S_2$ and  $z$ is the lag between the two sequences. The lag $z$ used to achieve maximum $CC$ is used to determine the best alignment; the maximal value of $CC$ is  used to assess the match strength between the two sequences. When signatures contain missing values, pairwise complete observations are used to calculate the cross-correlation.
 
@@ -293,8 +293,8 @@ In this paper, we validate the algorithm described in \citet{aoas} on three exte
 
 # Validation Sets
 
-Random forests \citep{breiman} have a built-in internal testing mechanism to prevent potential overfitting. Error rates reported by random forest algorithms are based on these internal test sets. However, there is some discussion on whether or in which situations these error rates are biased \citep{rfOver2, rfOver}. 
-Neither of these papers addresses another issue with internal test sets: internal test sets are constructed to have the same distribution as the training data (apart from sampling variability). For any machine learning method, a true benchmark of the performance of an algorithm requires testing its performance on external test data.Good performance (in terms of low error rates) on external test data validates a ML algorithm. External data also allows an assessment of the algorithm's sensitivity to distributional changes as well as testing the algorithm's robustness by going outside the parameters of the training data.  
+Random forests \citep{breiman} have a built-in internal testing mechanism to prevent potential overfitting. Errors reported by random forest algorithms are based on these internal test sets. However, there is some discussion on whether or in which situations these errors are biased \citep{rfOver2, rfOver}. 
+Neither of these papers addresses another issue with internal test sets: internal test sets are constructed to have the same distribution as the training data (apart from sampling variability). For any machine learning method, a true benchmark of the performance of an algorithm requires testing its performance on external test data. Good performance (in terms of wrong and missed identifications) on external test data validates a ML algorithm. External data also allows an assessment of the algorithm's sensitivity to distributional changes as well as testing the algorithm's robustness by going outside the parameters of the training data.  
 
 The algorithm in \citet{aoas} is trained on scans from Hamby sets 252 and 173 made available through \citet{nist}. Set 173 was originally published as Hamby set 44. This mis-labeling has been corrected now. The scans used to train the model were taken at 20 fold magnification for a resolution of 1.5625 microns per pixel. While magnification is generally of interest in microscopy, **resolution** -- usually measured in microns per pixel -- is of more interest for 3D topographic measurements, as it determines the operative level of available data.
 
@@ -312,7 +312,7 @@ The structure of these three sets is similar to a forthcoming study by Nally and
 
 Scans of all land engraved areas for the validation data were taken on a Sensofar Confocal Light microscope at 20x magnification resulting in a resolution of 0.645 microns per pixel. If not indicated otherwise, scans were taken at the Roy J Carver high resolution microscopy lab at Iowa State University.
 
-Case studies were chosen such that difficulty for the matching algorithm increases with each case study: Hamby set 44 is part of the Hamby study. The algorithm in \citet{aoas} was trained on sets 173 and 252, so the bullets in Hamby 44 are of the same type of ammunition and are fired through the same barrels as the bullets in the training set. The Phoenix PD set uses Ruger P-95 barrels, which are different from the barrels in the Hamby sets used for training the algorithm, but the barrels are rifled similarly to the Ruger P-85 barrels. The Houston sets use Ruger LCP barrels. These barrels are first rifled traditionally, i.e. similar to the Ruger P-85, but are treated to a secondary round of heating after \svp{rifling}. This second round of heat exposure has the potential to introduce some subclass characteristics, i.e. anomalies that are shared between different barrels manufactured in this manner. This should make the automatic matching harder, and in particular, \svp{is expected to complicate} the classification as different-source land engraved areas/bullets. \svp{In all three studies, the scan resolution is much higher than the scans used to train the algorithm in \citet{aoas}; this difference also provides a test of the algorithm's ability to generalize to scans taken at different resolutions.}
+Case studies were chosen such that difficulty for the matching algorithm increases with each case study: Hamby set 44 is part of the Hamby study. The algorithm in \citet{aoas} was trained on sets 173 and 252, so the bullets in Hamby 44 are of the same type of ammunition and are fired through the same barrels as the bullets in the training set. The Phoenix PD set uses Ruger P-95 barrels, which are different from the barrels in the Hamby sets used for training the algorithm, but the barrels are rifled similarly to the Ruger P-85 barrels. The Houston sets use Ruger LCP barrels. These barrels are first rifled traditionally, i.e. similar to the Ruger P-85, but are treated to a secondary round of heating after rifling. This second round of heat exposure has the potential to introduce some subclass characteristics, i.e. anomalies that are shared between different barrels manufactured in this manner. This should make the automatic matching harder, and in particular, is expected to complicate the classification as different-source land engraved areas/bullets. In all three studies, the scan resolution is much higher than the scans used to train the algorithm in \citet{aoas}; this difference also provides a test of the algorithm's ability to generalize to scans taken at different resolutions.
 
 
 # Results
@@ -378,7 +378,7 @@ h44 <- h44nest %>%
   geom_tile(size = 1) +
   facet_grid(. ~ barrel2, space = "free", scales = "free") +
   ylab("Questioned bullets") +
-  xlab("Testfires from barrels 1 to 10 (left), questioned bullets (right)") +
+  xlab("Test fires from barrels 1 to 10 (left), questioned bullets (right)") +
   scale_fill_gradient2("RF score ",
     low = "darkgrey",
     high = "darkorange", midpoint = 0.35, limits = c(0, 1)
@@ -933,7 +933,7 @@ all_lands %>%
   geom_hline(yintercept = 0, show.legend = F)
 ```
 
-\svp{When evaluating classifier performance, it is common to use a receiver operating curve, which plots the false positives against the true positives for each possible value of the cutoff between the two classes (in this case, known match and known non-match).} \svp{As the land-to-land scores are not perfectly separated, we can use ROC curves to evaluate their performance.} \svp{The ROC curves for the land-to-land scores are shown in \autoref{fig:roc-auc} (a). A perfect classifier would have 100\% true positives and 0\% false positives, e.g. the ROC curve would be a right angle at (0, 1). Classifiers with better performance will be closer to this corner of the plot. A random classifier would have an ROC curve that was a straight diagonal line through (0,0) and (1,1).}
+When evaluating classifier performance, it is common to use a receiver operating characteristic (ROC) curve, which plots the percent of wrong identifications against the percent correct identifications for each possible value of the cutoff between the two classes (in this case, known match and known non-match). Land-to-land scores are not perfectly separated, we can therefore use ROC curves to distinguish between the performance of the different methods and studies. The ROC curves for the land-to-land scores are shown in \autoref{fig:roc-auc} (a). A perfect classifier would have 100\% correct identifications and 0\% wrong identifications, e.g. the ROC curve would be a right angle at (0, 100). Classifiers with better performance will be closer to this corner of the plot. A random classifier would have an ROC curve that was a straight diagonal line through (0,0) and (100,100).
 
 
 
@@ -952,15 +952,18 @@ rocpic <- all_lands %>% gather(measure, score, rfscore, ccf, cms) %>%
   theme_bw() +
   # coord_fixed() + 
   facet_wrap(~studyg, nrow=3) +
-  xlab("Fraction False Positives") +
-  ylab("Fraction True Positives") +
+  xlab("Percent Wrong Identifications") +
+  ylab("Percent Correct Identifications") +
   scale_colour_manual("Study", values = c("#fe9929", "#aa0000",
                                          "#74a9cf", "#2b8cbe", "#045a8d"),
                       guide=FALSE) +
   theme(legend.position= c(1, 0), legend.justification = c(1, 0), legend.direction = "vertical",
         legend.key.width = unit(1, "cm")) +
   guides(linetype = guide_legend(override.aes = list(shape = NA, size = .5))) + 
-  scale_linetype_manual("Measure", values=c(1,3,2)) 
+  scale_linetype_manual("Measure", values=c(1,3,2)) +
+  scale_x_continuous(breaks=seq(0,1, by=0.25), labels=c("0", "25\\%", "50\\%", "75\\%", "100\\%")) +
+  scale_y_continuous(breaks=seq(0,1, by=0.25), labels=c("0", "25\\%", "50\\%", "75\\%", "100\\%"))
+
 ```
 
 
@@ -1023,29 +1026,32 @@ aucpic <- aucs %>%
 ```
 
 
-```{r roc-auc, echo = FALSE, out.width = c("0.49\\textwidth", ".45\\textwidth"), out.height = c("0.6\\textwidth", "0.6\\textwidth"), fig.width = c(5, 6), fig.height = c(7.5, 7.5), fig.subcap=c("ROC curves", "Area under the curve (AUC)"), fig.cap="ROC curves and AUC for each (set) of the studies for the random forest score (RF), cross-correlation (CC) and consecutively matching striae (CMS).   As seen in the ROC curves, the algorithm performs the least well on set 2 of the Houston FSI study. Based on AUC, the overall performance on all sets is very good to excellent for cross-correlation and the random forest score. At the land level there is no significant difference in prediction power between RF score and cross-correlation."}
+```{r roc-auc, echo = FALSE, out.width = c("0.49\\textwidth", ".45\\textwidth"), out.height = c("0.6\\textwidth", "0.6\\textwidth"), fig.width = c(5, 6), fig.height = c(7.5, 7.5), fig.subcap=c("ROC curves", "Area under the curve (AUC)"), fig.cap="ROC curves and AUC for each (set) of the studies for the random forest score (RF), cross-correlation (CC) and consecutively matching striae (CMS).   As seen in the ROC curves, the algorithm performs the least well on set 2 of the Houston FSI study. Based on AUC, the overall performance on all sets is very good to excellent for cross-correlation and the random forest score. At the land level there is no significant difference in prediction power between RF score and cross-correlation.", cache=FALSE}
   rocpic
   aucpic
 ```
 
 In \autoref{fig:roc-auc}a, the Houston FSI G1 and G3 curves and the Phoenix PD curve show excellent performance; Houston FSI G2 and Hamby 44 show still a very  good performance. Area under the curve (AUC) values, which summarize ROC curves, are shown in \autoref{fig:roc-auc}b. AUC values are useful for differentiating between poor, good, and excellent model performance, but are not particularly useful when determining which of several models with approximately the same level of performance should be used \citep{marzban_roc_2004}. Hamby 44 and Phoenix PD are the only studies with a somewhat noticable difference between the AUC score for RF compared to cross-correlation, but even those differences are not statistically significant.
 
-\hh{\autoref{fig:eer} shows an overview of Equal Error Rates (EER) and their thresholds based on the ROC curves of \autoref{fig:roc-auc}. EERs are error rates when sensitivity and specificity of a test are equal, i.e. we see the same error rates of missing an identification for a land-to-land comparison  and wrong identifications, when it is determined that two land engraved areas come from the same source when they are, in fact, known to be from a different source. Equal error rates based on CMS of two lands are significantly higher than equal error rates based on cross-correlation or the RF score. At best, RF score and cross-correlation have an equal error rate of around 5\% for land-to-land comparisons. 
-Interestingly, for consecutively matching striae, an equal error rate is reached for just two matching striae, which from a practical point of view is not sustainable. A  CMS of  6 or above is an established cutoff used in identifications. This leads to 21 wrong identifications (out of 49286; for an error rate of 4 in 10,000) but only identifies 139 out of  715 known same-source lands, for an error rate of 80.6\%. }
+\autoref{fig:eer} shows an overview of Equal Error and their thresholds based on the ROC curves of \autoref{fig:roc-auc}. Equal Errors are errors  when sensitivity and specificity of a test are equal, i.e. we see the same percentage of missed and wrong identifications for a land-to-land comparison. Equal errors based on CMS of two lands are significantly higher than equal errors based on cross-correlation or the RF score. At best, RF score and cross-correlation have an equal error of around 5\% for land-to-land comparisons. 
+Interestingly, for consecutively matching striae, equal errors are reached for just two matching striae, which from a practical point of view is not sustainable. A  CMS of  6 or above is an established cutoff used in identifications. This leads to 21 wrong identifications (out of 49286; for an error of 4 in 10,000 -- or 0.04\%) but only identifies 139 out of  715 known same-source lands, for an error of 80.6\%. 
 ```{r eval=FALSE}
 xtabs(~sameland+I(round(cms)>=6), data = all_lands)
 ```
 
-```{r eer, fig.width=7, fig.height = 4, fig.cap="Equal Error Rates and thresholds for all measures (RF score, Cross-correlation and CMS) under all five (sub-)studies. CMS has an EER threshold of 2 for all studies. CMS is signifcantly worse than both Cross-correlation and the RF score. At best, Cross-correlation and RF score have errors for land-to-land comparison of around 5\\%.\\svp{I'm uncomfortable using the same scale for EER threshold given that CMS has a different scale; leaving CMS out also seems odd though}", out.width = '.8\\textwidth'}
-aucs %>% gather(eer_thresh, value, eer, threshold) %>%
+```{r eer, fig.width=7, fig.height = 4, fig.cap="Equal Error (in Percent)  and corresponding thresholds for all measures (RF score, Cross-correlation and CMS) under all five (sub-)studies. CMS has an equal error threshold of 2 for all studies. CMS is signifcantly worse than both Cross-correlation and the RF score. At best, Cross-correlation and RF score have equal errors for land-to-land comparison of around 5\\%.", out.width = '.8\\textwidth'}
+aucs %>% 
+  mutate(
+    eer = 100*eer
+  ) %>%
+  gather(eer_thresh, value, eer, threshold) %>%
   filter(!(measure=="CMS" & eer_thresh=="threshold")) %>%
   mutate(
-    eer_thresh = factor(eer_thresh, labels=c("EER", "Threshold for EER"))
+    eer_thresh = factor(eer_thresh, labels=c("Equal Error (in Percent)", "Threshold for Equal Error"))
   ) %>%
   ggplot(aes(y = studyg, x = value, colour=measure, shape = measure)) + 
   geom_point(size = 4) +theme_bw() +
-#  xlim(c(0, .35)) +
-  xlab("Equal Error Rates (left) and EER thresholds (right)") +
+  xlab("Equal Error (in Percent, left) and corresponding thresholds (right)") +
   ylab("") +
   scale_color_brewer(palette = "Set2") +
   scale_shape_discrete(solid = F) + 
