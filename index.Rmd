@@ -289,7 +289,7 @@ When evaluating algorithm performance, it is useful to distinguish between two t
 \begin{tabular}{c|ccc}
 \multicolumn{2}{c}{} & \multicolumn{2}{c}{Ground Truth}\\\cline{3-4}
 \multicolumn{2}{c}{} & \multicolumn{1}{|c}{Same Source} & \multicolumn{1}{|c|}{Different Source} \\\cline{2-4}
-\multirow{2}{*}{\rotatebox[origin=c]{90}{\hfillResults\hfill}} & 
+\multirow{2}{*}{\rotatebox[origin=c]{90}{\hfill Results\hfill}} & 
   \rotatebox[origin=c]{90}{\hspace{1mm}Exclusion\hspace{1mm}} & 
   \multicolumn{1}{|c}{Missed ID} & 
   \multicolumn{1}{|c|}{Correct Exclusion}\\\cline{2-4}
@@ -299,6 +299,8 @@ When evaluating algorithm performance, it is useful to distinguish between two t
 \caption{Something}
 \end{table}
 \hh{Note that this definition of error is more stringent than the AFTE Theory of Identification, in that it does not allow for inconclusive results, but forces a decision based on a cutoff value. }
+\svp{XXX Relate to AFTE Theory of Examination criteria? How to handle ``inconclusive"?}
+
 
 In this paper, we validate the algorithm described in \citet{aoas} on three external test sets. We assess the results on each set and evaluate whether the minimal requirements described above are fulfilled for bullet-to-bullet SAM scores. We compare the random forest algorithm's performance to the performance of other suggested measures for quantitative assessment of match strength, such as cross-correlation and consecutive matching striae. 
 
