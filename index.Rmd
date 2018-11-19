@@ -285,7 +285,22 @@ This leads us to two minimal requirements the \hh{similarity} scores should fulf
 ## Identification Errors
 When evaluating algorithm performance, it is useful to distinguish between two types of errors, which we will refer to as \textbf{wrong identification} and \textbf{missed identification} in this paper. Wrong identifications are those in which two bullets from different sources are determined to be from the same source. Missed identifications are those in which two bullets from the same source are determined to be from different sources.
 \hh{Note that this definition of error is more strict than the AFTE Theory of Identification, in that it does not allow for inconclusive results, but forces a decision based on a cutoff value. }
-\svp{XXX Relate to AFTE Theory of Examination criteria? How to handle ``inconclusive"?}
+
+
+\begin{table}
+\centering
+\begin{tabular}{c|ccc}
+\multicolumn{2}{c}{} & \multicolumn{2}{c}{Ground Truth}\\\cline{3-4}
+\multicolumn{2}{c}{} & \multicolumn{1}{|c}{Same Source} & \multicolumn{1}{|c|}{Different Source} \\\cline{2-4}
+\multirow{2}{*}{\rotatebox[origin=c]{90}{\hfillResults\hfill}} & 
+  \rotatebox[origin=c]{90}{\hspace{1mm}Exclusion\hspace{1mm}} & 
+  \multicolumn{1}{|c}{Missed ID} & 
+  \multicolumn{1}{|c|}{Correct Exclusion}\\\cline{2-4}
+& \rotatebox[origin=c]{90}{\hspace{1mm}Identification\hspace{1mm}} &
+\multicolumn{1}{|c}{Correct Identification} & \multicolumn{1}{|c|}{Wrong ID}\\\cline{2-4}
+\end{tabular}
+\caption{Something}
+\end{table}
 \svp{XXX May want to have the error type table/chart as a visual representation? XXX}
 
 
@@ -1030,8 +1045,9 @@ aucpic <- aucs %>%
 
 In \autoref{fig:roc-auc}a, the Houston FSI G1 and G3 curves and the Phoenix PD curve show excellent performance; Houston FSI G2 and Hamby 44 show still a very  good performance. Area under the curve (AUC) values, which summarize ROC curves, are shown in \autoref{fig:roc-auc}b. AUC values are useful for differentiating between poor, good, and excellent model performance, but are not particularly useful when determining which of several models with approximately the same level of performance should be used \citep{marzban_roc_2004}. Hamby 44 and Phoenix PD are the only studies with a somewhat noticable difference between the AUC score for RF compared to cross-correlation, but even those differences are not statistically significant.
 
-\hh{\autoref{fig:eer} shows an overview of Equal Error Rates (EER) and their thresholds based on the ROC curves of \autoref{fig:roc-auc}. EERs are error rates when sensitivity and specificity of a test are equal, i.e. we see the same error rates of missing an identification for a land-to-land comparison  and wrong identifications, when it is determined that two land engraved areas come from the same source when they are, in fact, known to be from a different source. Equal error rates based on CMS of two lands are significantly higher than equal error rates based on cross-correlation or the RF score. At best, RF score and cross-correlation have an equal error rate of around 5\% for land-to-land comparisons. 
-Interestingly, for consecutively matching striae, an equal error rate is reached for just two matching striae, which from a practical point of view is not sustainable. A  CMS of  6 or above is an established cutoff used in identifications. This leads to 21 wrong identifications (out of 49286; for an error rate of 4 in 10,000) but only identifies 139 out of  715 known same-source lands, for an error rate of 80.6\%. }
+\hh{\autoref{fig:eer} shows an overview of Equal Error Rates (EER) and their thresholds based on the ROC curves of \autoref{fig:roc-auc}. EERs are error rates when sensitivity and specificity of a test are equal, i.e. we see the same error rates of missing an identification for a land-to-land comparison  and wrong identifications, when it is determined that two land engraved areas come from the same source when they are, in fact, known to be from a different source. Equal error rates based on CMS of two lands are significantly higher than equal error rates based on cross-correlation or the RF score. At best, RF score and cross-correlation have an equal error rate of around 5\%}\svp{(EER = 0.05)} \hh{ for land-to-land comparisons. 
+Interestingly, for consecutively matching striae, an equal error rate is reached for just two matching striae, which from a practical point of view is not sustainable. A  CMS of  6 or above is an established cutoff used in identifications. This leads to 21 wrong identifications (out of 49286; for an error rate of 4 in 10,000) but only identifies 139 out of 715 known same-source lands, for an error rate of 80.6\%. }
+
 ```{r eval=FALSE}
 xtabs(~sameland+I(round(cms)>=6), data = all_lands)
 ```
