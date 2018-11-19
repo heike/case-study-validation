@@ -289,7 +289,7 @@ When evaluating algorithm performance, it is useful to distinguish between two t
 \begin{tabular}{c|ccc}
 \multicolumn{2}{c}{} & \multicolumn{2}{c}{Ground Truth}\\\cline{3-4}
 \multicolumn{2}{c}{} & \multicolumn{1}{|c}{Same Source} & \multicolumn{1}{|c|}{Different Source} \\\cline{2-4}
-\multirow{2}{*}{\rotatebox[origin=c]{90}{\hfill Results\hfill}} & 
+\multirow{2}{*}{\rotatebox[origin=c]{90}{\hfill Results\hspace{7mm}\hfill}} & 
   \rotatebox[origin=c]{90}{\hspace{1mm}Exclusion\hspace{1mm}} & 
   \multicolumn{1}{|c}{Missed ID} & 
   \multicolumn{1}{|c|}{Correct Exclusion}\\\cline{2-4}
