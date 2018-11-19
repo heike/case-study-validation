@@ -94,9 +94,9 @@ estimateBeta <- function(x, method = "mm", probs = c(0.25, 0.75)) {
 In current practice, firearms and toolmark examiners (FTE) evaluate the similarity of striae on bullets by placing the evidence together with another bullet under a comparison microscope. The second bullet could be a test fire from a weapon recovered during the investigation, or it could be a second bullet from the crime scene. Examiners visually classify similarity according to the theory of firearms identification \citep{identification} as one of identification, inconclusive or exclusion. Exact guidelines for this classification vary from lab to lab; some labs will exclude only on the basis of non-matching class characteristics, such as direction of the twist in rifling, land length or number of lands, or type of rifling. In other labs, CMS (consecutively matching striae) as defined by \citet{biasotti} is used as a measure to quantify the strength of a match. In virtually all labs, individual characteristics used to identify matching bullets are derived from visual assessment; some class characteristics may be directly measured, but these are not sufficient for individualization.  <!-- Want to make it clear that individual characteristics are visually derived, rather than numerically derived... hopefully managed that without being insulting. HH: reads well -->
 
 ## Identification Using 3D Imaging Technology
-More explicit characterization of bullet surfaces has been discussed since at least 1958 (\citeauthor{davis1968introduction}), but at the time technology was not sufficiently advanced to make an analysis based on 3D measurements or surface traces a viable option. \citet{ComputerIdentificationBullets1978} demonstrated use of a scanning electron microscope to quantitatively examine and compare bullet striae. More recently, approaches using 3D measurement data were explicitly described in 1999 (\citeauthor{dekinderAutomatedComparisonsBullet1999}), and have been further developed by \citet{bachrachDevelopment3DbasedAutomated2002,xieAutomatedBulletidentificationSystem2009, chuPilotStudyAutomated2010}. These approaches utilize 3D surface measurements directly to characterize the topology of land engraved areas (LEAs), rather than using visual or image comparison techniques. In many cases, these \svp{approaches} also provide some level of automation of the comparison process, with the goal of reducing human biases by augmenting the visual information with 3D measurements. Utilizing the 3D measurements allows for examination \svp{of both the peaks and valleys in LEAs; visual examination of valleys is more difficult} except in relation to the peaks. 
+More explicit characterization of bullet surfaces has been discussed since at least 1958 (\citeauthor{davis1968introduction}), but at the time technology was not sufficiently advanced to make an analysis based on 3D measurements or surface traces a viable option. \citet{ComputerIdentificationBullets1978} demonstrated use of a scanning electron microscope to quantitatively examine and compare bullet striae. More recently, approaches using 3D measurement data were explicitly described in 1999 (\citeauthor{dekinderAutomatedComparisonsBullet1999}), and have been further developed by \citet{bachrachDevelopment3DbasedAutomated2002,xieAutomatedBulletidentificationSystem2009, chuPilotStudyAutomated2010}. These approaches utilize 3D surface measurements directly to characterize the topology of land engraved areas (LEAs), rather than using visual or image comparison techniques. In many cases, these approaches also provide some level of automation of the comparison process, with the goal of reducing human biases by augmenting the visual information with 3D measurements. Utilizing the 3D measurements allows for examination of both peaks and valleys in LEAs, \hh{it also allows us to take the depth of striae into account, something that is difficult, if not impossible, for visual examination.} 
 
-Commonly, approaches derived from 3D surface measurements use some features which are similar to those visually assessed by FTEs \citep{luAutomatedBulletIdentification2014}. Class characteristics, which are shared by a group of firearms with the same rifling design, manufacturer, and tooling process, are typically evaluated first, as a mismatch on class charcteristics is sufficient for an exclusion. Automated approaches to estimation of width of the land engraved area and twist angle were described in \citet{chuPilotStudyAutomated2010}. Individual characteristics, which are not shared by all members of a class, can also be automatically assessed from 3D surface measurements. One of the most common features used to assess the strength of a match based on individual characteristics is the cross-correlation function, which is \svp{utilized} in several studies \citep{maNISTBulletSignature2004, vorburgerApplicationsCrosscorrelationFunctions2011, chuPilotStudyAutomated2010}. Additional features proposed for automatically assessing match strength also include signature distance \citep{maNISTBulletSignature2004}, striae depth and width \citep{ComputerIdentificationBullets1978}, and consecutive matching striae (CMS) \citep{chuAutomaticIdentificationBullet2013}.
+Commonly, approaches derived from 3D surface measurements use some features which are similar to those visually assessed by FTEs \citep{luAutomatedBulletIdentification2014}. Class characteristics, which are shared by a group of firearms with the same rifling design, manufacturer, and tooling process, are typically evaluated first, as a mismatch on class charcteristics is sufficient for an exclusion. Automated approaches to estimation of width of the land engraved area and twist angle were described in \citet{chuPilotStudyAutomated2010}. Individual characteristics, which are not shared by all members of a class, can also be automatically assessed from 3D surface measurements. One of the most common features used to assess the strength of a match based on individual characteristics is the cross-correlation function, which is utilized in several studies \citep{maNISTBulletSignature2004, vorburgerApplicationsCrosscorrelationFunctions2011, chuPilotStudyAutomated2010}. Additional features proposed for automatically assessing match strength also include signature distance \citep{maNISTBulletSignature2004}, striae depth and width \citep{ComputerIdentificationBullets1978}, and consecutive matching striae (CMS) \citep{chuAutomaticIdentificationBullet2013}.
 
 In the matching algorithm proposed in \citet{aoas}, several of the features described above are combined using a random forest \citep{breiman} to produce a similarity score based on 3d topographic scans of land engraved areas (LEAs).
 From each land engraved area a signature is derived using the process described in detail in \citet{aoas}:
@@ -109,7 +109,7 @@ From each land engraved area a signature is derived using the process described 
 \begin{itemize}
 \item[(a)] Identify an area on the LEA with expressed striae. Locate a stable crosscut (see \citet{aoas}) in the identified area.
 \item[(b)] Discard extraneous/contaminated data, such as data from groove engraved area and areas affected by break-off or contact with objects after the bullet exited the barrel  (``tank rash").
-\item[(c)] Remove bullet curvature \hh{using a Gaussian filter \cite{chuAutomaticIdentificationBullet2013}\svp{This mentions use of a gaussian filter, but not for the specific purpose of removing curvature. Also, since we're discussing the aoas paper, might be better to stick to the non-parametric smooth?} or non-parametric smooth \citep{aoas}}. 
+\item[(c)] Remove bullet curvature using a non-parametric smooth. 
 \end{itemize}
 A signature for a land engraved area is then defined as the sequence $S(x)$, $x = 1, ..., I$, where $I$ is the number of observed locations across the base of the bullet. \autoref{fig:signatures} shows a set of six signatures corresponding to the six land engraved areas of bullets 1 and 2 from barrel 1 of set 44 of the Hamby study \citep{hamby}. 
 
@@ -167,9 +167,9 @@ signatures %>%
   xlab("Relative Location (in millimeters)")
 ```
 
-\svp{Once signatures have been extracted from stable regions with expressed striae, they must be aligned in order to assess their match strength.} \hh{Maximized cross-correlation is used to pair-wise align signatures \citet{aoas,vorburgerApplicationsCrosscorrelationFunctions2011}. }
+Once signatures have been extracted from stable regions with expressed striae, they must be aligned in order to assess their match strength. Maximized cross-correlation is used to pair-wise align signatures \citep{aoas,vorburgerApplicationsCrosscorrelationFunctions2011}. 
 
-The cross-correlation function (ccf) between two signatures $S_1(x)$ and $S_2(x)$ is defined as $$CC(S_1, S_2, z) = \text{cor}\left(S_1(x), S_2(x + z)\right)$$ where \hh{$x$ and $x+z$ are integer values appropriately defined within the domains of $S_1$ and $S_2$ and }  $z$ is the lag between the two sequences. The lag $z$ used to achieve maximum $CC$ is used to determine the best alignment; the maximal value of $CC$ is  used to assess the match strength between the two sequences. When signatures contain missing values, pairwise complete observations are used to calculate the cross-correlation.
+The cross-correlation function (ccf) between two signatures $S_1(x)$ and $S_2(x)$ is defined as $$CC(S_1, S_2, z) = \text{cor}\left(S_1(x), S_2(x + z)\right)$$ where \hh{$x$ and $x+z$ are integer values appropriately defined within the domains of $S_1$ and $S_2$ and  $z$ is the lag between the two sequences. The lag $z$ used to achieve maximum $CC$ is used to determine the best alignment; the maximal value of $CC$ is  used to assess the match strength between the two sequences. When signatures contain missing values, pairwise complete observations are used to calculate the cross-correlation.
 
 ## Statistics for Matching Aligned Signatures
 <!-- \hh{XXX define signatures mathematically here - as random spatial process; extracted from crosscut by removing big structure first and then applying (cross-validated, \citet{aoas}) 'roughness' filter. 'roughness' defined by NIST paper. } -->
@@ -178,12 +178,12 @@ Once two signatures are aligned, quantitative features describing the similarity
 
 One of the measures firearms examiners use to describe the strength of a match quantitatively is the number of consecutive matching striae (CMS) as defined by \citet{biasotti}.
 If there are at least 6 consecutive matching striae, the bullets are considered to be a good match \citep{biasotti_firearms_1997,nichols_scientific_2006}. 
-CMS in this setting are counted as the number of consecutive peaks in signatures of two lands that match\svp{, in part because it is difficult to visually assess valleys except as relative to peaks}. 
-\hh{Note that because signatures are moved into phase based on the maximum cross-correlation rather than matching striation marks,} \svp{it is possible for two lands to }\hh{have a consecutive matching striae of 0. } \svp{CMS are generally considered to be a very conservative criteria, in that bullets fired through the same barrel may not have a high number of consecutively matching striae; in this sense, CMS may be more likely to produce an inconclusive result.}
+CMS in this setting are counted as the number of consecutive peaks in signatures of two lands that match, in part because it is difficult to visually assess valleys except as relative to peaks. 
+Note that because signatures are moved into phase based on the maximum cross-correlation rather than matching striation marks, it is possible for two lands to have a consecutive matching striae of 0. CMS are generally considered to be a very conservative criteria, in that bullets fired through the same barrel may not have a high number of consecutively matching striae; in this sense, CMS may be more likely to produce an inconclusive result.
 
-\hh{XXX for CMS we need to define peaks, and matching peaks, and for that we need to define the additional filter/smooth.}\svp{XXX Can't we just refer to the aoas paper? It seems to be defined in there relatively well.}
+<!--\hh{XXX for CMS we need to define peaks, and matching peaks, and for that we need to define the additional filter/smooth.}\svp{XXX Can't we just refer to the aoas paper? It seems to be defined in there relatively well.}-->
 
-\hh{The random forest presented in \citet{aoas} is based on a combination of multiple characteristics, such as maximized cross-correlation, number of matching striae, and number of consecutively matching striae among others. }
+The random forest presented in \citet{aoas} is based on a combination of multiple characteristics, such as maximized cross-correlation, number of matching striae, and number of consecutively matching striae among others. 
 
 The output of the random forest is a score between 0 and 1 representing the algorithm's assessment of the strength of the match, where scores close to 1 indicate that the algorithm believes it to be highly likely that the aligned signatures come from the same source, while low scores indicate that the aligned signatures are highly likely to originate from different lands.
 
@@ -284,9 +284,6 @@ This leads us to two minimal requirements the \hh{similarity} scores should fulf
 
 ## Identification Errors
 When evaluating algorithm performance, it is useful to distinguish between two types of errors, which we will refer to as \textbf{wrong identification} and \textbf{missed identification} in this paper. Wrong identifications are those in which two bullets from different sources are determined to be from the same source. Missed identifications are those in which two bullets from the same source are determined to be from different sources.
-\hh{Note that this definition of error is more strict than the AFTE Theory of Identification, in that it does not allow for inconclusive results, but forces a decision based on a cutoff value. }
-
-
 \begin{table}
 \centering
 \begin{tabular}{c|ccc}
@@ -301,20 +298,19 @@ When evaluating algorithm performance, it is useful to distinguish between two t
 \end{tabular}
 \caption{Something}
 \end{table}
-\svp{XXX May want to have the error type table/chart as a visual representation? XXX}
+\hh{Note that this definition of error is more stringent than the AFTE Theory of Identification, in that it does not allow for inconclusive results, but forces a decision based on a cutoff value. }
 
-
-\svp{In this paper, we validate the algorithm described in \citet{aoas} on three external test sets. We assess the results on each set and evaluate whether the minimal requirements described above are fulfilled for bullet-to-bullet SAM scores. We compare the random forest algorithm's performance to the performance of other suggested measures for quantitative assessment of match strength, such as cross-correlation and consecutive matching striae. }
+In this paper, we validate the algorithm described in \citet{aoas} on three external test sets. We assess the results on each set and evaluate whether the minimal requirements described above are fulfilled for bullet-to-bullet SAM scores. We compare the random forest algorithm's performance to the performance of other suggested measures for quantitative assessment of match strength, such as cross-correlation and consecutive matching striae. 
 
 # Validation Sets
 
-\svp{Random forests \citep{breiman} have} \hh{a built-in internal testing mechanism to prevent potential overfitting. Error rates reported by random forest algorithms are based on these internal test sets. However, there is some discussion on whether or in which situations these error rates are biased \citep{rfOver2, rfOver}. 
-Neither of these papers addresses another issue with internal test sets: internal test sets are constructed to have the same distribution as the training data (apart from sampling variability).} \svp{For any machine learning method, a true benchmark of the performance of an algorithm requires testing its performance on external test data.} \hh{Good performance (in terms of low error rates) on external test data validates a ML algorithm. External data also allows an assessment of the algorithm's sensitivity to distributional changes} \svp{as well as testing the algorithm's robustness by going outside the parameters of the training data.  }
+Random forests \citep{breiman} have a built-in internal testing mechanism to prevent potential overfitting. Errors reported by random forest algorithms are based on these internal test sets. However, there is some discussion on whether or in which situations these errors are biased \citep{rfOver2, rfOver}. 
+Neither of these papers addresses another issue with internal test sets: internal test sets are constructed to have the same distribution as the training data (apart from sampling variability). For any machine learning method, a true benchmark of the performance of an algorithm requires testing its performance on external test data. Good performance (in terms of wrong and missed identifications) on external test data validates a ML algorithm. External data also allows an assessment of the algorithm's sensitivity to distributional changes as well as testing the algorithm's robustness by going outside the parameters of the training data.  
 
 The algorithm in \citet{aoas} is trained on scans from Hamby sets 252 and 173 made available through \citet{nist}. Set 173 was originally published as Hamby set 44. This mis-labeling has been corrected now. The scans used to train the model were taken at 20 fold magnification for a resolution of 1.5625 microns per pixel. While magnification is generally of interest in microscopy, **resolution** -- usually measured in microns per pixel -- is of more interest for 3D topographic measurements, as it determines the operative level of available data.
 
 
-\hh{For the validation of the automatic matching algorithm we are considering three validation sets of -- what should be -- increasing difficulty level:} 
+For the validation of the automatic matching algorithm we are considering three validation sets of -- what should be -- increasing difficulty level: 
 \begin{itemize}
 \item {\bf Hamby set 44} is one set of the Hamby study \citep{hamby}. Each Hamby set  consists of a total of 35 bullets fired through ten consecutively manufactured barrels of Rugers P85. Each set consists of 20 known bullets (two from each of the ten barrels) and 15 questioned bullets of unknown origin. Note that all Hamby sets are closed sets; that is, all questioned bullets are fired through one of the ten barrels. The ammunition used for this set were 9 mm Luger 115 Grain Full Metal Jacket  from the Winchester Ammunition Company.
 \item {\bf Phoenix PD}
@@ -327,7 +323,7 @@ The structure of these three sets is similar to a forthcoming study by Nally and
 
 Scans of all land engraved areas for the validation data were taken on a Sensofar Confocal Light microscope at 20x magnification resulting in a resolution of 0.645 microns per pixel. If not indicated otherwise, scans were taken at the Roy J Carver high resolution microscopy lab at Iowa State University.
 
-Case studies were chosen such that difficulty for the matching algorithm increases with each case study: Hamby set 44 is part of the Hamby study. The algorithm in \citet{aoas} was trained on sets 173 and 252, so the bullets in Hamby 44 are of the same type of ammunition and are fired through the same barrels as the bullets in the training set. The Phoenix PD set uses Ruger P-95 barrels, which are different from the barrels in the Hamby sets used for training the algorithm, but the barrels are rifled similarly to the Ruger P-85 barrels. The Houston sets use Ruger LCP barrels. These barrels are first rifled traditionally, i.e. similar to the Ruger P-85, but are treated to a secondary round of heating after \svp{rifling}. This second round of heat exposure has the potential to introduce some subclass characteristics, i.e. anomalies that are shared between different barrels manufactured in this manner. This should make the automatic matching harder, and in particular, \svp{is expected to complicate} the classification as different-source land engraved areas/bullets. \svp{In all three studies, the scan resolution is much higher than the scans used to train the algorithm in \citet{aoas}; this difference also provides a test of the algorithm's ability to generalize to scans taken at different resolutions.}
+Case studies were chosen such that difficulty for the matching algorithm increases with each case study: Hamby set 44 is part of the Hamby study. The algorithm in \citet{aoas} was trained on sets 173 and 252, so the bullets in Hamby 44 are of the same type of ammunition and are fired through the same barrels as the bullets in the training set. The Phoenix PD set uses Ruger P-95 barrels, which are different from the barrels in the Hamby sets used for training the algorithm, but the barrels are rifled similarly to the Ruger P-85 barrels. The Houston sets use Ruger LCP barrels. These barrels are first rifled traditionally, i.e. similar to the Ruger P-85, but are treated to a secondary round of heating after rifling. This second round of heat exposure has the potential to introduce some subclass characteristics, i.e. anomalies that are shared between different barrels manufactured in this manner. This should make the automatic matching harder, and in particular, is expected to complicate the classification as different-source land engraved areas/bullets. In all three studies, the scan resolution is much higher than the scans used to train the algorithm in \citet{aoas}; this difference also provides a test of the algorithm's ability to generalize to scans taken at different resolutions.
 
 
 # Results
@@ -393,7 +389,7 @@ h44 <- h44nest %>%
   geom_tile(size = 1) +
   facet_grid(. ~ barrel2, space = "free", scales = "free") +
   ylab("Questioned bullets") +
-  xlab("Testfires from barrels 1 to 10 (left), questioned bullets (right)") +
+  xlab("Test fires from barrels 1 to 10 (left), questioned bullets (right)") +
   scale_fill_gradient2("RF score ",
     low = "darkgrey",
     high = "darkorange", midpoint = 0.35, limits = c(0, 1)
@@ -948,7 +944,7 @@ all_lands %>%
   geom_hline(yintercept = 0, show.legend = F)
 ```
 
-\svp{When evaluating classifier performance, it is common to use a receiver operating curve, which plots the false positives against the true positives for each possible value of the cutoff between the two classes (in this case, known match and known non-match).} \svp{As the land-to-land scores are not perfectly separated, we can use ROC curves to evaluate their performance.} \svp{The ROC curves for the land-to-land scores are shown in \autoref{fig:roc-auc} (a). A perfect classifier would have 100\% true positives and 0\% false positives, e.g. the ROC curve would be a right angle at (0, 1). Classifiers with better performance will be closer to this corner of the plot. A random classifier would have an ROC curve that was a straight diagonal line through (0,0) and (1,1).}
+When evaluating classifier performance, it is common to use a receiver operating characteristic (ROC) curve, which plots the percent of wrong identifications against the percent correct identifications for each possible value of the cutoff between the two classes (in this case, known match and known non-match). Land-to-land scores are not perfectly separated, we can therefore use ROC curves to distinguish between the performance of the different methods and studies. The ROC curves for the land-to-land scores are shown in \autoref{fig:roc-auc} (a). A perfect classifier would have 100\% correct identifications and 0\% wrong identifications, e.g. the ROC curve would be a right angle at (0, 100). Classifiers with better performance will be closer to this corner of the plot. A random classifier would have an ROC curve that was a straight diagonal line through (0,0) and (100,100).
 
 
 
@@ -967,15 +963,18 @@ rocpic <- all_lands %>% gather(measure, score, rfscore, ccf, cms) %>%
   theme_bw() +
   # coord_fixed() + 
   facet_wrap(~studyg, nrow=3) +
-  xlab("Fraction False Positives") +
-  ylab("Fraction True Positives") +
+  xlab("Percent Wrong Identifications") +
+  ylab("Percent Correct Identifications") +
   scale_colour_manual("Study", values = c("#fe9929", "#aa0000",
                                          "#74a9cf", "#2b8cbe", "#045a8d"),
                       guide=FALSE) +
   theme(legend.position= c(1, 0), legend.justification = c(1, 0), legend.direction = "vertical",
         legend.key.width = unit(1, "cm")) +
   guides(linetype = guide_legend(override.aes = list(shape = NA, size = .5))) + 
-  scale_linetype_manual("Measure", values=c(1,3,2)) 
+  scale_linetype_manual("Measure", values=c(1,3,2)) +
+  scale_x_continuous(breaks=seq(0,1, by=0.25), labels=c("0", "25\\%", "50\\%", "75\\%", "100\\%")) +
+  scale_y_continuous(breaks=seq(0,1, by=0.25), labels=c("0", "25\\%", "50\\%", "75\\%", "100\\%"))
+
 ```
 
 
@@ -1038,30 +1037,38 @@ aucpic <- aucs %>%
 ```
 
 
-```{r roc-auc, echo = FALSE, out.width = c("0.49\\textwidth", ".45\\textwidth"), out.height = c("0.6\\textwidth", "0.6\\textwidth"), fig.width = c(5, 6), fig.height = c(7.5, 7.5), fig.subcap=c("ROC curves", "Area under the curve (AUC)"), fig.cap="ROC curves and AUC for each (set) of the studies for the random forest score (RF), cross-correlation (CC) and consecutively matching striae (CMS).   As seen in the ROC curves, the algorithm performs the least well on set 2 of the Houston FSI study. Based on AUC, the overall performance on all sets is very good to excellent for cross-correlation and the random forest score. At the land level there is no significant difference in prediction power between RF score and cross-correlation."}
+```{r roc-auc, echo = FALSE, out.width = c("0.49\\textwidth", ".45\\textwidth"), out.height = c("0.6\\textwidth", "0.6\\textwidth"), fig.width = c(5, 6), fig.height = c(7.5, 7.5), fig.subcap=c("ROC curves", "Area under the curve (AUC)"), fig.cap="ROC curves and AUC for each (set) of the studies for the random forest score (RF), cross-correlation (CC) and consecutively matching striae (CMS).   As seen in the ROC curves, the algorithm performs the least well on set 2 of the Houston FSI study. Based on AUC, the overall performance on all sets is very good to excellent for cross-correlation and the random forest score. At the land level there is no significant difference in prediction power between RF score and cross-correlation.", cache=FALSE}
   rocpic
   aucpic
 ```
 
 In \autoref{fig:roc-auc}a, the Houston FSI G1 and G3 curves and the Phoenix PD curve show excellent performance; Houston FSI G2 and Hamby 44 show still a very  good performance. Area under the curve (AUC) values, which summarize ROC curves, are shown in \autoref{fig:roc-auc}b. AUC values are useful for differentiating between poor, good, and excellent model performance, but are not particularly useful when determining which of several models with approximately the same level of performance should be used \citep{marzban_roc_2004}. Hamby 44 and Phoenix PD are the only studies with a somewhat noticable difference between the AUC score for RF compared to cross-correlation, but even those differences are not statistically significant.
 
+<<<<<<< HEAD
 \hh{\autoref{fig:eer} shows an overview of Equal Error Rates (EER) and their thresholds based on the ROC curves of \autoref{fig:roc-auc}. EERs are error rates when sensitivity and specificity of a test are equal, i.e. we see the same error rates of missing an identification for a land-to-land comparison  and wrong identifications, when it is determined that two land engraved areas come from the same source when they are, in fact, known to be from a different source. Equal error rates based on CMS of two lands are significantly higher than equal error rates based on cross-correlation or the RF score. At best, RF score and cross-correlation have an equal error rate of around 5\%}\svp{(EER = 0.05)} \hh{ for land-to-land comparisons. 
 Interestingly, for consecutively matching striae, an equal error rate is reached for just two matching striae, which from a practical point of view is not sustainable. A  CMS of  6 or above is an established cutoff used in identifications. This leads to 21 wrong identifications (out of 49286; for an error rate of 4 in 10,000) but only identifies 139 out of 715 known same-source lands, for an error rate of 80.6\%. }
 
+=======
+\autoref{fig:eer} shows an overview of Equal Error and their thresholds based on the ROC curves of \autoref{fig:roc-auc}. Equal Errors are errors  when sensitivity and specificity of a test are equal, i.e. we see the same percentage of missed and wrong identifications for a land-to-land comparison. Equal errors based on CMS of two lands are significantly higher than equal errors based on cross-correlation or the RF score. At best, RF score and cross-correlation have an equal error of around 5\% for land-to-land comparisons. 
+Interestingly, for consecutively matching striae, equal errors are reached for just two matching striae, which from a practical point of view is not sustainable. A  CMS of  6 or above is an established cutoff used in identifications. This leads to 21 wrong identifications (out of 49286; for an error of 4 in 10,000 -- or 0.04\%) but only identifies 139 out of  715 known same-source lands, for an error of 80.6\%. 
+>>>>>>> 46fcc18c3d5cecacd614557fc87afa19c3040610
 ```{r eval=FALSE}
 xtabs(~sameland+I(round(cms)>=6), data = all_lands)
 ```
 
-```{r eer, fig.width=7, fig.height = 4, fig.cap="Equal Error Rates and thresholds for all measures (RF score, Cross-correlation and CMS) under all five (sub-)studies. CMS has an EER threshold of 2 for all studies. CMS is signifcantly worse than both Cross-correlation and the RF score. At best, Cross-correlation and RF score have errors for land-to-land comparison of around 5\\%.\\svp{I'm uncomfortable using the same scale for EER threshold given that CMS has a different scale; leaving CMS out also seems odd though}", out.width = '.8\\textwidth'}
-aucs %>% gather(eer_thresh, value, eer, threshold) %>%
+```{r eer, fig.width=7, fig.height = 4, fig.cap="Equal Error (in Percent)  and corresponding thresholds for all measures (RF score, Cross-correlation and CMS) under all five (sub-)studies. CMS has an equal error threshold of 2 for all studies. CMS is signifcantly worse than both Cross-correlation and the RF score. At best, Cross-correlation and RF score have equal errors for land-to-land comparison of around 5\\%.", out.width = '.8\\textwidth'}
+aucs %>% 
+  mutate(
+    eer = 100*eer
+  ) %>%
+  gather(eer_thresh, value, eer, threshold) %>%
   filter(!(measure=="CMS" & eer_thresh=="threshold")) %>%
   mutate(
-    eer_thresh = factor(eer_thresh, labels=c("EER", "Threshold for EER"))
+    eer_thresh = factor(eer_thresh, labels=c("Equal Error (in Percent)", "Threshold for Equal Error"))
   ) %>%
   ggplot(aes(y = studyg, x = value, colour=measure, shape = measure)) + 
   geom_point(size = 4) +theme_bw() +
-#  xlim(c(0, .35)) +
-  xlab("Equal Error Rates (left) and EER thresholds (right)") +
+  xlab("Equal Error (in Percent, left) and corresponding thresholds (right)") +
   ylab("") +
   scale_color_brewer(palette = "Set2") +
   scale_shape_discrete(solid = F) + 
