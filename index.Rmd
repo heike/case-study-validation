@@ -1024,7 +1024,7 @@ aucpic <- aucs %>%
   geom_segment(aes(x = auc_ci_low, xend = auc_ci_low, y = measurenum - .125, yend = measurenum + .125), size = 1) + 
   geom_segment(aes(x = auc_ci_high, xend = auc_ci_high, y = measurenum - .125, yend = measurenum + .125), size = 1) + 
   geom_segment(aes(x=auc_ci_low, xend=auc_ci_high, y = measurenum, yend = measurenum, linetype=measure), size=1) +
-  geom_point(size=3) +
+  geom_point(size=3.5, aes(shape = measure)) +
   theme_bw() +
   xlab("AUC and 95% confidence intervals") +
   xlim(c(0.5, 1)) +
@@ -1034,7 +1034,8 @@ aucpic <- aucs %>%
                         guide = FALSE) +
   # theme(legend.position = "bottom",
   #       legend.key.width = unit(1.5, "cm")) +
-  scale_linetype_manual("Measure", values = c(3,1,2), guide = F)
+  scale_linetype_manual("Measure", values = c(3,1,2), guide = F) +
+  scale_shape_discrete(guide=F)
 
 ```
 
@@ -1064,7 +1065,8 @@ aucs %>%
     eer_thresh = factor(eer_thresh, labels=c("Equal Error (in Percent)", "Threshold for Equal Error"))
   ) %>%
   ggplot(aes(y = studyg, x = value, colour=measure, shape = measure)) + 
-  geom_point(size = 4) +theme_bw() +
+  geom_point(size = 3.5) +
+  theme_bw() +
   xlab("Equal Error (in Percent, left) and corresponding thresholds (right)") +
   ylab("") +
   scale_color_brewer(palette = "Set2") +
