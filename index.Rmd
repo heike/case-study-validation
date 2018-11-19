@@ -1024,7 +1024,7 @@ aucpic <- aucs %>%
   geom_segment(aes(x = auc_ci_low, xend = auc_ci_low, y = measurenum - .125, yend = measurenum + .125), size = 1) + 
   geom_segment(aes(x = auc_ci_high, xend = auc_ci_high, y = measurenum - .125, yend = measurenum + .125), size = 1) + 
   geom_segment(aes(x=auc_ci_low, xend=auc_ci_high, y = measurenum, yend = measurenum, linetype=measure), size=1) +
-  geom_point() +
+  geom_point(size=3) +
   theme_bw() +
   xlab("AUC and 95% confidence intervals") +
   xlim(c(0.5, 1)) +
@@ -1046,14 +1046,9 @@ aucpic <- aucs %>%
 
 In \autoref{fig:roc-auc}a, the Houston FSI G1 and G3 curves and the Phoenix PD curve show excellent performance; Houston FSI G2 and Hamby 44 show still a very  good performance. Area under the curve (AUC) values, which summarize ROC curves, are shown in \autoref{fig:roc-auc}b. AUC values are useful for differentiating between poor, good, and excellent model performance, but are not particularly useful when determining which of several models with approximately the same level of performance should be used \citep{marzban_roc_2004}. Hamby 44 and Phoenix PD are the only studies with a somewhat noticable difference between the AUC score for RF compared to cross-correlation, but even those differences are not statistically significant.
 
-<<<<<<< HEAD
-\hh{\autoref{fig:eer} shows an overview of Equal Error Rates (EER) and their thresholds based on the ROC curves of \autoref{fig:roc-auc}. EERs are error rates when sensitivity and specificity of a test are equal, i.e. we see the same error rates of missing an identification for a land-to-land comparison  and wrong identifications, when it is determined that two land engraved areas come from the same source when they are, in fact, known to be from a different source. Equal error rates based on CMS of two lands are significantly higher than equal error rates based on cross-correlation or the RF score. At best, RF score and cross-correlation have an equal error rate of around 5\%}\svp{(EER = 0.05)} \hh{ for land-to-land comparisons. 
-Interestingly, for consecutively matching striae, an equal error rate is reached for just two matching striae, which from a practical point of view is not sustainable. A  CMS of  6 or above is an established cutoff used in identifications. This leads to 21 wrong identifications (out of 49286; for an error rate of 4 in 10,000) but only identifies 139 out of 715 known same-source lands, for an error rate of 80.6\%. }
-
-=======
 \autoref{fig:eer} shows an overview of Equal Error and their thresholds based on the ROC curves of \autoref{fig:roc-auc}. Equal Errors are errors  when sensitivity and specificity of a test are equal, i.e. we see the same percentage of missed and wrong identifications for a land-to-land comparison. Equal errors based on CMS of two lands are significantly higher than equal errors based on cross-correlation or the RF score. At best, RF score and cross-correlation have an equal error of around 5\% for land-to-land comparisons. 
 Interestingly, for consecutively matching striae, equal errors are reached for just two matching striae, which from a practical point of view is not sustainable. A  CMS of  6 or above is an established cutoff used in identifications. This leads to 21 wrong identifications (out of 49286; for an error of 4 in 10,000 -- or 0.04\%) but only identifies 139 out of  715 known same-source lands, for an error of 80.6\%. 
->>>>>>> 46fcc18c3d5cecacd614557fc87afa19c3040610
+
 ```{r eval=FALSE}
 xtabs(~sameland+I(round(cms)>=6), data = all_lands)
 ```
