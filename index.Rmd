@@ -91,12 +91,16 @@ estimateBeta <- function(x, method = "mm", probs = c(0.25, 0.75)) {
 ```
 
 # Introduction and Background
+
 In current practice, firearms and toolmark examiners (FTE) evaluate the similarity of striae on bullets by placing the evidence together with another bullet under a comparison microscope. The second bullet could be a test fire from a weapon recovered during the investigation, or it could be a second bullet from the crime scene. Examiners visually classify similarity according to the theory of firearms identification \citep{identification} as one of identification, inconclusive or exclusion. Exact guidelines for this classification vary from lab to lab; some labs will exclude only on the basis of non-matching class characteristics, such as direction of the twist in rifling, land length or number of lands, or type of rifling. In other labs, CMS (consecutively matching striae) as defined by \citet{biasotti} is used as a measure to quantify the strength of a match. In virtually all labs, individual characteristics used to identify matching bullets are derived from visual assessment; some class characteristics may be directly measured, but these are not sufficient for individualization.  <!-- Want to make it clear that individual characteristics are visually derived, rather than numerically derived... hopefully managed that without being insulting. HH: reads well -->
 
 ## Identification Using 3D Imaging Technology
+
 More explicit characterization of bullet surfaces has been discussed since at least 1958 (\citeauthor{davis1968introduction}), but at the time technology was not sufficiently advanced to make an analysis based on 3D measurements or surface traces a viable option. \citet{ComputerIdentificationBullets1978} demonstrated use of a scanning electron microscope to quantitatively examine and compare bullet striae. More recently, approaches using 3D measurement data were explicitly described in 1999 (\citeauthor{dekinderAutomatedComparisonsBullet1999}), and have been further developed by \citet{bachrachDevelopment3DbasedAutomated2002,xieAutomatedBulletidentificationSystem2009, chuPilotStudyAutomated2010}. These approaches utilize 3D surface measurements directly to characterize the topology of land engraved areas (LEAs), rather than using visual or image comparison techniques. In many cases, these approaches also provide some level of automation of the comparison process, with the goal of reducing human biases by augmenting the visual information with 3D measurements. Utilizing the 3D measurements allows for examination of both peaks and valleys in LEAs, \hh{it also allows us to take the depth of striae into account, something that is difficult, if not impossible, for visual examination.} 
 
 Commonly, approaches derived from 3D surface measurements use some features which are similar to those visually assessed by FTEs \citep{luAutomatedBulletIdentification2014}. Class characteristics, which are shared by a group of firearms with the same rifling design, manufacturer, and tooling process, are typically evaluated first, as a mismatch on class charcteristics is sufficient for an exclusion. Automated approaches to estimation of width of the land engraved area and twist angle were described in \citet{chuPilotStudyAutomated2010}. Individual characteristics, which are not shared by all members of a class, can also be automatically assessed from 3D surface measurements. One of the most common features used to assess the strength of a match based on individual characteristics is the cross-correlation function, which is utilized in several studies \citep{maNISTBulletSignature2004, vorburgerApplicationsCrosscorrelationFunctions2011, chuPilotStudyAutomated2010}. Additional features proposed for automatically assessing match strength also include signature distance \citep{maNISTBulletSignature2004}, striae depth and width \citep{ComputerIdentificationBullets1978}, and consecutive matching striae (CMS) \citep{chuAutomaticIdentificationBullet2013}.
+
+## Automated Processing of 3D Scans
 
 In the matching algorithm proposed in \citet{aoas}, several of the features described above are combined using a random forest \citep{breiman} to produce a similarity score based on 3d topographic scans of land engraved areas (LEAs).
 From each land engraved area a signature is derived using the process described in detail in \citet{aoas}:
@@ -105,14 +109,12 @@ From each land engraved area a signature is derived using the process described 
 <!-- \hh{ -->
 <!-- Let $z(t)$ describe a digitized toolmark for the striation marks on a land engraved area. -->
 <!-- $z(t)$ is then a spatial process indexed by $t$, where $t, t = 1,...,T$ denotes equally spaced pixel locations for a total length of $T$. } -->
-
 \begin{itemize}
 \item[(a)] Identify an area on the LEA with expressed striae. Locate a stable crosscut (see \citet{aoas}) in the identified area.
 \item[(b)] Discard extraneous/contaminated data, such as data from groove engraved area and areas affected by break-off or contact with objects after the bullet exited the barrel  (``tank rash").
 \item[(c)] Remove bullet curvature using a non-parametric smooth. 
 \end{itemize}
 A signature for a land engraved area is then defined as the sequence $S(x)$, $x = 1, ..., I$, where $I$ is the number of observed locations across the base of the bullet. \autoref{fig:signatures} shows a set of six signatures corresponding to the six land engraved areas of bullets 1 and 2 from barrel 1 of set 44 of the Hamby study \citep{hamby}. 
-
 ```{r signatures, fig.cap="Signatures of all six lands of bullets 1 and 2 from barrel 1 of the Hamby set 44.", fig.height=4, fig.width=10}
 # signatures for one bullet
 # h44cc <- readRDS("data/h44-ccdata.rda")
@@ -169,9 +171,10 @@ signatures %>%
 
 Once signatures have been extracted from stable regions with expressed striae, they must be aligned in order to assess their match strength. Maximized cross-correlation is used to pair-wise align signatures \citep{aoas,vorburgerApplicationsCrosscorrelationFunctions2011}. 
 
-The cross-correlation function (ccf) between two signatures $S_1(x)$ and $S_2(x)$ is defined as $$CC(S_1, S_2, z) = \text{cor}\left(S_1(x), S_2(x + z)\right)$$ where \hh{$x$ and $x+z$ are integer values appropriately defined within the domains of $S_1$ and $S_2$ and  $z$ is the lag between the two sequences. The lag $z$ used to achieve maximum $CC$ is used to determine the best alignment; the maximal value of $CC$ is  used to assess the match strength between the two sequences. When signatures contain missing values, pairwise complete observations are used to calculate the cross-correlation.
+The cross-correlation function (ccf) between two signatures $S_1(x)$ and $S_2(x)$ is defined as \[CC(S_1, S_2, z) = \text{cor}\left(S_1(x), S_2(x + z)\right)\] where \hh{$x$ and $x+z$ are integer values appropriately defined within the domains of $S_1$ and $S_2$ and  $z$ is the lag between the two sequences. The lag $z$ used to achieve maximum $CC$ is used to determine the best alignment; the maximal value of $CC$ is  used to assess the match strength between the two sequences.} When signatures contain missing values, pairwise complete observations are used to calculate the cross-correlation.
 
 ## Statistics for Matching Aligned Signatures
+ 
 <!-- \hh{XXX define signatures mathematically here - as random spatial process; extracted from crosscut by removing big structure first and then applying (cross-validated, \citet{aoas}) 'roughness' filter. 'roughness' defined by NIST paper. } -->
 
 Once two signatures are aligned, quantitative features describing the similarity of two signature are extracted. Features include characteristics of the signature that firearms and toolmark examiners base their visual assessment on, such as striae depth, number of matching striae, and the number of consecutively matching striae (CMS). Statistical features such as cross-correlation and Euclidean distance between the signatures are also extracted and used to assess the strength of the correspondence between the aligned signatures. 
@@ -180,16 +183,15 @@ One of the measures firearms examiners use to describe the strength of a match q
 If there are at least 6 consecutive matching striae, the bullets are considered to be a good match \citep{biasotti_firearms_1997,nichols_scientific_2006}. 
 CMS in this setting are counted as the number of consecutive peaks in signatures of two lands that match, in part because it is difficult to visually assess valleys except as relative to peaks. 
 Note that because signatures are moved into phase based on the maximum cross-correlation rather than matching striation marks, it is possible for two lands to have a consecutive matching striae of 0. CMS are generally considered to be a very conservative criteria, in that bullets fired through the same barrel may not have a high number of consecutively matching striae; in this sense, CMS may be more likely to produce an inconclusive result.
-
 <!--\hh{XXX for CMS we need to define peaks, and matching peaks, and for that we need to define the additional filter/smooth.}\svp{XXX Can't we just refer to the aoas paper? It seems to be defined in there relatively well.}-->
+\svp{XXX Feels like we need to mention something about ccf here just because these are the 3 main features we're using to evaluate the algorithm...?}
 
-The random forest presented in \citet{aoas} is based on a combination of multiple characteristics, such as maximized cross-correlation, number of matching striae, and number of consecutively matching striae among others. 
+The random forest presented in \citet{aoas} is based on a combination of multiple characteristics, such as maximized cross-correlation, number of matching striae, and number of consecutively matching striae among others. The output of the random forest is a score between 0 and 1 representing the algorithm's assessment of the strength of the match, where scores close to 1 indicate that the algorithm believes it to be highly likely that the aligned signatures come from the same source, while low scores indicate that the aligned signatures are highly likely to originate from different lands.
 
-The output of the random forest is a score between 0 and 1 representing the algorithm's assessment of the strength of the match, where scores close to 1 indicate that the algorithm believes it to be highly likely that the aligned signatures come from the same source, while low scores indicate that the aligned signatures are highly likely to originate from different lands.
 
-# Assessing Match Strength
+## Assessing Match Strength
+
 Each of the features described in the previous section, as well as the random forest score, describe comparisons on a land-to-land basis. While these comparisons are useful, \hh{the question of interest typically involves }  the entire physical object (e.g. all lands on a single bullet), \hh{and a conclusion on same or different source should be reached based on the evidence of all lands of the bullets}.
-
 <!--to describe the correspondence between two pieces of physical evidence.-->
 <!-- \svp{In order to aggregate land-to-land match scores, we must consider the physical structure of the evidence; that is, that the sequence of lands stems from spatial information, but the numbering of each land represents the scan order and start point rather than encoding useful information. } --><!--This last bit might be redundant-->
 
@@ -224,7 +226,7 @@ p2 <- bab %>%
   theme(legend.position = "bottom") + coord_equal()
 ```
 
-## Land-to-Land Comparisons
+### Land-to-Land Comparisons
 
 Land-to-land comparisons lead to a whole set of scores for bullet-to-bullet comparisons. \autoref{fig:b2b} shows two matrices of scores for \hh{two pairs} of bullet-to-bullet matches. On the left, a matrix is shown that is typical for scores from two bullets from the same barrel. On the right, values for a pair of known non-matching bullets are shown.
 
@@ -235,7 +237,7 @@ grid.arrange(p1, p2, ncol = 2, padding = 2)
 
 When imaging bullets, operators scan one land at a time in a clockwise (left twisted rifling) or anti-clockwise (right twisted rifling) sequence. The order in which scans are acquired is kept as meta-information. Let us assume that lands on a bullet are labelled $\ell_i$ with $i = 1, .., p$, \hh{where $p$ indicates the number of lands a bullet has, as determined by the rifling of a barrel. For all of the bullets considered here the number of lands $p$ is 6}. A match between  \hh{a pair of lands from two} bullets therefore results in an expected additional $p-1$ matches between pairs of lands. These lands are also expected to be in a sequence, i.e. if there is a match between lands $\ell_i$ on bullet 1 and $\ell_j$ on bullet 2, we also expect lands $\ell_{i\oplus s}$ and $\ell_{j\oplus s}$ to match for all integers $s$, where $\oplus$ is defined as $a \oplus b \equiv \left((a + b - 1)\mod p\right) + 1$. This relationship gives rise to the sequence average maximum (SAM) to quantify a bullet-to-bullet match. 
 
-## Bullet-to-Bullet Comparisons
+### Bullet-to-Bullet Comparisons
 
 \begin{definition}{Sequence Average and its Maximum}
 Let $A$ be a square real-valued matrix of dimensions $p \times p$. For the purpose of this paper, $A$ consists of scores describing the similarity between two sets of land engraved areas.
@@ -282,8 +284,8 @@ This leads us to two minimal requirements the \hh{similarity} scores should fulf
 \end{itemize}
 
 
-## Identification Errors
-When evaluating algorithm performance, it is useful to \svp{enumerate the set of possible outcomes}. If ground truth and the algorithm's prediction match, we have either a correct identification or a correct exclusion. If ground truth and the algorithm's prediction do not match, we} distinguish between two types of errors, which we will refer to as \textbf{wrong identification} and \textbf{missed identification}. Wrong identifications are those in which two bullets from different sources are determined to be from the same source. Missed identifications are those in which two bullets from the same source are determined to be from different sources. \svp{The full range of possible outcomes is shown in \autoref{tab:possible-outcomes}.} 
+## Identification Errors and Algorithm Evaluation
+When evaluating algorithm performance, it is useful to \svp{enumerate the set of possible outcomes}. If ground truth and the algorithm's prediction match, we have either a correct identification or a correct exclusion. If ground truth and the algorithm's prediction do not match, we distinguish between two types of errors, which we will refer to as \textbf{wrong identification} and \textbf{missed identification}. Wrong identifications are those in which two bullets from different sources are determined to be from the same source. Missed identifications are those in which two bullets from the same source are determined to be from different sources. \svp{The full range of possible outcomes is shown in \autoref{tab:possible-outcomes}.} 
 \begin{table}
 \centering
 \begin{tabular}{c|ccc}
@@ -304,6 +306,9 @@ When evaluating algorithm performance, it is useful to \svp{enumerate the set of
 \hh{Note that this definition of error is more stringent than the AFTE Theory of Identification, in that it does not allow for inconclusive results, but forces a decision based on a cutoff value. } \svp{This increased rigor may increase the error rate of the model when compared to examiner error rates, but we expect that the increased information available from the 3D measurement data will compensate for this loss. A binary decision model is also easier to interpret and provides more clear-cut, definitive results.} 
 
 \svp{It is likely that matches which were deemed  inconclusive would instead be marked as exclusions by the algorithm. XXX I don't know if we can make this statement, but I think it would help examiners understand how the line gets drawn if we could. I have exactly no evidence to back that up (except maybe the Hamby 44 tank rash results?)}
+
+\svp{In machine learning and statistics, it is common to evaluate algorithms using sensitivity and specificity; these concepts are related to the error rate. \textbf{Sensitivity} is defined as the proportion of actual positives that are correctly identified; that is, when ground truth is same source, the sensitivity is the proportion of correct identifications. \textbf{Specificity} is defined as the proportion of actual negatives that are correctly identified; that is, when ground truth is different source, the specificity is the proportion of correct identifications. The combination of sensitivity and specificity is sufficient to describe the reliability of an algorithm. }
+
 
 In this paper, we validate the algorithm described in \citet{aoas} on three external test sets. We assess the results on each set and evaluate whether the minimal requirements described above are fulfilled for bullet-to-bullet SAM scores. We compare the random forest algorithm's performance to the performance of other suggested measures for quantitative assessment of match strength, such as cross-correlation and consecutive matching striae. 
 
