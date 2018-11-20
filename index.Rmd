@@ -283,24 +283,27 @@ This leads us to two minimal requirements the \hh{similarity} scores should fulf
 
 
 ## Identification Errors
-When evaluating algorithm performance, it is useful to distinguish between two types of errors, which we will refer to as \textbf{wrong identification} and \textbf{missed identification} in this paper. Wrong identifications are those in which two bullets from different sources are determined to be from the same source. Missed identifications are those in which two bullets from the same source are determined to be from different sources.
+When evaluating algorithm performance, it is useful to \svp{enumerate the set of possible outcomes}. If ground truth and the algorithm's prediction match, we have either a correct identification or a correct exclusion. If ground truth and the algorithm's prediction do not match, we} distinguish between two types of errors, which we will refer to as \textbf{wrong identification} and \textbf{missed identification}. Wrong identifications are those in which two bullets from different sources are determined to be from the same source. Missed identifications are those in which two bullets from the same source are determined to be from different sources. \svp{The full range of possible outcomes is shown in \autoref{tab:possible-outcomes}.} 
 \begin{table}
 \centering
 \begin{tabular}{c|ccc}
-\multicolumn{2}{c}{} & \multicolumn{2}{c}{Ground Truth}\\\cline{3-4}
+\multicolumn{2}{c}{} & \multicolumn{2}{c}{\textbf{Ground Truth}}\\\cline{3-4}
 \multicolumn{2}{c}{} & \multicolumn{1}{|c}{Same Source} & \multicolumn{1}{|c|}{Different Source} \\\cline{2-4}
-\multirow{2}{*}{\rotatebox[origin=c]{90}{\hfill Results\hspace{7mm}\hfill}} & 
-  \rotatebox[origin=c]{90}{\hspace{1mm}Exclusion\hspace{1mm}} & 
-  \multicolumn{1}{|c}{Missed ID} & 
-  \multicolumn{1}{|c|}{Correct Exclusion}\\\cline{2-4}
-& \rotatebox[origin=c]{90}{\hspace{1mm}Identification\hspace{1mm}} &
-\multicolumn{1}{|c}{Correct Identification} & \multicolumn{1}{|c|}{Wrong ID}\\\cline{2-4}
+\multirow{8}{*}{\rotatebox[origin=c]{90}{\hfill \textbf{Results}\hspace{6mm}\hfill}} & 
+  \multirow{4}{*}{\rotatebox[origin=c]{90}{\hspace{1mm}Exclusion\hspace{1mm}}} & \multicolumn{1}{|c}{} & \multicolumn{1}{|c|}{}\\
+  & &  \multicolumn{1}{|c}{Missed} & \multicolumn{1}{|c|}{Correct}\\
+  & &  \multicolumn{1}{|c}{Identification} & \multicolumn{1}{|c|}{Exclusion}\\
+  & &  \multicolumn{1}{|c}{} & \multicolumn{1}{|c|}{} \\\cline{2-4}
+& \multirow{4}{*}{\rotatebox[origin=c]{90}{\hspace{1mm}Identification\hspace{1mm}}}  & \multicolumn{1}{|c}{} & \multicolumn{1}{|c|}{}\\
+  & &  \multicolumn{1}{|c}{Correct} & \multicolumn{1}{|c|}{Wrong}\\
+  & &  \multicolumn{1}{|c}{Identification} & \multicolumn{1}{|c|}{Identification}\\
+  & &  \multicolumn{1}{|c}{} & \multicolumn{1}{|c|}{} \\\cline{2-4}
 \end{tabular}
-\caption{Something}
+\caption{Possible outcomes of an examination of two pieces of evidence.\label{tab:possible-outcomes}}
 \end{table}
-\hh{Note that this definition of error is more stringent than the AFTE Theory of Identification, in that it does not allow for inconclusive results, but forces a decision based on a cutoff value. }
-\svp{XXX Relate to AFTE Theory of Examination criteria? How to handle ``inconclusive"?}
+\hh{Note that this definition of error is more stringent than the AFTE Theory of Identification, in that it does not allow for inconclusive results, but forces a decision based on a cutoff value. } \svp{This increased rigor may increase the error rate of the model when compared to examiner error rates, but we expect that the increased information available from the 3D measurement data will compensate for this loss. A binary decision model is also easier to interpret and provides more clear-cut, definitive results.} 
 
+\svp{It is likely that matches which were deemed  inconclusive would instead be marked as exclusions by the algorithm. XXX I don't know if we can make this statement, but I think it would help examiners understand how the line gets drawn if we could. I have exactly no evidence to back that up (except maybe the Hamby 44 tank rash results?)}
 
 In this paper, we validate the algorithm described in \citet{aoas} on three external test sets. We assess the results on each set and evaluate whether the minimal requirements described above are fulfilled for bullet-to-bullet SAM scores. We compare the random forest algorithm's performance to the performance of other suggested measures for quantitative assessment of match strength, such as cross-correlation and consecutive matching striae. 
 
