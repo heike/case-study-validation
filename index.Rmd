@@ -171,7 +171,7 @@ signatures %>%
 
 Once signatures have been extracted from stable regions with expressed striae, they must be aligned in order to assess their match strength. Maximized cross-correlation is used to pair-wise align signatures \citep{aoas,vorburgerApplicationsCrosscorrelationFunctions2011}. 
 
-The cross-correlation function (ccf) between two signatures $S_1(x)$ and $S_2(x)$ is defined as \[CC(S_1, S_2, z) = \text{cor}\left(S_1(x), S_2(x + z)\right)\] where \hh{$x$ and $x+z$ are integer values appropriately defined within the domains of $S_1$ and $S_2$ and  $z$ is the lag between the two sequences. The lag $z$ used to achieve maximum $CC$ is used to determine the best alignment; the maximal value of $CC$ is  used to assess the match strength between the two sequences.} When signatures contain missing values, pairwise complete observations are used to calculate the cross-correlation.
+The cross-correlation (CC) function between two signatures $S_1(x)$ and $S_2(x)$ is defined as \[CC(S_1, S_2, z) = \text{cor}\left(S_1(x), S_2(x + z)\right)\] where \hh{$x$ and $x+z$ are integer values appropriately defined within the domains of $S_1$ and $S_2$ and  $z$ is the lag between the two sequences. The lag $z$ used to achieve maximum $CC$ is used to determine the best alignment; the maximal value of $CC$ is  used to assess the match strength between the two sequences.} When signatures contain missing values, pairwise complete observations are used to calculate the cross-correlation.
 
 ## Statistics for Matching Aligned Signatures
  
@@ -278,10 +278,10 @@ $k=2$ is higher than the other sequence averages, and also higher than the seque
 
 SAM scores allow us to define a single quantity for each pair of bullets that describes the similarity between these two bullets. 
 This leads us to two minimal requirements the \hh{similarity} scores should fulfill:
-\begin{itemize}
+\begin{description}
 \item[(R1)] {\bf Monotonicity:} a higher score is indicative of higher similarity between a pair of bullets, in particular, similarity scores of same-source pairs of bullets are higher than different-source pairs.
 \item[(R2)] {\bf Stability:} the same score leads to the same conclusion. 
-\end{itemize}
+\end{description}
 
 
 ## Identification Errors and Algorithm Evaluation
@@ -308,6 +308,8 @@ When evaluating algorithm performance, it is useful to \svp{enumerate the set of
 \svp{It is likely that matches which were deemed  inconclusive would instead be marked as exclusions by the algorithm. XXX I don't know if we can make this statement, but I think it would help examiners understand how the line gets drawn if we could. I have exactly no evidence to back that up (except maybe the Hamby 44 tank rash results?)}
 
 \svp{In machine learning and statistics, it is common to evaluate algorithms using sensitivity and specificity; these concepts are related to the error rate. \textbf{Sensitivity} is defined as the proportion of actual positives that are correctly identified; that is, when ground truth is same source, the sensitivity is the proportion of correct identifications. \textbf{Specificity} is defined as the proportion of actual negatives that are correctly identified; that is, when ground truth is different source, the specificity is the proportion of correct identifications. The combination of sensitivity and specificity is sufficient to describe the reliability of an algorithm. }
+
+\svp{When evaluating the \citet{aoas} algorithm, we will describe errors as a percentage of correct evaluations. Some machine learning tools, such as ROC curves and AUC, will be presented in the decimal (rate) form because they do not easily translate into a percent-form interpretation. }
 
 \svp{XXX Should we have some sort of header here to differentiate it from the error section?}
 
@@ -726,9 +728,9 @@ hou3
 
 
 # Evaluating the Random Forest Algorithm
-\svp{The random forest SAM scores correctly separate known matches from known non-matches, using SAM scores to aggregate land-to-land scores into a bullet-to-bullet comparison. With no errors at the bullet-to-bullet level, we now need to evaluate the scores in light of the criteria described in \autoref{land-to-land-comparisons}. In this section, we will compare the random forest scores to cross-correlation scores; cross-correlation is one of the components of the random forest, but has also been used to quantify the strength of a match in its own right \citep{chuPilotStudyAutomated2010}. In addition, both scoring methods use the same scale (0 to 1) and are continuous along that interval; other evaluation methods, such as consecutive matching striae are discrete and more difficult to directly compare to continuous measurements.}
+\svp{The random forest SAM scores correctly separate known matches from known non-matches, using SAM scores to aggregate land-to-land scores into a bullet-to-bullet comparison. With no errors at the bullet-to-bullet level, we now need to evaluate the scores in light of (R1) and (R2). In this section, we will compare the random forest scores to cross-correlation scores; cross-correlation is one of the components of the random forest, but has also been used to quantify the strength of a match in its own right \citep{chuPilotStudyAutomated2010}. In addition, both scoring methods use the same scale (0 to 1) and are continuous along that interval; other evaluation methods, such as consecutive matching striae are discrete and more difficult to directly compare to continuous measurements.}
 
-\svp{XXX We may want to add in SAM scores for CMS as well, but that's going to make the the scales on the density plots (and the density plots themselves) a bit wonky. Thoughts?}
+<!-- \svp{XXX We may want to add in SAM scores for CMS as well, but that's going to make the the scales on the density plots (and the density plots themselves) a bit wonky. Thoughts?} -->
 
 ## Comparison of SAM scores
 \autoref{fig:compare} shows density curves for the scores bullet-to-bullet matches of each of the studies, comparing the SAM scores based on cross-correlation (top) and the random forest score (bottom). Color indicates ground truth. Small vertical lines below the $x$-axis indicate observed scores in a **rug-plot**. The plot shows that for all three case studies and both continuous measures, i.e. SAM scores based on cross-correlation as well as SAM scores based on the random forest scores, all similarity scores are higher for pairs of bullets from the same source, i.e. bullets fired through the same barrel, than pairs of bullets from different sources (fired through different barrels). 
@@ -782,10 +784,10 @@ nestslong %>%
   )
 ```
 
-\svp{According to \autoref{fig:compare}, neither cross-correlation nor random forest score} fulfill both of the minimal requirements laid out \svp{in \autoref{land-to-land-comparisons}}. Both measures fulfill (R1), i.e. all  scores  of  different-source pairs are lower than scores of same-source pairs for SAM scores based on cross-correlation and RF scores.
+\svp{According to \autoref{fig:compare}, neither cross-correlation nor random forest score} fulfill both of the minimal requirements laid out \svp{in the introduction}. Both measures fulfill (R1), i.e. all  scores  of  different-source pairs are lower than scores of same-source pairs for SAM scores based on cross-correlation and RF scores.
 However, SAM scores based on the multivariate random forest score show better separation between same-source and different-source scores than SAM scores based on cross-correlation. This can be seen from the larger horizontal distance between the modes (peaks) of the density curves of RF based SAM scores compared to the cross-correlation SAM scores.  
 
-Regarding requirement (R2), \autoref{fig:compare} shows that a single cutoff value does not exist that separates same-source scores from different-source scores across all three studies, without introducing errors.
+Regarding requirement (R2), \autoref{fig:compare} shows that a single cutoff value does not exist that separates same-source scores from different-source scores across all three studies without introducing errors.
 
 There are several approaches for potential improvements: we can try to fine tune the matching algorithm to take make and model of the firearm and ammunition used into account or expand the training base of the algorithm to include a wider variety of makes and models. The downside of \svp{either of these options} is that we \svp{would} need to considerably expand the database used for training. Another solution would be to \svp{augment} the aggregation used to get from land-to-land scores to bullet scores: SAM scores only take the scores of the maximum sequence into account and ignore scores associated with pairs of land engraved areas from different sources. Those scores might be useful in establishing a baseline that better expresses similarity between pairs of bullets. One approach that uses scores for both same source pairs and different source pairs are score-based likelihood ratios \citep{Bunch:2013if, Morrison:2018fh}.
 
@@ -794,7 +796,7 @@ There are several approaches for potential improvements: we can try to fine tune
 
 ## Digging deeper: comparison of land-to-land scores
 
-\svp{Examining land-to-land scores provides more details about the matching algorithm's performance. \autoref{fig:compare-land-to-land} shows density curves and rug plots for each study. There is some overlap between known matching and known non-matching land-to-land scores; in many cases the random forest scores for these overlapping values are more extreme than the corresponding ccf scores. This suggests that the matching algorithm is sensitive to the presence of LEAs which have low land-to-land match scores, such as the matches of bullets `I' and `F' in the Hamby 44 study. Comparing this to the bullet-to-bullet score density plot shown in \autoref{fig:compare}, we see that there is much greater separation between the same-source and different-source densities for each study in the bullet-to-bullet comparisons than in the land-to-land comparisons, that is, one or two poorly matching lands does not prevent the bullet from showing a matching score, though if there are weak matches on several lands, such as the marked Hamby 44 comparisons in \autoref{fig:compare}, the overall score may be affected. }
+\svp{Examining land-to-land scores provides more details about the matching algorithm's performance. \autoref{fig:compare-land-to-land} shows density curves for each study. There is some overlap between known matching and known non-matching land-to-land scores; in many cases the random forest scores for these overlapping values are more extreme than the corresponding cross-correlation scores. This suggests that the matching algorithm is sensitive to the presence of LEAs which have low land-to-land match scores, such as the matches of bullets `I' and `F' in the Hamby 44 study. Comparing this to the bullet-to-bullet score density plot shown in \autoref{fig:compare}, we see that there is much greater separation between the same-source and different-source densities for each study in the bullet-to-bullet comparisons than in the land-to-land comparisons, that is, one or two poorly matching lands does not prevent the bullet from showing a matching score, though if there are weak matches on several lands, such as the marked Hamby 44 comparisons in \autoref{fig:compare}, the overall score may be affected. }
 
 ```{r, cache=FALSE}
 hounest <- hounest %>% mutate(
