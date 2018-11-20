@@ -39,7 +39,7 @@ Cleanup TO-DO
 \begin{itemize}
 \item define false positives and false negatives once and stick to those definitions. We should avoid false positive and false negatives, because that only makes sense in a test setting, which we have not defined formally.
 Let's use instead wrong identification and missed identification. 
-\item error rates: we are using rates exchangeably with percentages. We need to fix that. I think percentages might be easier understood. 
+\item error rates: we are using rates exchangeably with percentages. We need to fix that. I think percentages might be easier understood. XXX Should be fixed now
 \end{itemize}
 }
 
@@ -171,7 +171,8 @@ signatures %>%
 
 Once signatures have been extracted from stable regions with expressed striae, they must be aligned in order to assess their match strength. Maximized cross-correlation is used to pair-wise align signatures \citep{aoas,vorburgerApplicationsCrosscorrelationFunctions2011}. 
 
-The cross-correlation (CC) function between two signatures $S_1(x)$ and $S_2(x)$ is defined as \[CC(S_1, S_2, z) = \text{cor}\left(S_1(x), S_2(x + z)\right)\] where \hh{$x$ and $x+z$ are integer values appropriately defined within the domains of $S_1$ and $S_2$ and  $z$ is the lag between the two sequences. When signatures contain missing values, pairwise complete observations are used to calculate the cross-correlation. The lag $z$ used to achieve maximum $CC$ is used to determine the best alignment.} 
+The cross-correlation (CC) function between two signatures $S_1(x)$ and $S_2(x)$ is defined as \[CC(S_1, S_2, z) = \text{cor}\left(S_1(x), S_2(x + z)\right)\] where $x$ and $x+z$ are integer values appropriately defined within the domains of $S_1$ and $S_2$ and  $z$ is the lag between the two sequences. When signatures contain missing values, pairwise complete observations are used to calculate the cross-correlation. The lag $z$ used to achieve maximum $CC$ is used to determine the best alignment.
+
 
 ## Statistics for Matching Aligned Signatures
 
@@ -287,7 +288,7 @@ This leads us to two minimal requirements the \hh{similarity} scores should fulf
 
 
 ## Identification Errors and Algorithm Evaluation
-When evaluating algorithm performance, it is useful to \svp{enumerate the set of possible outcomes}. If ground truth and the algorithm's prediction match, we have either a correct identification or a correct exclusion. If ground truth and the algorithm's prediction do not match, we distinguish between two types of errors, which we will refer to as \textbf{wrong identification} and \textbf{missed identification}. Wrong identifications are those in which two bullets from different sources are determined to be from the same source. Missed identifications are those in which two bullets from the same source are determined to be from different sources. \svp{The full range of possible outcomes is shown in \autoref{tab:possible-outcomes}.} 
+When evaluating algorithm performance, it is useful to \hh{systematically assess }\svp{ the set of possible outcomes} \hh{first}: if ground truth and the algorithm's prediction match, we have either a correct identification or a correct exclusion. If ground truth and the algorithm's prediction do not match, we distinguish between two types of errors, which we will refer to as \textbf{wrong identification} and \textbf{missed identification}. Wrong identifications are those in which two bullets from different sources are determined to be from the same source. Missed identifications are those in which two bullets from the same source are determined to be from different sources. The full range of possible outcomes is shown in \autoref{tab:possible-outcomes}.
 \begin{table}
 \centering
 \begin{tabular}{c|ccc}
@@ -956,7 +957,7 @@ all_lands %>%
   geom_hline(yintercept = 0, show.legend = F)
 ```
 
-When evaluating classifier performance, it is common to use a receiver operating characteristic (ROC) curve, which plots the percent of wrong identifications against the percent correct identifications for each possible value of the cutoff between the two classes (in this case, known match and known non-match). Land-to-land scores are not perfectly separated, we can therefore use ROC curves to distinguish between the performance of the different methods and studies. The ROC curves for the land-to-land scores are shown in \autoref{fig:roc-auc} (a). A perfect classifier would have 100\% correct identifications and 0\% wrong identifications, e.g. the ROC curve would be a right angle at (0, 100). Classifiers with better performance will be closer to this corner of the plot. A random classifier would have an ROC curve that was a straight diagonal line through (0,0) and (100,100).
+When evaluating classifier performance, it is common to use a receiver operating characteristic (ROC) curve, which plots the percent of wrong identifications against the percent correct identifications for each possible value of the cutoff between the two classes (in this case, known match and known non-match). Land-to-land scores are not perfectly separated, we can therefore use ROC curves to distinguish between the performance of the different methods and studies. The ROC curves for the land-to-land scores are shown in \autoref{fig:roc-auc} (a). A perfect classifier would have 100\% correct identifications and 0\% wrong identifications, e.g. the ROC curve would be a right angle at $(0, 100)$. Classifiers with better performance will be closer to this corner of the plot. A random classifier would have an ROC curve that was a straight diagonal line through $(0,0)$ and $(100,100)$.
 
 
 
@@ -971,7 +972,7 @@ rocpic <- all_lands %>% gather(measure, score, rfscore, ccf, cms) %>%
   ) %>%
   ggplot(aes(linetype = measure, colour = studyg)) +
   geom_roc(aes(m = score, d = as.numeric(sameland)), 
-           labels = FALSE, pointsize = 0, alpha = 0.8, size = .75) +
+           labels = FALSE, pointsize = 0, alpha = 0.8, size = 1) +
   theme_bw() +
   # coord_fixed() + 
   facet_wrap(~studyg, nrow=3) +
@@ -984,8 +985,8 @@ rocpic <- all_lands %>% gather(measure, score, rfscore, ccf, cms) %>%
         legend.key.width = unit(1, "cm")) +
   guides(linetype = guide_legend(override.aes = list(shape = NA, size = .5))) + 
   scale_linetype_manual("Measure", values=c(1,3,2)) +
-  scale_x_continuous(breaks=seq(0,1, by=0.25), labels=c("0", "25\\%", "50\\%", "75\\%", "100\\%")) +
-  scale_y_continuous(breaks=seq(0,1, by=0.25), labels=c("0", "25\\%", "50\\%", "75\\%", "100\\%"))
+  scale_x_continuous(breaks=seq(0,1, by=0.25), labels=c("0", "25%", "50%", "75%", "100%")) +
+  scale_y_continuous(breaks=seq(0,1, by=0.25), labels=c("0", "25%", "50%", "75%", "100%"))
 
 ```
 
@@ -1038,7 +1039,7 @@ aucpic <- aucs %>%
   theme_bw() +
   xlab("AUC and 95% confidence intervals") +
   xlim(c(0.5, 1)) +
-  scale_y_continuous("", breaks = unique(aucs$measurenum), labels = unique(aucs$measurechar)) + 
+  scale_y_continuous("", breaks = unique(aucs$measurenum), labels = unique(aucs$measurechar), limits=c(0.5, 3.5)) + 
   scale_colour_manual("Study", values = c("#fe9929", "#aa0000",
                                          "#74a9cf", "#2b8cbe", "#045a8d"),
                         guide = FALSE) +
@@ -1050,7 +1051,7 @@ aucpic <- aucs %>%
 ```
 
 
-```{r roc-auc, echo = FALSE, out.width = c("0.49\\textwidth", ".45\\textwidth"), out.height = c("0.6\\textwidth", "0.6\\textwidth"), fig.width = c(5, 6), fig.height = c(7.5, 7.5), fig.subcap=c("ROC curves", "Area under the curve (AUC)"), fig.cap="ROC curves and AUC for each (set) of the studies for the random forest score (RF), cross-correlation (CC) and consecutively matching striae (CMS).   As seen in the ROC curves, the algorithm performs the least well on set 2 of the Houston FSI study. Based on AUC, the overall performance on all sets is very good to excellent for cross-correlation and the random forest score. At the land level there is no significant difference in prediction power between RF score and cross-correlation.", cache=FALSE}
+```{r roc-auc, echo = FALSE, out.width = c("0.51\\textwidth", ".4725\\textwidth"), out.height = c("0.63\\textwidth", "0.63\\textwidth"), fig.width = c(5, 6), fig.height = c(7.5, 7.5), fig.subcap=c("ROC curves", "Area under the curve (AUC)"), fig.cap="ROC curves and AUC for each (set) of the studies for the random forest score (RF), cross-correlation (CC) and consecutively matching striae (CMS).   As seen in the ROC curves, the algorithm performs the least well on set 2 of the Houston FSI study. Based on AUC, the overall performance on all sets is very good to excellent for cross-correlation and the random forest score. At the land level there is no significant difference in prediction power between RF score and cross-correlation.", cache=FALSE}
   rocpic
   aucpic
 ```
