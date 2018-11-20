@@ -299,7 +299,7 @@ When evaluating algorithm performance, it is useful to \svp{enumerate the set of
   & &  \multicolumn{1}{|c}{Identification} & \multicolumn{1}{|c|}{Identification}\\
   & &  \multicolumn{1}{|c}{} & \multicolumn{1}{|c|}{} \\\cline{2-4}
 \end{tabular}
-\caption{Possible outcomes of an examination of two pieces of evidence.\label{tab:possible-outcomes}}
+\caption{Possible outcomes of an examination of two pieces of evidence. Correct decisions are shown in the top-right and bottom-left corners; incorrect decisions in the top-left and bottom-right corners.\label{tab:possible-outcomes}}
 \end{table}
 \hh{Note that this definition of error is more stringent than the AFTE Theory of Identification, in that it does not allow for inconclusive results, but forces a decision based on a cutoff value. } \svp{This increased rigor may increase the error rate of the model when compared to examiner error rates, but we expect that the increased information available from the 3D measurement data will compensate for this loss. A binary decision model is also easier to interpret and provides more clear-cut, definitive results.} 
 
