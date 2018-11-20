@@ -171,20 +171,22 @@ signatures %>%
 
 Once signatures have been extracted from stable regions with expressed striae, they must be aligned in order to assess their match strength. Maximized cross-correlation is used to pair-wise align signatures \citep{aoas,vorburgerApplicationsCrosscorrelationFunctions2011}. 
 
-The cross-correlation (CC) function between two signatures $S_1(x)$ and $S_2(x)$ is defined as \[CC(S_1, S_2, z) = \text{cor}\left(S_1(x), S_2(x + z)\right)\] where \hh{$x$ and $x+z$ are integer values appropriately defined within the domains of $S_1$ and $S_2$ and  $z$ is the lag between the two sequences. The lag $z$ used to achieve maximum $CC$ is used to determine the best alignment; the maximal value of $CC$ is  used to assess the match strength between the two sequences.} When signatures contain missing values, pairwise complete observations are used to calculate the cross-correlation.
+The cross-correlation (CC) function between two signatures $S_1(x)$ and $S_2(x)$ is defined as \[CC(S_1, S_2, z) = \text{cor}\left(S_1(x), S_2(x + z)\right)\] where \hh{$x$ and $x+z$ are integer values appropriately defined within the domains of $S_1$ and $S_2$ and  $z$ is the lag between the two sequences. When signatures contain missing values, pairwise complete observations are used to calculate the cross-correlation. The lag $z$ used to achieve maximum $CC$ is used to determine the best alignment.} 
 
 ## Statistics for Matching Aligned Signatures
- 
-<!-- \hh{XXX define signatures mathematically here - as random spatial process; extracted from crosscut by removing big structure first and then applying (cross-validated, \citet{aoas}) 'roughness' filter. 'roughness' defined by NIST paper. } -->
 
 Once two signatures are aligned, quantitative features describing the similarity of two signature are extracted. Features include characteristics of the signature that firearms and toolmark examiners base their visual assessment on, such as striae depth, number of matching striae, and the number of consecutively matching striae (CMS). Statistical features such as cross-correlation and Euclidean distance between the signatures are also extracted and used to assess the strength of the correspondence between the aligned signatures. 
 
-One of the measures firearms examiners use to describe the strength of a match quantitatively is the number of consecutive matching striae (CMS) as defined by \citet{biasotti}.
+One of the measures firearms examiners use to describe the strength of a match quantitatively is the number of consecutive matching striae (CMS) as defined by \citet{biasotti}. \svp{In order to evaluate CMS, we must first identify peaks and valleys in each of the signatures, then determine whether these peaks and valleys overlap sufficiently. Features which firearms examiners assess visually depend on the identification of these extrema; numerical features such as cross-correlation can be computed from the aligned signatures alone. } 
+
+
 If there are at least 6 consecutive matching striae, the bullets are considered to be a good match \citep{biasotti_firearms_1997,nichols_scientific_2006}. 
 CMS in this setting are counted as the number of consecutive peaks in signatures of two lands that match, in part because it is difficult to visually assess valleys except as relative to peaks. 
 Note that because signatures are moved into phase based on the maximum cross-correlation rather than matching striation marks, it is possible for two lands to have a consecutive matching striae of 0. CMS are generally considered to be a very conservative criteria, in that bullets fired through the same barrel may not have a high number of consecutively matching striae; in this sense, CMS may be more likely to produce an inconclusive result.
 <!--\hh{XXX for CMS we need to define peaks, and matching peaks, and for that we need to define the additional filter/smooth.}\svp{XXX Can't we just refer to the aoas paper? It seems to be defined in there relatively well.}-->
 \svp{XXX Feels like we need to mention something about ccf here just because these are the 3 main features we're using to evaluate the algorithm...?}
+
+; the maximal value of $CC$ is  used to assess the match strength between the two sequences
 
 The random forest presented in \citet{aoas} is based on a combination of multiple characteristics, such as maximized cross-correlation, number of matching striae, and number of consecutively matching striae among others. The output of the random forest is a score between 0 and 1 representing the algorithm's assessment of the strength of the match, where scores close to 1 indicate that the algorithm believes it to be highly likely that the aligned signatures come from the same source, while low scores indicate that the aligned signatures are highly likely to originate from different lands.
 
@@ -226,7 +228,7 @@ p2 <- bab %>%
   theme(legend.position = "bottom") + coord_equal()
 ```
 
-### Land-to-Land Comparisons
+### Bullet Structure
 
 Land-to-land comparisons lead to a whole set of scores for bullet-to-bullet comparisons. \autoref{fig:b2b} shows two matrices of scores for \hh{two pairs} of bullet-to-bullet matches. On the left, a matrix is shown that is typical for scores from two bullets from the same barrel. On the right, values for a pair of known non-matching bullets are shown.
 
@@ -790,9 +792,6 @@ However, SAM scores based on the multivariate random forest score show better se
 Regarding requirement (R2), \autoref{fig:compare} shows that a single cutoff value does not exist that separates same-source scores from different-source scores across all three studies without introducing errors.
 
 There are several approaches for potential improvements: we can try to fine tune the matching algorithm to take make and model of the firearm and ammunition used into account or expand the training base of the algorithm to include a wider variety of makes and models. The downside of \svp{either of these options} is that we \svp{would} need to considerably expand the database used for training. Another solution would be to \svp{augment} the aggregation used to get from land-to-land scores to bullet scores: SAM scores only take the scores of the maximum sequence into account and ignore scores associated with pairs of land engraved areas from different sources. Those scores might be useful in establishing a baseline that better expresses similarity between pairs of bullets. One approach that uses scores for both same source pairs and different source pairs are score-based likelihood ratios \citep{Bunch:2013if, Morrison:2018fh}.
-
-\svp{XXX This is a bit of an incomplete thought. I think I know where you were going, but can you expand on it a bit so that I'm not putting words in your mouth? XXX}
-\citet{Morrison:2018km}  stress the need to additionally include the typicality of a signature.
 
 ## Digging deeper: comparison of land-to-land scores
 
