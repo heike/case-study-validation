@@ -78,6 +78,20 @@ library(gridExtra)
 library(kableExtra)
 ```
 
+```{r child-doc-compile, include = F}
+library(stringr)
+thisdoc <- readLines("index.Rmd")
+idxs <- which(thisdoc == "---")
+if (length(idxs) >= 2) {
+  # Get yaml metadata, set to nonblinded, write to title-page.Rmd
+  thisdoc[idxs[1]:idxs[2]] %>%
+    str_replace("^blinded: 1", "blinded: 0") %>%
+    writeLines(con = "title-page.Rmd")
+}
+
+rmarkdown::render("title-page.Rmd", clean = T)
+```
+
 ```{r functions, eval=FALSE}
 estimateBeta <- function(x, method = "mm", probs = c(0.25, 0.75)) {
   if (method == "mm") {
