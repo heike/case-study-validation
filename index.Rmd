@@ -88,6 +88,8 @@ knitr::opts_chunk$set(
 )
 options(knitr.table.format = "latex")
 
+library(stringr)
+
 library(tidyverse)
 library(scales)
 library(multidplyr) # install_github("hadley/multidplyr")
@@ -96,10 +98,9 @@ library(gridExtra)
 library(kableExtra)
 ```
 
-```{r child-doc-compile, include = F}
-library(stringr)
+```{r child-doc-compile, include = F, cache = F}
 thisdoc <- readLines("index.Rmd")
-idxs <- which(thisdoc == "---")
+idxs <- which(str_detect(thisdoc, "^---$"))
 if (length(idxs) >= 2) {
   # Get yaml metadata, set to nonblinded, write to title-page.Rmd
   thisdoc[idxs[1]:idxs[2]] %>%
@@ -109,6 +110,7 @@ if (length(idxs) >= 2) {
 }
 
 rmarkdown::render("title-page.Rmd", clean = T)
+file.remove("title-page.tex", "title-page.Rmd")
 ```
 
 ```{r functions, eval=FALSE}
@@ -134,7 +136,7 @@ estimateBeta <- function(x, method = "mm", probs = c(0.25, 0.75)) {
 
 In current practice, firearms and toolmark examiners (FTE) evaluate the similarity of striae on bullets by placing the evidence together with another bullet under a comparison microscope. The second bullet could be a test fire from a weapon recovered during the investigation, or it could be a second bullet from the crime scene. Examiners visually classify similarity according to the theory of firearms identification \citep{identification} as one of identification, inconclusive or exclusion. Exact guidelines for this classification vary from lab to lab; some labs will exclude only on the basis of non-matching class characteristics, such as direction of the twist in rifling, land length or number of lands, or type of rifling. In other labs, CMS (consecutively matching striae) as defined by \citet{biasotti} is used as a measure to quantify the strength of a match. In virtually all labs, individual characteristics used to identify matching bullets are derived from visual assessment; some class characteristics may be directly measured, but these are not sufficient for individualization.  <!-- Want to make it clear that individual characteristics are visually derived, rather than numerically derived... hopefully managed that without being insulting. HH: reads well -->
 
-## Identification Using 3D Imaging Technology
+<!-- ## Identification Using 3D Imaging Technology -->
 
 More explicit characterization of bullet surfaces has been discussed since at least 1958 (\citeauthor{davis1968introduction}), but at the time technology was not sufficiently advanced to make an analysis based on 3D measurements or surface traces a viable option. \citet{ComputerIdentificationBullets1978} demonstrated use of a scanning electron microscope to quantitatively examine and compare bullet striae. More recently, approaches using 3D measurement data were explicitly described in 1999 (\citeauthor{dekinderAutomatedComparisonsBullet1999}), and have been further developed by \citet{bachrachDevelopment3DbasedAutomated2002,xieAutomatedBulletidentificationSystem2009, chuPilotStudyAutomated2010}. These approaches utilize 3D surface measurements directly to characterize the topology of land engraved areas (LEAs), rather than using visual or image comparison techniques. In many cases, these approaches also provide some level of automation of the comparison process, with the goal of reducing human biases by augmenting the visual information with 3D measurements. Utilizing the 3D measurements allows for examination of both peaks and valleys in LEAs, \hh{it also allows us to take the depth of striae into account, something that is difficult, if not impossible, for visual examination.} 
 
@@ -258,14 +260,18 @@ When evaluating algorithm performance, it is useful to \hh{systematically assess
 \begin{tabular}{c|ccc}
 \multicolumn{2}{c}{} & \multicolumn{2}{c}{\textbf{Ground Truth}}\\\cline{3-4}
 \multicolumn{2}{c}{} & \multicolumn{1}{|c}{Same Source} & \multicolumn{1}{|c|}{Different Source} \\\cline{2-4}
-\multirow{8}{*}{\rotatebox[origin=c]{90}{\hfill \textbf{Results}\hspace{6mm}\hfill}} & 
-  \multirow{4}{*}{\rotatebox[origin=c]{90}{\hspace{1mm}Exclusion\hspace{1mm}}} & \multicolumn{1}{|c}{} & \multicolumn{1}{|c|}{}\\
+\multirow{8}{*}{\rotatebox[origin=c]{90}{\hfill \textbf{Results}\hspace{5mm}\hfill}} & 
+  \multirow{6}{*}{\rotatebox[origin=c]{90}{\hspace{1mm}Exclusion\hspace{1mm}}} & \multicolumn{1}{|c}{} & \multicolumn{1}{|c|}{}\\
+  & &   \multicolumn{1}{|c}{} & \multicolumn{1}{|c|}{}\\
   & &  \multicolumn{1}{|c}{Missed} & \multicolumn{1}{|c|}{Correct}\\
   & &  \multicolumn{1}{|c}{Identification} & \multicolumn{1}{|c|}{Exclusion}\\
+  & &   \multicolumn{1}{|c}{} & \multicolumn{1}{|c|}{}\\
   & &  \multicolumn{1}{|c}{} & \multicolumn{1}{|c|}{} \\\cline{2-4}
-& \multirow{4}{*}{\rotatebox[origin=c]{90}{\hspace{1mm}Identification\hspace{1mm}}}  & \multicolumn{1}{|c}{} & \multicolumn{1}{|c|}{}\\
+& \multirow{6}{*}{\rotatebox[origin=c]{90}{\hspace{1mm}Identification\hspace{1mm}}}  & \multicolumn{1}{|c}{} & \multicolumn{1}{|c|}{}\\
+  & &  \multicolumn{1}{|c}{} & \multicolumn{1}{|c|}{}\\
   & &  \multicolumn{1}{|c}{Correct} & \multicolumn{1}{|c|}{Wrong}\\
   & &  \multicolumn{1}{|c}{Identification} & \multicolumn{1}{|c|}{Identification}\\
+  & &  \multicolumn{1}{|c}{} & \multicolumn{1}{|c|}{}\\
   & &  \multicolumn{1}{|c}{} & \multicolumn{1}{|c|}{} \\\cline{2-4}
 \end{tabular}
 \caption{Possible outcomes of an examination of two pieces of evidence. Correct decisions are shown in the top-right and bottom-left corners; incorrect decisions in the top-left and bottom-right corners.\label{tab:possible-outcomes}}
@@ -1026,7 +1032,7 @@ When evaluating classifier performance, it is common to use a receiver operating
 
 
 
-```{r rocs, fig.cap="ROC curves for all studies based on land-to-land comparisons of the random forest score."}
+```{r rocs}
 library(plotROC)
 library(pROC)
 rocpic <- all_lands %>% gather(measure, score, rfscore, ccf, cms) %>%
@@ -1055,7 +1061,7 @@ rocpic <- all_lands %>% gather(measure, score, rfscore, ccf, cms) %>%
 ```
 
 
-```{r aucs-pic, fig.cap=""}
+```{r aucs-pic}
 eer <- function(roc){
   dframe <- data.frame(sens = roc$sensitivities, 
                        spec = roc$specificities,
@@ -1164,6 +1170,78 @@ All of the studies presented here involve the same type of firearm. We see some 
 \svp{The random forest matching algorithm presented in \citet{aoas} does perform well on three different external test sets. While a single cutoff value cannot be used to distinguish matches and non-matches across the different test sets, the algorithm makes no errors when a set-specific cutoff value is used on bullet-to-bullet scores aggregated using sequence average maximum.} \svp{XXX comparison to FTEs XXX} \svp{By validating the algorithm on external test sets, we have demonstrated that the method can be generalized to different types of ammunition and is not overly sensitive to small differences in rifling procedure. Future studies can generalize this to a wider range of external test sets to establish the limits of the algorithm's generalizability.}
 
 
+```{r output-all-figs, include = F}
+thisdoc <- readLines("index.Rmd")
+
+# First, get figures that aren't in code chunks
+# Haven't really tested this part - regex may need work
+raw_figures <- data_frame(
+  line_start = which(str_detect(thisdoc, "\\begin\\{figure\\}")), 
+  line_end = which(str_detect(thisdoc, "\\end\\{figure\\}")),
+  subfloats = purrr::map2(line_start, line_end, 
+                          ~str_extract(thisdoc[.x:.y], "\\includegraphics(?:\\[.*\\])?\\{(.*)\\}") %>%
+                            str_replace("\\includegraphics(?:\\[.*\\])?\\{(.*)\\}", "\\1"))
+)
+
+# Code chunk figures
+chunk_figures <- data_frame(
+  line_start = which(str_detect(thisdoc, "^```\\{r.*\\}$")),
+  line_end = which(str_detect(thisdoc, "^``` *$")),
+  chunk_name = str_replace(thisdoc[line_start], "(```\\{r ?)([0-9A-z-]*)(,?.*\\})", "\\2")
+) %>% 
+  mutate(
+    chunk_name = ifelse(chunk_name == "", "unnamed-chunk", chunk_name),
+  ) %>% 
+  mutate(
+    subfloats = purrr::map2(line_start, chunk_name, ~thisdoc[.x] %>%
+                              str_extract("fig\\.subcap ?= ?.*?\\),") %>%
+                              str_replace("fig\\.subcap ?= ?", "") %>%
+                              str_replace(",$", "") %>%
+                              parse(text=.) %>% eval %>% length() %>% 
+                              seq(1, ., by = 1) %>%
+                              sprintf("figures/%s-%d.pdf", .y, .))
+  )
+
+# Knitr included graphics figures
+chunk_incl_figures <- data_frame(
+  line_start = which(str_detect(thisdoc, "^```\\{r.*\\}$")),
+  line_end = which(str_detect(thisdoc, "^``` *$")),
+  chunk_name = str_replace(thisdoc[line_start], "(```\\{r ?)([0-9A-z-]*)(,?.*\\})", "\\2")
+) %>% 
+  mutate(
+    chunk_name = ifelse(chunk_name == "", "unnamed-chunk", chunk_name),
+  ) %>% 
+  mutate(
+    subfloats = purrr::map2(line_start, line_end, function(.x, .y) {
+      thisdoc[.x:.y] %>%
+        paste(collapse = " ") %>%
+        str_extract(., "include_graphics\\(c?\\(?.*?\\)?\\)") %>%
+        str_replace("include_graphics\\(", "") %>%
+        str_extract_all('\\"[\\.A-z0-9 /-]*?\\"') %>%
+        parse(text = .) %>% eval() %>%
+        str_remove_all("\\\\|\"")
+    })
+  )
+
+# All figures
+figs <- bind_rows(raw_figures, chunk_figures, chunk_incl_figures) %>%
+  arrange(line_start) %>%
+  mutate(subfloats = purrr::map(subfloats, function(x) data_frame(file = x, exists = file.exists(x)))) %>%
+  tidyr::unnest() %>%
+  filter(exists) %>%
+  mutate(fig_num = group_indices(., line_start, line_end)) %>%
+  group_by(fig_num) %>%
+  mutate(rn = 1:n(),
+         maxrn = n(),
+         fig_label = letters[rn],
+         fig_label = ifelse(maxrn > 1, fig_label, ""),
+         fileext = tools::file_ext(file),
+         fig_label = sprintf("Figure_%d%s.%s", fig_num, fig_label, fileext))
+
+if (!dir.exists("separate_fig_files")) dir.create("separate_fig_files")
+file.copy(figs$file, file.path("separate_fig_files", figs$fig_label))
+
+```
 # References
 
 
