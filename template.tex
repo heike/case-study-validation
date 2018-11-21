@@ -59,7 +59,7 @@
 
   \author{
     $for(authors)$
-    $authors.name$ $if(authors.thanks)$\thanks{$authors.thanks$} $endif$\\
+    $authors.name$ $if(authors.thanks)$\thanks{$for(authors.thanks)$$authors.thanks$$sep$\newline\indent $endfor$} $endif$\\
     $authors.affiliation$\\
     $sep$ and \\ $endfor$
   }
