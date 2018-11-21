@@ -1,8 +1,9 @@
 ---
 title: Case study validations of automatic bullet matching
 
-# to produce blinded version set to 1
-blinded: 1
+blinded: 1 # to produce blinded version set to 1
+titlepage: 0 # This gets changed automatically when the title page is compiled in the chunk child-doc-compile
+draft: 0 # Set to 1 if figures should be included with the text
 
 affiliation: 
 - Department of Statistics, Iowa State University
@@ -105,6 +106,7 @@ if (length(idxs) >= 2) {
   # Get yaml metadata, set to nonblinded, write to title-page.Rmd
   thisdoc[idxs[1]:idxs[2]] %>%
     str_replace("^blinded: 1", "blinded: 0") %>%
+    str_replace("^titlepage: 0", "titlepage: 1") %>%
     str_replace("^abstract:.*", "") %>%
     writeLines(con = "title-page.Rmd")
 }
@@ -1239,7 +1241,7 @@ figs <- bind_rows(raw_figures, chunk_figures, chunk_incl_figures) %>%
          fig_label = sprintf("Figure_%d%s.%s", fig_num, fig_label, fileext))
 
 if (!dir.exists("separate_fig_files")) dir.create("separate_fig_files")
-file.copy(figs$file, file.path("separate_fig_files", figs$fig_label))
+file.copy(figs$file, file.path("separate_fig_files", figs$fig_label), overwrite = T)
 
 ```
 # References
