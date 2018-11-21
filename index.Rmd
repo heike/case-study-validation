@@ -5,11 +5,11 @@ title: Case study validations of automatic bullet matching
 blinded: 1
 
 authors: 
-- name: Heike Hofmann
+- name: Heike Hofmann, Ph.D.
   thanks: This work was partially funded by the Center for Statistics and Applications in Forensic Evidence (CSAFE) through Cooperative Agreement \#70NANB15H176 between NIST and Iowa State University, which includes activities carried out at Carnegie Mellon University, University of California Irvine, and University of Virginia. The authors wish to thank Jim Hamby, Tylor Klep (Phoenix PD), and Melissa Nally and Kasi Kirksey (FSI Houston) for access to test set bullets. XXX Scanning. Hamby advice. 
   affiliation: Department of Statistics, Iowa State University
   
-- name: Susan VanderPlas
+- name: Susan VanderPlas, Ph.D.
   affiliation: Department of Statistics, Iowa State University
 
 keywords:
