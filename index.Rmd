@@ -26,6 +26,7 @@ biblio-style: apsr
 
 output: 
   pdf_document:
+    number_sections: false
     citation_package: natbib
     keep_tex: true
     fig_caption: true
@@ -48,6 +49,7 @@ Let's use instead wrong identification and missed identification. }
 \svp{
 Outstanding XXX items:
 \begin{itemize}
+\item ``Authors are responsible for obtaining written permission from persons acknowledged by name, because readers may infer their endorsement of the data and conclusions."
 \item thanks - scanning and hamby advice
 \item comparison to FTEs in conclusion
 \end{itemize}
@@ -64,6 +66,7 @@ knitr::opts_chunk$set(
   comment = "",
   fig.height = 6,
   fig.width = 6,
+  dpi = 300,
   fig.align = "center",
   out.width = "\\textwidth",
   cache = TRUE,
