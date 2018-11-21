@@ -2,7 +2,7 @@
 title: Case study validations of automatic bullet matching
 
 # to produce blinded version set to 1
-blinded: 0
+blinded: 1
 
 authors: 
 - name: Heike Hofmann
@@ -13,8 +13,9 @@ authors:
   affiliation: Department of Statistics, Iowa State University
 
 keywords:
-- 3 to 6 keywords
-- that do not appear in the title
+- random forest
+- 3d microscopy
+- toolmark
 
 abstract: Recent advances in microscopy have made it possible to collect 3d topographic data, enabling virtual comparisons based on the collected 3D data next to traditional comparison microscopy. Automatic matching algorithms have been introduced for various scenarios, such as matching cartridge cases (Tai and Eddy 2018) or matching bullet striae (Hare et al. 2017b,  Chu et al 2013,  De Kinder and Bonfanti 1999). One key aspect of validating automatic matching algorithms is to evaluate the performance of the algorithm on external tests. Here, we are presenting a discussion of the performance of the matching algorithm (Hare et al. 2017b) in three studies. We are considering matching performance based on the Random forest score, cross-correlation, and consecutive matching striae (CMS) at the land-to-land level and, using Sequential Average Maxima scores, also at the bullet-to bullet level. Cross-correlation and Random Forest scores both result in perfect discrimination of same-source and different-source bullets. At the land-to-land level, discrimination (based on area under the curve, AUC) is excellent ($ge$ 0.90). 
 
