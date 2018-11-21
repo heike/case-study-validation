@@ -4,22 +4,45 @@
 \usepackage{amsthm}
 \usepackage{graphicx,psfrag,epsf}
 \usepackage{enumerate}
-\usepackage{natbib}
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{array}
 \usepackage{multirow}
+\usepackage{adjustbox}
 \usepackage[table]{xcolor}
 \usepackage{wrapfig}
 \usepackage{subfig}
 \usepackage{float}
-\usepackage{colortbl}
-\usepackage{hyperref}
+% \usepackage{colortbl}
 \usepackage{pdflscape}
 \usepackage{tabu}
 \usepackage{threeparttable}
-\usepackage[normalem]{ulem} % for strikeout text
 \usepackage{url} % not crucial - just used below for the URL
+
+\usepackage{sectsty}
+\sectionfont{\normalfont\textbf}
+\subsectionfont{\normalfont\itshape}
+\subsubsectionfont{\normalfont}
+
+\usepackage{natbib}
+\setcitestyle{numbers} 
+\makeatletter % Reference list option change
+\renewcommand\@biblabel[1]{#1. } % from [1] to 1
+\makeatother %
+
+\usepackage[nomarkers,tabhead,fighead]{endfloat}
+
+\usepackage[colorlinks]{hyperref}
+\hypersetup{
+  colorlinks=true,
+  citecolor=black,
+  linkcolor=black,
+  urlcolor=blue}
+  
+\usepackage[normalem]{ulem} % for strikeout text
+
+\usepackage{abstract}
+\renewcommand{\abstractname}{\textbf ABSTRACT}    % clear the title
 
 %\pdfminorversion=4
 % NOTE: To produce blinded version, replace "0" with "1" below.
@@ -52,46 +75,75 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\date{\vspace{-5ex}}
 
 \if0\blind
 {
-  \title{\bf $title$}
+  \title{\bf $title$$if(funding)$\thanks{$funding$}$endif$}
 
   \author{
     $for(authors)$
-    $authors.name$ $if(authors.thanks)$\thanks{$for(authors.thanks)$$authors.thanks$$sep$\newline\indent $endfor$} $endif$\\
-    $authors.affiliation$\\
-    $sep$ and \\ $endfor$
+    $authors.name$\\ %$if(authors.thanks)$\thanks{$authors.thanks$} $endif$\\
+    $authors.degree$\\
+    % $authors.affiliation$\\
+    $sep$ \\ and \\\\ $endfor$
   }
+  
   \maketitle
+  \bigskip
+  \begin{center}
+  {
+  
+  $if(affiliation)$
+  \textbf{Affiliation(s)}\\
+  $for(affiliation)$ $affiliation$ $sep$\\\indent $endfor$\\
+  \bigskip
+  $endif$
+  
+  $if(presentedat)$
+  \textbf{Presentations}\\
+  $for(presentedat)$ $presentedat$ $sep$\\\indent $endfor$
+  \bigskip
+  $endif$
+  
+  $if(thanks)$
+  \textit{\textbf{Acknowledgements}}\\
+  $for(thanks)$ $thanks$ $sep$\vspace{.5em}\\ $endfor$
+  $endif$
+  }
+  \end{center}
+
 } \fi
 
 \if1\blind
 {
+  \title{\LARGE\bf $title$}
+  \maketitle
+  
+  $if(abstract)$
   \bigskip
+  \begin{abstract}
+  $abstract$
+  \end{abstract}
+  $endif$
   \bigskip
-  \bigskip
-  \begin{center}
-    {\LARGE\bf $title$}
-  \end{center}
-  \medskip
+  
+  $if(keywords)$
+  \noindent%
+  {\bf KEYWORDS:} $for(keywords)$$keywords$$sep$, $endfor$
+  \vfill
+  $endif$
+  
 } \fi
 
-\bigskip
-\begin{abstract}
-$abstract$
-\end{abstract}
-
-\noindent%
-{\it Keywords:} $for(keywords)$$keywords$$sep$, $endfor$
-\vfill
-
-\newpage
 \spacingset{1.45} % DON'T change the spacing!
+$if(body)$
+\newpage
+$endif$
 
 $body$
 
-\bibliographystyle{agsm}
+\bibliographystyle{jfs-authoryear}
 \bibliography{$for(bibliography)$$bibliography$$sep$,$endfor$}
 
 \end{document}

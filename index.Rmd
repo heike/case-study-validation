@@ -4,29 +4,42 @@ title: Case study validations of automatic bullet matching
 # to produce blinded version set to 1
 blinded: 1
 
-authors: 
-- name: Heike Hofmann, Ph.D.
-  affiliation: Department of Statistics, Iowa State University
-  thanks: 
-    - This work was partially funded by the Center for Statistics and Applications in Forensic Evidence (CSAFE) through Cooperative Agreement \#70NANB15H176 between NIST and Iowa State University, which includes activities carried out at Carnegie Mellon University, University of California Irvine, and University of Virginia.
-    - The authors wish to thank Jim Hamby, Tylor Klep (Phoenix PD), and Melissa Nally and Kasi Kirksey (FSI Houston) for access to test set bullets. XXX Scanning. Hamby advice.
+affiliation: 
+- Department of Statistics, Iowa State University
+- Center for Statistical Applications in Forensic Evidence (CSAFE), Iowa State University
   
-- name: Susan VanderPlas, Ph.D.
-  affiliation: Department of Statistics, Iowa State University
+authors: 
+- name: Heike Hofmann
+  degree: Doctor of Philosophy (Ph.D.)
+- name: Susan VanderPlas
+  degree: Doctor of Philosophy (Ph.D.)
+
+funding: This work was partially funded by the Center for Statistics and Applications in Forensic Evidence (CSAFE) through Cooperative Agreement \#70NANB15H176 between NIST and Iowa State University, which includes activities carried out at Carnegie Mellon University, University of California Irvine, and University of Virginia.
+
+thanks: 
+- The authors wish to thank Jim Hamby, Tylor Klep (Phoenix PD), and Melissa Nally and Kasi Kirksey (FSI Houston) for access to test set bullets. 
+- XXX Scanning. 
+- Thanks to Jim Hamby for his advice on XXX.
+
+presentedat: This work was presented in the form of a poster at Forensics\@NIST on November 7, 2018 in Gaithersburg, Maryland
 
 keywords:
+- forensic science
+- toolmark
+- cross-correlation
 - random forest
 - 3d microscopy
-- toolmark
+- land engraved areas (LEAs)
 
 abstract: Recent advances in microscopy have made it possible to collect 3d topographic data, enabling virtual comparisons based on the collected 3D data next to traditional comparison microscopy. Automatic matching algorithms have been introduced for various scenarios, such as matching cartridge cases (Tai and Eddy 2018) or matching bullet striae (Hare et al. 2017b,  Chu et al 2013,  De Kinder and Bonfanti 1999). One key aspect of validating automatic matching algorithms is to evaluate the performance of the algorithm on external tests. Here, we are presenting a discussion of the performance of the matching algorithm (Hare et al. 2017b) in three studies. We are considering matching performance based on the Random forest score, cross-correlation, and consecutive matching striae (CMS) at the land-to-land level and, using Sequential Average Maxima scores, also at the bullet-to bullet level. Cross-correlation and Random Forest scores both result in perfect discrimination of same-source and different-source bullets. At the land-to-land level, discrimination (based on area under the curve, AUC) is excellent ($ge$ 0.90). 
 
 bibliography: bibliography
-biblio-style: apsr
+biblio-style: jfs
+
+numsecdepth: 1
 
 output: 
   pdf_document:
-    number_sections: false
     citation_package: natbib
     keep_tex: true
     fig_caption: true
