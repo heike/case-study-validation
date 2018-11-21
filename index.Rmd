@@ -329,7 +329,6 @@ $k=2$ is higher than the other sequence averages, and also higher than the seque
 
 SAM scores allow us to define a single quantity for each pair of bullets that describes the similarity between these two bullets. 
 
-\svp{XXX Should we have some sort of header here to differentiate it from the previous section?}
 
 In this paper, we validate the algorithm described in \citet{aoas} on three external test sets. We assess the results on each set and evaluate whether the minimal requirements described above are fulfilled for bullet-to-bullet SAM scores. We compare the random forest algorithm's performance to the performance of other suggested measures for quantitative assessment of match strength, such as cross-correlation and consecutive matching striae. 
 
