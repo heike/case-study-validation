@@ -18,9 +18,10 @@
 \usepackage{tabu}
 \usepackage{threeparttable}
 \usepackage{url} % not crucial - just used below for the URL
+\usepackage{ifdraft}
 
 \usepackage{sectsty}
-\sectionfont{\normalfont\textbf}
+\sectionfont{\noindent\normalfont\textbf}
 \subsectionfont{\normalfont\itshape}
 \subsubsectionfont{\normalfont}
 
@@ -30,20 +31,7 @@
 \renewcommand\@biblabel[1]{#1. } % from [1] to 1
 \makeatother %
 
-\newcommand{\titlepageonly}{$titlepage$}
-\newcommand{\draftversion}{$draft$}
-
-% Only screw with figures if it's not a draft version and isn't the title page alone
-% \if0\draftversion
-% {
-%   \usepackage[figuresonly,nolists,nomarkers]{endfloat}
-%   \AtBeginDelayedFloats{%
-%     \renewcommand{\includegraphics}[2][]{}% Remove \includegraphics functionality
-%     \renewcommand{\resizebox}[3]{}% Remove \resizebox functionality
-%     \RenewEnviron{tabular}[2][]{}% Gobble tabular environment
-%     \pagenumbering{gobble}
-%   }
-% } \fi
+\usepackage{etoolbox} % Conditional package and formatting
 
 \usepackage[colorlinks]{hyperref}
 \hypersetup{
@@ -58,8 +46,6 @@
 \renewcommand{\abstractname}{\textbf ABSTRACT}    % clear the title
 
 %\pdfminorversion=4
-% NOTE: To produce blinded version, replace "0" with "1" below.
-\newcommand{\blind}{$blinded$}
 
 % DON'T change margins - should be 1 inch all around.
 \addtolength{\oddsidemargin}{-.5in}%
@@ -80,18 +66,76 @@
 
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
-
-\begin{document}
-
+  
 \def\spacingset#1{\renewcommand{\baselinestretch}%
 {#1}\small\normalsize} \spacingset{1}
+
+%%%
+\newcommand{\titlepageonlyval}{$titlepage$}
+\newcommand{\draftval}{$draft$}
+
+\newbool{titlepageonly}
+\newbool{draftversion}
+\ifnumequal{\titlepageonlyval}{0}{\setbool{titlepageonly}{false}}{\setbool{titlepageonly}{true}}
+\ifnumequal{\draftval}{0}{\setbool{draftversion}{false}}{\setbool{draftversion}{true}}
+
+
+
+\usepackage{letltxmacro}
+\LetLtxMacro\latexincludegraphics\includegraphics
+
+\ifbool{draftversion}{
+\PassOptionsToPackage{notables,nofigures}{endfloat}
+}{
+\PassOptionsToPackage{figuresonly,nolists,nomarkers}{endfloat}
+}
+
+\usepackage{endfloat}
+
+% Only screw with figures if it's not a draft version
+\notbool{draftversion}{%
+% Only screw with figures if it's not a draft version
+  \renewcommand{\includegraphics}[2][]{\hphantom{\latexincludegraphics[#1]{#2}}}%
+  \renewcommand{\efloatseparator}{\noindent}%
+  \setcounter{totalnumber}{10}%
+  \AtBeginDelayedFloats{\pagenumbering{gobble}\spacingset{1.45}}%
+  \AtEndDocument{\vfill}%
+}{%
+}%
+%%%
+
+\begin{document}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \date{\vspace{-5ex}}
 
-\if0\blind
-{
+% NOTE: To produce blinded version, replace "0" with "1" below.
+\newcommand{\blindval}{$blinded$}
+\newbool{blind}
+
+\ifnumequal{\blindval}{0}{\setbool{blind}{false}}{\setbool{blind}{true}}
+
+\ifbool{blind}{
+  \title{\LARGE\bf $title$}
+  \author{}
+  \maketitle
+  
+  $if(abstract)$
+  \bigskip
+  \begin{abstract}
+  $abstract$
+  \end{abstract}
+  $endif$
+  \bigskip
+  
+  $if(keywords)$
+  \noindent%
+  {\bf KEYWORDS:} $for(keywords)$$keywords$$sep$, $endfor$
+  \vfill
+  $endif$
+  
+}{
   \title{\bf $title$$if(funding)$\thanks{$funding$}$endif$}
 
   \author{
@@ -126,29 +170,7 @@
   }
   \end{center}
 
-} \fi
-
-\if1\blind
-{
-  \title{\LARGE\bf $title$}
-  \author{}
-  \maketitle
-  
-  $if(abstract)$
-  \bigskip
-  \begin{abstract}
-  $abstract$
-  \end{abstract}
-  $endif$
-  \bigskip
-  
-  $if(keywords)$
-  \noindent%
-  {\bf KEYWORDS:} $for(keywords)$$keywords$$sep$, $endfor$
-  \vfill
-  $endif$
-  
-} \fi
+}
 
 \spacingset{1.45} % DON'T change the spacing!
 $if(body)$

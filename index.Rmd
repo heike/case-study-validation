@@ -1,9 +1,12 @@
 ---
 title: Case study validations of automatic bullet matching
 
-blinded: 1 # to produce blinded version set to 1
-titlepage: 0 # This gets changed automatically when the title page is compiled in the chunk child-doc-compile
-draft: 0 # Set to 1 if figures should be included with the text
+# to produce blinded version set to 1
+blinded: 1
+# This gets changed automatically when the title page is compiled in the chunk child-doc-compile
+titlepage: 0
+# Set to 1 if figures should be included with the text
+draft: 1
 
 affiliation: 
 - Department of Statistics, Iowa State University
