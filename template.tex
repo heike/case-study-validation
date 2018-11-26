@@ -36,13 +36,13 @@
 % Only screw with figures if it's not a draft version and isn't the title page alone
 % \if0\draftversion
 % {
-  \usepackage[figuresonly,nolists,nomarkers]{endfloat}
-  \AtBeginDelayedFloats{%
-    \renewcommand{\includegraphics}[2][]{}% Remove \includegraphics functionality
-    \renewcommand{\resizebox}[3]{}% Remove \resizebox functionality
-    \RenewEnviron{tabular}[2][]{}% Gobble tabular environment
-    \pagenumbering{gobble}
-  }
+%   \usepackage[figuresonly,nolists,nomarkers]{endfloat}
+%   \AtBeginDelayedFloats{%
+%     \renewcommand{\includegraphics}[2][]{}% Remove \includegraphics functionality
+%     \renewcommand{\resizebox}[3]{}% Remove \resizebox functionality
+%     \RenewEnviron{tabular}[2][]{}% Gobble tabular environment
+%     \pagenumbering{gobble}
+%   }
 % } \fi
 
 \usepackage[colorlinks]{hyperref}
