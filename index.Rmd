@@ -29,10 +29,10 @@ keywords:
 - toolmark
 - cross-correlation
 - random forest
-- 3d microscopy
+- 3D microscopy
 - land engraved areas (LEAs)
 
-abstract: Recent advances in microscopy have made it possible to collect 3d topographic data, enabling virtual comparisons based on the collected 3D data next to traditional comparison microscopy. Automatic matching algorithms have been introduced for various scenarios, such as matching cartridge cases (Tai and Eddy 2018) or matching bullet striae (Hare et al. 2017b,  Chu et al 2013,  De Kinder and Bonfanti 1999). One key aspect of validating automatic matching algorithms is to evaluate the performance of the algorithm on external tests. Here, we are presenting a discussion of the performance of the matching algorithm (Hare et al. 2017b) in three studies. We are considering matching performance based on the Random forest score, cross-correlation, and consecutive matching striae (CMS) at the land-to-land level and, using Sequential Average Maxima scores, also at the bullet-to bullet level. Cross-correlation and Random Forest scores both result in perfect discrimination of same-source and different-source bullets. At the land-to-land level, discrimination (based on area under the curve, AUC) is excellent ($ge$ 0.90). 
+abstract: Recent advances in microscopy have made it possible to collect 3D topographic data, enabling virtual comparisons based on the collected 3D data next to traditional comparison microscopy. Automatic matching algorithms have been introduced for various scenarios, such as matching cartridge cases (Tai and Eddy 2018) or matching bullet striae (Hare et al. 2017b,  Chu et al 2013,  De Kinder and Bonfanti 1999). One key aspect of validating automatic matching algorithms is to evaluate the performance of the algorithm on external tests. Here, we are presenting a discussion of the performance of the matching algorithm (Hare et al. 2017b) in three studies. We are considering matching performance based on the Random forest score, cross-correlation, and consecutive matching striae (CMS) at the land-to-land level and, using Sequential Average Maxima scores, also at the bullet-to bullet level. Cross-correlation and Random Forest scores both result in perfect discrimination of same-source and different-source bullets. At the land-to-land level, discrimination (based on area under the curve, AUC) is excellent ($ge$ 0.90). 
 
 bibliography: bibliography
 biblio-style: jfs
@@ -99,9 +99,9 @@ library(gridExtra)
 library(kableExtra)
 ```
 
-```{r child-doc-compile, include = F, cache = F}
+```{r child-doc-compile, eval=FALSE, include = F, cache = F}
 thisdoc <- readLines("index.Rmd")
-idxs <- which(str_detect(thisdoc, "^---$"))
+idxs <- which(stringr::str_detect(thisdoc, "^---$"))
 if (length(idxs) >= 2) {
   # Get yaml metadata, set to nonblinded, write to title-page.Rmd
   thisdoc[idxs[1]:idxs[2]] %>%
@@ -115,32 +115,13 @@ rmarkdown::render("title-page.Rmd", clean = T)
 file.remove("title-page.tex", "title-page.Rmd")
 ```
 
-```{r functions, eval=FALSE}
-estimateBeta <- function(x, method = "mm", probs = c(0.25, 0.75)) {
-  if (method == "mm") {
-    mu <- mean(x, na.rm = TRUE)
-    sd <- sd(x, na.rm = TRUE)
-    lambda <- mu / sd * (1 - mu) / sd - 1
-    alpha <- mu * lambda
-    beta <- (1 - mu) * lambda
-  }
-  if (method == "LB") {
-    quantile1 <- list(p = probs[1], x = quantile(probs = probs[1], x))
-    quantile2 <- list(p = probs[2], x = quantile(probs = probs[2], x))
-    bs <- LearnBayes::beta.select(quantile1, quantile2)
-    alpha <- bs[1]
-    beta <- bs[2]
-  }
-  return(c(alpha = alpha, beta = beta))
-}
-```
 
 
 In current practice, firearms and toolmark examiners (FTE) evaluate the similarity of striae on bullets by placing the evidence together with another bullet under a comparison microscope. The second bullet could be a test fire from a weapon recovered during the investigation, or it could be a second bullet from the crime scene. Examiners visually classify similarity according to the theory of firearms identification \citep{identification} as one of identification, inconclusive or exclusion. Exact guidelines for this classification vary from lab to lab; some labs will exclude only on the basis of non-matching class characteristics, such as direction of the twist in rifling, land length or number of lands, or type of rifling. In other labs, CMS (consecutively matching striae) as defined by \citet{biasotti} is used as a measure to quantify the strength of a match. In virtually all labs, individual characteristics used to identify matching bullets are derived from visual assessment; some class characteristics may be directly measured, but these are not sufficient for individualization.  <!-- Want to make it clear that individual characteristics are visually derived, rather than numerically derived... hopefully managed that without being insulting. HH: reads well -->
 
 <!-- ## Identification Using 3D Imaging Technology -->
 
-More explicit characterization of bullet surfaces has been discussed since at least 1958 (\citeauthor{davis1968introduction}), but at the time technology was not sufficiently advanced to make an analysis based on 3D measurements or surface traces a viable option. \citet{ComputerIdentificationBullets1978} demonstrated use of a scanning electron microscope to quantitatively examine and compare bullet striae. More recently, approaches using 3D measurement data were explicitly described in 1999 (\citeauthor{dekinderAutomatedComparisonsBullet1999}), and have been further developed by \citet{bachrachDevelopment3DbasedAutomated2002,xieAutomatedBulletidentificationSystem2009, chuPilotStudyAutomated2010}. These approaches utilize 3D surface measurements directly to characterize the topology of land engraved areas (LEAs), rather than using visual or image comparison techniques. In many cases, these approaches also provide some level of automation of the comparison process, with the goal of reducing human biases by augmenting the visual information with 3D measurements. Utilizing the 3D measurements allows for examination of both peaks and valleys in LEAs, \hh{it also allows us to take the depth of striae into account, something that is difficult, if not impossible,} \svp{from} \hh{visual examination.} 
+More explicit characterization of bullet surfaces has been discussed since at least 1958 by \citeauthor{davis1968introduction} \cite{davis1968introduction}, but at the time technology was not sufficiently advanced to make an analysis based on 3D measurements or surface traces a viable option. \citet{ComputerIdentificationBullets1978} demonstrated use of a scanning electron microscope to quantitatively examine and compare bullet striae. More recently, approaches using 3D measurement data were explicitly described in 1999 (\citeauthor{dekinderAutomatedComparisonsBullet1999}), and have been further developed in \citep{bachrachDevelopment3DbasedAutomated2002,xieAutomatedBulletidentificationSystem2009, chuPilotStudyAutomated2010}. These approaches utilize 3D surface measurements directly to characterize the topology of land engraved areas (LEAs), rather than using visual or image comparison techniques. In many cases, these approaches also provide some level of automation of the comparison process, with the goal of reducing human biases by augmenting the visual information with 3D measurements. Utilizing the 3D measurements allows for examination of both peaks and valleys in LEAs, it also allows us to take the depth of striae into account, something that is difficult, if not impossible, from visual inspection.
 
 Commonly, approaches derived from 3D surface measurements use some features which are similar to those visually assessed by FTEs \citep{luAutomatedBulletIdentification2014}. Class characteristics, which are shared by a group of firearms with the same rifling design, manufacturer, and tooling process, are typically evaluated first, as a mismatch on class charcteristics is sufficient for an exclusion. Automated approaches to estimation of width of the land engraved area and twist angle were described in \citet{chuPilotStudyAutomated2010}. Individual characteristics, which are not shared by all members of a class, can also be automatically assessed from 3D surface measurements. One of the most common features used to assess the strength of a match based on individual characteristics is the cross-correlation function, which is utilized in several studies \citep{maNISTBulletSignature2004, vorburgerApplicationsCrosscorrelationFunctions2011, chuPilotStudyAutomated2010}. Additional features proposed for automatically assessing match strength also include signature distance \citep{maNISTBulletSignature2004}, striae depth and width \citep{ComputerIdentificationBullets1978}, and consecutive matching striae (CMS) \citep{chuAutomaticIdentificationBullet2013}.
 
@@ -148,7 +129,7 @@ Commonly, approaches derived from 3D surface measurements use some features whic
 
 <!-- ## Automated Processing of 3D Scans -->
 
-In the matching algorithm proposed in \citet{aoas}, several of the features described above are combined using a random forest \citep{breiman} to produce a similarity score based on 3d topographic scans of land engraved areas (LEAs).
+In the matching algorithm proposed in \citet{aoas}, several of the features described above are combined using a random forest \citep{breiman} to produce a similarity score based on 3D topographic scans of land engraved areas (LEAs).
 From each land engraved area a signature is derived using the process described in detail in \citet{aoas}:
 
 <!-- XXXX get from area to crosscut XXXX -->
