@@ -205,30 +205,20 @@ The cross-correlation (CC) function between two signatures $S_1(x)$ and $S_2(x)$
 \[
 CC(S_1, S_2, z) = \text{cor}\left(S_1(x), S_2(x + z)\right)
 \] 
-where $x$ and $x+z$ are integer values appropriately defined within the domains of $S_1$ and $S_2$ and  $z$ is the lag between the two sequences.
-\hh{$\text{cor}(.,.)$ is the Pearson correlation coefficient,}
-when signatures contain missing values, pairwise complete observations are used to calculate the cross-correlation. The lag $z$ used to achieve maximum $CC$ is used to determine the best alignment.
+where $x$ and $x+z$ are integer values appropriately defined within the domains of $S_1$ and $S_2$, $z$ is the lag between the two sequences, \svp{and }\hh{$\text{cor}(.,.)$ is the Pearson correlation coefficient.}
+When signatures contain missing values, pairwise complete observations are used to calculate the cross-correlation. The lag $z$ used to achieve maximum $CC$ is used to determine the best alignment.
 
 \svp{Cross correlation can also be used to assess match strength between two aligned signatures. Cross correlation varies between -1 and 1, but as we are taking the maximal value, in practice the cross-correlations for aligned signatures are generally positive. Cross-correlation values which are close to 1 indicate similarity between signatures and with it may indicate that the two signatures come from the same source. Cross-correlation values which are close to 0 indicate signatures which may originate from different sources.}
 
 <!-- ## Statistics for Matching Aligned Signatures -->
 
-\hh{Using the lag determined for aligning two signatures} other quantitative features describing the similarity of the two signatures can be extracted. 
+\hh{Using the lag determined for aligning two signatures,} other quantitative features describing the similarity of the two signatures can be extracted. Numerical features such as cross-correlation and Euclidean distance
+can be computed from the aligned signatures alone. \hh{Other} features include characteristics of the signature that firearms and toolmark examiners base their visual assessment on, such as striae depth, number of matching striae, and the number of consecutively matching striae (CMS), \hh{one of the measures firearms examiners use to describe the strength of a match quantitatively.}
 
-Numerical features such as cross-correlation  and Euclidean distance
-can be computed from the aligned signatures alone.
-
-\hh{Other} features include characteristics of the signature that firearms and toolmark examiners base their visual assessment on, such as striae depth, number of matching striae, and the number of consecutively matching striae (CMS), \hh{one of the measures firearms examiners use to describe the strength of a match quantitatively.} 
-\sout{is the number of consecutive matching striae (CMS) as defined by} \citet{biasotti}.
-
-\svp{In order to evaluate CMS, we must first identify peaks and valleys in each of the signatures, then determine whether these peaks and valleys overlap sufficiently. Features which firearms examiners assess visually depend on the identification of these extrema. } 
-
-If there are at least six consecutive matching striae, the bullets are considered to be a good match in practice \citep{biasotti_firearms_1997,nichols_scientific_2006}. 
-CMS in this setting are counted as the number of consecutively matching peaks in signatures of two aligned lands. Peaks -- rather than peaks and valleys -- are used for this determination in part because it is difficult to visually assess valleys except as relative to peaks. 
-Note that with automatic alignment based on the maximum cross-correlation rather than matching striation marks, it is possible for two lands to have a consecutive matching striae of zero. 
+\svp{In order to evaluate CMS, we must first identify peaks and valleys in each of the signatures, then determine whether these peaks and valleys overlap sufficiently. Features which firearms examiners assess visually depend on the identification of these extrema. } If there are at least six consecutive matching striae, the bullets are considered to be a good match in practice \citep{biasotti_firearms_1997,nichols_scientific_2006}. CMS in this setting are counted as the number of consecutively matching peaks in signatures of two aligned lands. Peaks -- rather than peaks and valleys -- are used for this determination in part because it is difficult to visually assess valleys except as relative to peaks. Note that with automatic alignment based on the maximum cross-correlation rather than matching striation marks, it is possible for two lands to have a consecutive matching striae of zero. 
 
 
-The random forest presented in \citet{aoas} is based on a combination of multiple characteristics, including cross-correlation, number of matching striae, and number of consecutively matching striae. The output of the random forest is a score between 0 and 1 representing the algorithm's assessment of the strength of the match, where scores close to 1 indicate \sout{that the algorithm believes} \hh{XXX can an algorithm have a belief?   XXX} it to be highly likely that the aligned signatures come from the same source, while low scores indicate that the aligned signatures are highly likely to originate from different lands.
+The random forest presented in \citet{aoas} is based on a combination of multiple characteristics, including cross-correlation, number of matching striae, and number of consecutively matching striae. The output of the random forest is a score between 0 and 1 representing the algorithm's assessment of the strength of the match, where scores close to 1 indicate it to be highly likely that the aligned signatures come from the same source, while low scores indicate that the aligned signatures are highly likely to originate from different lands.
 
 <!-- ## Interpreting the Algorithm Score -->
 
@@ -236,7 +226,6 @@ The random forest presented in \citet{aoas} is based on a combination of multipl
 An automated algorithm determines a cutoff-value along the range of possible values that introduces a barrier between identification and exclusion.
 }
 
-\sout{\svp{For any of the features described above, \hh{XXX not for Euclidean distance XXX} high values over the expected range indicate that the signatures are more similar; low values indicate that the signatures are less similar. At some point along the range of possible values, an automated algorithm would produce a threshold - below that score, the signatures would be categorized as an exclusion; above it, the signatures would be categorized as an identification. }}
 <!-- Firearms examiners typically set the threshold for CMS at 6; this is a threshold which is conservative, as it is much more likely to exclude same-source comparisons than it is to identify different-source comparisons.  -->
 This threshold system introduces a binary classification: identification or exclusion. This definition of error is more stringent than the AFTE Theory of Identification, in that it does not allow for inconclusive results. This increased rigor may increase the error rate of the model when compared to examiner error rates, but we expect that the increased information available from the 3D measurement data will compensate for this loss. A binary decision model is also easier to interpret and provides more clear-cut, definitive results.
 
@@ -338,7 +327,7 @@ The \emph{Sequence Average Maximum} \citep[SAM, ][]{sam} of square matrix $A$ of
 $$SAM (A) = \max_{k = 1}^{p} SA(A, k).$$
 \end{definition}
 
-Note that the sequence average maximum of the correlation between lands is used in SensoComp \hh{citation for that?} to capture the similarity between bullets. The correlation based SAM score has also been called the 'average correlation calculated at the max phase' in \citet{chuPilotStudyAutomated2010}. 
+Note that the sequence average maximum of the correlation between lands is used in SensoComp \hh{citation for that?}\svp{It's your claim... I looked for a citation and didn't find one. Closed-source proprietary = no references?} to capture the similarity between bullets. The correlation based SAM score has also been called the 'average correlation calculated at the max phase' in \citet{chuPilotStudyAutomated2010}. 
 
 ```{r sam-sketch, out.width='\\textwidth', fig.width=12, fig.height = 2.5, fig.cap="Sketch of all six land-to-land sequences between two bullets with six lands. "}
 df2 <- data.frame(expand.grid(x = 1:6, y = 1:6))
@@ -1165,7 +1154,7 @@ All of the studies presented here involve the same type of firearm. We see some 
 
 
 The random forest matching algorithm presented in \citet{aoas} does perform well on three different external test sets. While a single cutoff value cannot be used to distinguish matches and non-matches across the different test sets, the algorithm makes no errors when a set-specific cutoff value is used on bullet-to-bullet scores aggregated using sequence average maximum. 
-\hh{This performance is on par with the performance of forensic examiners. For a future round of the Houston study, we are planning to compare the algorithmic performance directly with scores given by forensic toolmark examiners. XXX need to ask XXX However, the intent is not to replace a fornesic examiner. The decision on matching should not be taken away from the human assessment. Instead, the algorithm's score is meant as a complement to an examiner's testimony as a way to measure and quantify the strength of an identification.  }
+\hh{This performance is on par with the performance of forensic examiners. For a future round of the Houston study, we are planning to compare the algorithmic performance directly with scores given by forensic toolmark examiners. XXX need to ask XXX \sout{However, the intent is not to replace a fornesic examiner. The decision on matching should not be taken away from the human assessment. Instead, the algorithm's score is meant as a complement to an examiner's testimony as a way to measure and quantify the strength of an identification.}  }\svp{The algorithm's score is not intended to replace an examiner's judgment; instead, it is a tool to measure and quantify the strength of an identification. }
 By validating the algorithm on external test sets, we have demonstrated that the method can be generalized to different types of ammunition and is not overly sensitive to small differences in rifling procedure. Future studies can \hh{and should} generalize this to a wider range of external test sets to establish the limits of the algorithm's generalizability.
 
 
