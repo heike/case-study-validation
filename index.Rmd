@@ -120,7 +120,7 @@ file.remove("title-page.tex", "title-page.Rmd")
 
 
 
-In current practice, firearms and toolmark examiners (FTE) evaluate the similarity of striae on bullets by placing the evidence together with another bullet under a comparison microscope. The second bullet could be a test fire from a weapon recovered during the investigation, or it could be a second bullet from the crime scene. Examiners visually classify similarity according to the theory of firearms identification \citep{identification} as one of identification, inconclusive or exclusion. Exact guidelines for this classification vary from lab to lab; some labs will exclude only on the basis of non-matching class characteristics, such as direction of the twist in rifling, land length or number of lands, or type of rifling. In other labs, CMS (consecutively matching striae) as defined by \citet{biasotti} is used as a measure to quantify the strength of a match. In virtually all labs, individual characteristics used to identify matching bullets are derived from visual assessment; some class characteristics may be directly measured, but these are not sufficient for individualization.  <!-- Want to make it clear that individual characteristics are visually derived, rather than numerically derived... hopefully managed that without being insulting. HH: reads well -->
+In current practice, firearms and toolmark examiners (FTE) evaluate the similarity of striae on bullets by placing the evidence together with another bullet under a comparison microscope. The second bullet could be a test fire from a weapon recovered during the investigation, or it could be a second bullet from the crime scene. Examiners visually classify similarity according to the theory of firearms identification \citep{identification} as one of identification, inconclusive or exclusion. Exact guidelines for this classification vary from lab to lab; some labs will exclude only on the basis of non-matching class characteristics, such as direction of the twist in rifling, land length or number of lands, or type of rifling. In other labs, CMS (consecutively matching striae) as defined by \citet{biasotti} is used as a measure to quantify the strength of a match. In virtually all labs, individual characteristics used to identify matching bullets are derived from visual assessment; some class characteristics may be directly measured, but these are not sufficient for individualization. 
 
 <!-- ## Identification Using 3D Imaging Technology -->
 
@@ -135,10 +135,6 @@ Commonly, approaches derived from 3D surface measurements use some features whic
 In the matching algorithm proposed in \citet{aoas}, several of the features described above are combined using a random forest \citep{breiman} to produce a similarity score based on 3D topographic scans of land engraved areas (LEAs).
 From each land engraved area a signature is derived using the process described in detail in \citet{aoas}:
 
-<!-- XXXX get from area to crosscut XXXX -->
-<!-- \hh{ -->
-<!-- Let $z(t)$ describe a digitized toolmark for the striation marks on a land engraved area. -->
-<!-- $z(t)$ is then a spatial process indexed by $t$, where $t, t = 1,...,T$ denotes equally spaced pixel locations for a total length of $T$. } -->
 \begin{itemize}
 \item[(a)] Identify an area on the LEA with expressed striae. Locate a stable crosscut in the identified area.
 \item[(b)] Discard extraneous/contaminated data, such as data from groove engraved area and areas affected by break-off or contact with objects after the bullet exited the barrel  (``tank rash").
@@ -205,17 +201,17 @@ The cross-correlation (CC) function between two signatures $S_1(x)$ and $S_2(x)$
 \[
 CC(S_1, S_2, z) = \text{cor}\left(S_1(x), S_2(x + z)\right)
 \] 
-where $x$ and $x+z$ are integer values appropriately defined within the domains of $S_1$ and $S_2$, $z$ is the lag between the two sequences, \svp{and }\hh{$\text{cor}(.,.)$ is the Pearson correlation coefficient.}
+where $x$ and $x+z$ are integer values appropriately defined within the domains of $S_1$ and $S_2$, $z$ is the lag between the two sequences, \svp{and }$\text{cor}(.,.)$ is the Pearson correlation coefficient.
 When signatures contain missing values, pairwise complete observations are used to calculate the cross-correlation. The lag $z$ used to achieve maximum $CC$ is used to determine the best alignment.
 
 \svp{Cross correlation can also be used to assess match strength between two aligned signatures. Cross correlation varies between -1 and 1, but as we are taking the maximal value, in practice the cross-correlations for aligned signatures are generally positive. Cross-correlation values which are close to 1 indicate similarity between signatures and with it may indicate that the two signatures come from the same source. Cross-correlation values which are close to 0 indicate signatures which may originate from different sources.}
 
 <!-- ## Statistics for Matching Aligned Signatures -->
 
-\hh{Using the lag determined for aligning two signatures,} other quantitative features describing the similarity of the two signatures can be extracted. Numerical features such as cross-correlation and Euclidean distance
-can be computed from the aligned signatures alone. \hh{Other} features include characteristics of the signature that firearms and toolmark examiners base their visual assessment on, such as striae depth, number of matching striae, and the number of consecutively matching striae (CMS), \hh{one of the measures firearms examiners use to describe the strength of a match quantitatively.}
+Using the lag determined for aligning two signatures, other quantitative features describing the similarity of the two signatures can be extracted. Numerical features such as cross-correlation and Euclidean distance
+can be computed from the aligned signatures alone. Other features include characteristics of the signature that firearms and toolmark examiners base their visual assessment on, such as striae depth, number of matching striae, and the number of consecutively matching striae (CMS), one of the measures firearms examiners use to describe the strength of a match quantitatively.
 
-\svp{In order to evaluate CMS, we must first identify peaks and valleys in each of the signatures, then determine whether these peaks and valleys overlap sufficiently. Features which firearms examiners assess visually depend on the identification of these extrema. } If there are at least six consecutive matching striae, the bullets are considered to be a good match in practice \citep{biasotti_firearms_1997,nichols_scientific_2006}. CMS in this setting are counted as the number of consecutively matching peaks in signatures of two aligned lands. Peaks -- rather than peaks and valleys -- are used for this determination in part because it is difficult to visually assess valleys except as relative to peaks. Note that with automatic alignment based on the maximum cross-correlation rather than matching striation marks, it is possible for two lands to have a consecutive matching striae of zero. 
+In order to evaluate CMS, we must first identify peaks and valleys in each of the signatures, then determine whether these peaks and valleys overlap sufficiently. Features which firearms examiners assess visually depend on the identification of these extrema. If there are at least six consecutive matching striae, the bullets are considered to be a good match in practice \citep{biasotti_firearms_1997,nichols_scientific_2006}. CMS in this setting are counted as the number of consecutively matching peaks in signatures of two aligned lands. Peaks -- rather than peaks and valleys -- are used for this determination in part because it is difficult to visually assess valleys except as relative to peaks. Note that with automatic alignment based on the maximum cross-correlation rather than matching striation marks, it is possible for two lands to have a consecutive matching striae of zero. 
 
 
 The random forest presented in \citet{aoas} is based on a combination of multiple characteristics, including cross-correlation, number of matching striae, and number of consecutively matching striae. The output of the random forest is a score between 0 and 1 representing the algorithm's assessment of the strength of the match, where scores close to 1 indicate it to be highly likely that the aligned signatures come from the same source, while low scores indicate that the aligned signatures are highly likely to originate from different lands.
@@ -237,32 +233,23 @@ We can enumerate characteristics of an ideal similarity scoring mechanism:
 
 In particular, requirement (R2) would imply that the same threshold value would be used for all comparisons of a certain scoring mechanism. If the same-source and different-source similarity score distributions overlap, setting a threshold value will introduce classification errors.
 
- 
-<!-- \svp{It is likely that matches which were deemed  inconclusive would instead be marked as exclusions by the algorithm. XXX I don't know if we can make this statement, but I think it would help examiners understand how the line gets drawn if we could. I have exactly no evidence to back that up (except maybe the Hamby 44 tank rash results?)} -->
-
-
 <!-- ## Identification Errors and Algorithm Evaluation -->
 
-When evaluating algorithm performance, it is useful to systematically assess  the set of possible outcomes. If ground truth and the algorithm's prediction match, we have either a correct identification or a correct exclusion. If ground truth and the algorithm's prediction do not match, we distinguish between two types of errors, which we will refer to as \textbf{wrong identification} and \textbf{missed identification}. Wrong identifications are those in which two bullets from different sources are determined to be from the same source. Missed identifications are those in which two bullets from the same source are determined to be from different sources. The full range of possible outcomes is shown in \autoref{tab:possible-outcomes}. \hh{XXX I know that you have spent a ton of time on this table - but could you make it less tall? It's taking a ton of space. }
+When evaluating algorithm performance, it is useful to systematically assess  the set of possible outcomes. If ground truth and the algorithm's prediction match, we have either a correct identification or a correct exclusion. If ground truth and the algorithm's prediction do not match, we distinguish between two types of errors, which we will refer to as \textbf{wrong identification} and \textbf{missed identification}. Wrong identifications are those in which two bullets from different sources are determined to be from the same source. Missed identifications are those in which two bullets from the same source are determined to be from different sources. The full range of possible outcomes is shown in \autoref{tab:possible-outcomes}.
+
 \begin{table}
 \centering
-\begin{tabular}{c|ccc}
-\multicolumn{2}{c}{} & \multicolumn{2}{c}{\textbf{Ground Truth}}\\\cline{3-4}
-\multicolumn{2}{c}{} & \multicolumn{1}{|c}{Same Source} & \multicolumn{1}{|c|}{Different Source} \\\cline{2-4}
-\multirow{8}{*}{\rotatebox[origin=c]{90}{\hfill \textbf{Results}\hspace{5mm}\hfill}} & 
-  \multirow{4}{*}{\rotatebox[origin=c]{90}{\hspace{1mm}Exclusion\hspace{1mm}}} & \multicolumn{1}{|c}{} & \multicolumn{1}{|c|}{}\\
-  % & &   \multicolumn{1}{|c}{} & \multicolumn{1}{|c|}{}\\ 
-  & &  \multicolumn{1}{|c}{Missed} & \multicolumn{1}{|c|}{Correct}\\
-  & &  \multicolumn{1}{|c}{Identification} & \multicolumn{1}{|c|}{Exclusion}\\
-  % & &   \multicolumn{1}{|c}{} & \multicolumn{1}{|c|}{}\\ 
-  & &  \multicolumn{1}{|c}{} & \multicolumn{1}{|c|}{} \\\cline{2-4}
-& \multirow{4}{*}{\rotatebox[origin=c]{90}{\hspace{1mm}Identification\hspace{1mm}}}  & \multicolumn{1}{|c}{} & \multicolumn{1}{|c|}{}\\
-  % & &  \multicolumn{1}{|c}{} & \multicolumn{1}{|c|}{}\\ 
-  & &  \multicolumn{1}{|c}{Correct} & \multicolumn{1}{|c|}{Wrong}\\
-  & &  \multicolumn{1}{|c}{Identification} & \multicolumn{1}{|c|}{Identification}\\
-  % & &  \multicolumn{1}{|c}{} & \multicolumn{1}{|c|}{}\\ 
-  & &  \multicolumn{1}{|c}{} & \multicolumn{1}{|c|}{} \\\cline{2-4}
+\bgroup
+\def\arraystretch{.8}%  1 is the default, change whatever you need
+\begin{tabular}{|ccc}
+\multicolumn{1}{c}{} & \multicolumn{2}{c}{\textbf{Ground Truth}}\\\cline{2-3}
+\multicolumn{1}{c}{\textbf{Results}} & \multicolumn{1}{|c}{Same Source} & \multicolumn{1}{|c|}{Different Source} \\\hline
+\multirow{2}{*}{Exclusion} & \multicolumn{1}{|c}{Missed} & \multicolumn{1}{|c|}{Correct}\\
+   &  \multicolumn{1}{|c}{Identification} & \multicolumn{1}{|c|}{Exclusion}\\\hline
+\multirow{2}{*}{Identification}  &  \multicolumn{1}{|c}{Correct} & \multicolumn{1}{|c|}{Wrong}\\
+   &  \multicolumn{1}{|c}{Identification} & \multicolumn{1}{|c|}{Identification}\\\hline
 \end{tabular}
+\egroup
 \caption{Possible outcomes of an examination of two pieces of evidence. Correct decisions are shown in the top-right and bottom-left corners; incorrect decisions in the top-left and bottom-right corners.\label{tab:possible-outcomes}}
 \end{table}
 
@@ -1153,9 +1140,8 @@ What is quite surprising is that while we anticipated Hamby 44 would be the easi
 All of the studies presented here involve the same type of firearm. We see some variations in scores across different models of Rugers, and it is probable that we will see even bigger variations with different brands of firearms that vary in number of lands and land length. We also know that different firearms and ammunition combinations mark differently well \citep{bolton-king_preventing_2016, bonfanti_influence_1999}. Rugers are among the firearms that mark very well, so we would correspondingly expect to see lowered similarity scores for other firearms. The matching algorithm works on matching lands. Barrels with polygonal rifling, such as Glocks, do not introduce well defined lands on bullets, which makes an application of the matching algorithm impossible.  
 
 
-The random forest matching algorithm presented in \citet{aoas} does perform well on three different external test sets. While a single cutoff value cannot be used to distinguish matches and non-matches across the different test sets, the algorithm makes no errors when a set-specific cutoff value is used on bullet-to-bullet scores aggregated using sequence average maximum. 
-\hh{This performance is on par with the performance of forensic examiners. For a future round of the Houston study, we are planning to compare the algorithmic performance directly with scores given by forensic toolmark examiners. XXX need to ask XXX \sout{However, the intent is not to replace a fornesic examiner. The decision on matching should not be taken away from the human assessment. Instead, the algorithm's score is meant as a complement to an examiner's testimony as a way to measure and quantify the strength of an identification.}  }\svp{The algorithm's score is not intended to replace an examiner's judgment; instead, it is a tool to measure and quantify the strength of an identification. }
-By validating the algorithm on external test sets, we have demonstrated that the method can be generalized to different types of ammunition and is not overly sensitive to small differences in rifling procedure. Future studies can \hh{and should} generalize this to a wider range of external test sets to establish the limits of the algorithm's generalizability.
+The random forest matching algorithm presented in \citet{aoas} does perform well on three different external test sets. While a single cutoff value cannot be used to distinguish matches and non-matches across the different test sets, the algorithm makes no errors when a set-specific cutoff value is used on bullet-to-bullet scores aggregated using sequence average maximum. This performance is on par with the performance of forensic examiners. For a future round of the Houston study, we are planning to compare the algorithmic performance directly with scores given by forensic toolmark examiners. \hh{XXX need to ask XXX \sout{However, the intent is not to replace a fornesic examiner. The decision on matching should not be taken away from the human assessment. Instead, the algorithm's score is meant as a complement to an examiner's testimony as a way to measure and quantify the strength of an identification.}  }\svp{The algorithm's score is not intended to replace an examiner's judgment; instead, it is a tool to measure and quantify the strength of an identification. }
+By validating the algorithm on external test sets, we have demonstrated that the method can be generalized to different types of ammunition and is not overly sensitive to small differences in rifling procedure. Future studies can and should generalize this to a wider range of external test sets to establish the limits of the algorithm's generalizability.
 
 
 ```{r output-all-figs, include = F}
