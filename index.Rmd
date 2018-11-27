@@ -251,16 +251,16 @@ When evaluating algorithm performance, it is useful to systematically assess  th
 \multicolumn{2}{c}{} & \multicolumn{1}{|c}{Same Source} & \multicolumn{1}{|c|}{Different Source} \\\cline{2-4}
 \multirow{8}{*}{\rotatebox[origin=c]{90}{\hfill \textbf{Results}\hspace{5mm}\hfill}} & 
   \multirow{4}{*}{\rotatebox[origin=c]{90}{\hspace{1mm}Exclusion\hspace{1mm}}} & \multicolumn{1}{|c}{} & \multicolumn{1}{|c|}{}\\
-  <!-- & &   \multicolumn{1}{|c}{} & \multicolumn{1}{|c|}{}\\ -->
+  % & &   \multicolumn{1}{|c}{} & \multicolumn{1}{|c|}{}\\ 
   & &  \multicolumn{1}{|c}{Missed} & \multicolumn{1}{|c|}{Correct}\\
   & &  \multicolumn{1}{|c}{Identification} & \multicolumn{1}{|c|}{Exclusion}\\
-  <!-- & &   \multicolumn{1}{|c}{} & \multicolumn{1}{|c|}{}\\ -->
+  % & &   \multicolumn{1}{|c}{} & \multicolumn{1}{|c|}{}\\ 
   & &  \multicolumn{1}{|c}{} & \multicolumn{1}{|c|}{} \\\cline{2-4}
 & \multirow{4}{*}{\rotatebox[origin=c]{90}{\hspace{1mm}Identification\hspace{1mm}}}  & \multicolumn{1}{|c}{} & \multicolumn{1}{|c|}{}\\
-  <!-- & &  \multicolumn{1}{|c}{} & \multicolumn{1}{|c|}{}\\ -->
+  % & &  \multicolumn{1}{|c}{} & \multicolumn{1}{|c|}{}\\ 
   & &  \multicolumn{1}{|c}{Correct} & \multicolumn{1}{|c|}{Wrong}\\
   & &  \multicolumn{1}{|c}{Identification} & \multicolumn{1}{|c|}{Identification}\\
-  <!-- & &  \multicolumn{1}{|c}{} & \multicolumn{1}{|c|}{}\\ -->
+  % & &  \multicolumn{1}{|c}{} & \multicolumn{1}{|c|}{}\\ 
   & &  \multicolumn{1}{|c}{} & \multicolumn{1}{|c|}{} \\\cline{2-4}
 \end{tabular}
 \caption{Possible outcomes of an examination of two pieces of evidence. Correct decisions are shown in the top-right and bottom-left corners; incorrect decisions in the top-left and bottom-right corners.\label{tab:possible-outcomes}}
