@@ -314,7 +314,7 @@ The \emph{Sequence Average Maximum} \citep[SAM, ][]{sam} of square matrix $A$ of
 $$SAM (A) = \max_{k = 1}^{p} SA(A, k).$$
 \end{definition}
 
-Note that the sequence average maximum of the correlation between lands is used in SensoComp \hh{citation for that?}\svp{It's your claim... I looked for a citation and didn't find one. Closed-source proprietary = no references?} to capture the similarity between bullets. The correlation based SAM score has also been called the 'average correlation calculated at the max phase' in \citet{chuPilotStudyAutomated2010}. 
+Note that the sequence average maximum of the correlation between lands is used in SensoComp \citep{sensofar-sam} to capture the similarity between bullets. The correlation based SAM score has also been called the 'average correlation calculated at the max phase' in \citet{chuPilotStudyAutomated2010}. 
 
 ```{r sam-sketch, out.width='\\textwidth', fig.width=12, fig.height = 2.5, fig.cap="Sketch of all six land-to-land sequences between two bullets with six lands. "}
 df2 <- data.frame(expand.grid(x = 1:6, y = 1:6))
