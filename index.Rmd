@@ -324,7 +324,7 @@ p2 <- bab %>%
 Land-to-land comparisons lead to a whole set of scores for bullet-to-bullet comparisons. \autoref{fig:b2b} shows two matrices of scores for two pairs of bullet-to-bullet matches. On the left, a matrix is shown that is typical for scores from two bullets from the same barrel. On the right, values for a pair of known non-matching bullets are shown.
 
 
-```{r b2b, echo = FALSE, fig.width = 9, fig.height = 5,  out.width='.6\\textwidth', fig.cap="Overview of land-land matching scores for two pairs of bullet-bullet comparisons. On the left the two bullets are known to come from the same source (barrel) on the right, the bullets are from two different sources (barrels)"}
+```{r b2b, echo = FALSE, fig.width = 5.4, fig.height = 3, out.width = ".6\\textwidth", fig.cap="Overview of land-land matching scores for two pairs of bullet-bullet comparisons. On the left the two bullets are known to come from the same source (barrel) on the right, the bullets are from two different sources (barrels)"}
 grid.arrange(p1, p2, ncol = 2, padding = 2)
 ```
 
