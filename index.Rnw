@@ -3,8 +3,7 @@
 \usepackage{lineno,hyperref}
 \modulolinenumbers[5]
 
-\usepackage{amsmath}
-\usepackage{amsthm}
+\usepackage{amsmath,amsthm}
 \usepackage{graphicx,psfrag,epsf}
 \usepackage{enumerate}
 \usepackage{booktabs}
@@ -20,8 +19,22 @@
 \usepackage{pdflscape}
 \usepackage{tabu}
 \usepackage{threeparttable}
-\usepackage{url} % not crucial - just used below for the URL
-\usepackage{ifdraft}
+
+\usepackage[numbers]{natbib}
+
+\newenvironment{definition}[1]% environment name 
+{% begin code 
+  \par\vspace{.75\baselineskip}\noindent 
+  \textbf{Definition (#1)}\begin{itshape}% 
+  \par\vspace{.5\baselineskip}\noindent\ignorespaces 
+}% 
+{% end code 
+  \end{itshape}\ignorespacesafterend 
+}
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
 
 \journal{Forensic Science International}
 %%%%%%%%%%%%%%%%%%%%%%%
@@ -38,7 +51,7 @@
 %\bibliographystyle{model1a-num-names}
 
 %% Harvard
-%\bibliographystyle{model2-names.bst}\biboptions{authoryear}
+% \bibliographystyle{model2-names.bst}\biboptions{authoryear}
 
 %% Vancouver numbered
 %\usepackage{numcompress}\bibliographystyle{model3-num-names}
@@ -47,13 +60,13 @@
 %\usepackage{numcompress}\bibliographystyle{model4-names}\biboptions{authoryear}
 
 %% APA style
-%\bibliographystyle{model5-names}\biboptions{authoryear}
+% \bibliographystyle{model5-names}\biboptions{authoryear}
 
 %% AMA style
 %\usepackage{numcompress}\bibliographystyle{model6-num-names}
 
 %% `Elsevier LaTeX' style
-\bibliographystyle{elsarticle-num}
+\bibliographystyle{elsarticle-num-names}
 %%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
@@ -84,9 +97,8 @@
 
 \author[isu,csafe]{Heike Hofmann\corref{corauthor}}
 \cortext[corauthor]{Corresponding author}\ead{hofmann@iastate.edu}
-\author[isu,csafe]{Susan Vanderplas}\ead{srvander@iastate.edu}
-
-\address[iastate]{Statistics Department, Iowa State University\\2438 Osborne Dr, Ames, IA 50011}
+\author[isu,csafe]{Susan Vanderplas}
+\address[isu]{Statistics Department, Iowa State University\\2438 Osborne Dr, Ames, IA 50011}
 \address[csafe]{Center for Statistical Applications in Forensic Evidence, Iowa State University\\613 Morrill Rd, Ames, IA 50011}
 
 
@@ -1166,7 +1178,7 @@ aucs %>%
 
 At the beginning of this study, we anticipated Hamby 44 would be the easiest set to work with because of its similarity to the sets used to train the random forest algorithm. In a surprise turn of events, it was the hardest to solve, in part because of damage to the bullets that obscured LEA striae. It has been shown \citet{lpr} that parts of lands can be used for successful identifications. The algorithm proposed by \citet{aoas} is not capable of  automatically detecting parts of lands with well-expressed striae. It may be useful to couple the \citet{aoas} algorithm with an algorithm which assesses the quality of the input data and determines which portions of the data to use for comparison. This would emulate the process used by examiners, who first assess the quality of the evidence and whether there is enough information present to attempt a match. One major disadvantage of an automated algorithm is that all of the decisions humans make (recognizing degraded land areas, excluding those areas from consideration, matching only the remaining areas) must be explicitly characterized; however, this explicit characterization means that the process can be scientifically validated to a much higher degree than the human perceptual process. 
 
-All of the studies presented here involve the same type of firearm. We see some variations in scores across different models of Rugers, and it is probable that we will see even bigger variations with different brands of firearms that vary in number of lands and land length. We also know that different firearms and ammunition combinations mark differently well \citep{bolton-king_preventing_2016, bonfanti_influence_1999}. Rugers are among the firearms that mark very well, so we would correspondingly expect to see lowered similarity scores for other firearms. The matching algorithm works on matching lands. Barrels with polygonal rifling, such as Glocks, do not introduce well defined lands on bullets, which makes an application of the matching algorithm impossible.  
+All of the studies presented here involve the same type of firearm. We see some variations in scores across different models of Rugers, and it is probable that we will see even bigger variations with different brands of firearms that vary in number of lands and land length. We also know that different firearms and ammunition combinations mark differently well \citep{boltonkingPreventingMiscarriagesJustice2016, bonfantiInfluenc1999}. Rugers are among the firearms that mark very well, so we would correspondingly expect to see lowered similarity scores for other firearms. The matching algorithm works on matching lands. Barrels with polygonal rifling, such as Glocks, do not introduce well defined lands on bullets, which makes an application of the matching algorithm impossible.  
 
 
 The random forest matching algorithm presented in \citet{aoas} does perform well on three different external test sets. While a single cutoff value cannot be used to distinguish matches and non-matches across the different test sets, the algorithm makes no errors when a set-specific cutoff value is used on bullet-to-bullet scores aggregated using sequence average maximum. This performance is on par with the performance of forensic examiners. For a future round of the Houston study, we are planning to compare the algorithmic performance directly with scores given by forensic toolmark examiners. \hh{XXX need to ask XXX  } The algorithm's score is not intended to replace an examiner's judgment; instead, it provides a complementary tool to measure and quantify the strength of an identification. 
@@ -1247,8 +1259,9 @@ file.copy(figs$file, file.path("separate_fig_files", figs$fig_label), overwrite 
 @
 \section{References}
 
-\bibliography{bibliography}
+\bibliography{bibfile}
 
+\end{document}
 
 % <!--include marginal distributions of training data and compare to test data-->
 
