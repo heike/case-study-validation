@@ -394,7 +394,9 @@ h44nest <- h44features %>%
   group_by(bullet1, barrel2, bullet2) %>%
   nest()
 
-h44nest <- h44nest %>% mutate(
+h44nest <- h44nest %>% 
+  mutate(bullet1 = as.character(bullet1), bullet2 = as.character(bullet2)) %>%
+  mutate(
   sam_ccf = data %>% purrr::map_dbl(.f = function(d) {
     scores <- bulletxtrctr::compute_average_scores(d$land1, d$land2, d$ccf)
     max(scores)
