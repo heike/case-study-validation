@@ -58,7 +58,8 @@ cleanall: clean
 		-e "knitr::knit('$*.Rnw', output='build/$*.tex')"
 	cp -r $(IMAGEDIR) build/$(IMAGEDIR)
 	cp -r $(FIGUREDIR) build/$(FIGUREDIR)
-	latexmk -pdf -halt-on-error -output-directory=build build/$*.tex || cp build/$*.pdf $*.pdf
+	latexmk -pdf -halt-on-error -output-directory=build build/$*.tex 
+	cp build/$*.pdf $*.pdf
 
 # extract an R file from an RNoWeb file
 %-purled.R: %.Rnw
