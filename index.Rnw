@@ -103,7 +103,7 @@
 
 
 \begin{abstract}
-Recent advances in microscopy have made it possible to collect 3D topographic data, enabling virtual comparisons based on the collected 3D data next to traditional comparison microscopy. Automatic matching algorithms have been introduced for various scenarios, such as matching cartridge cases (Tai and Eddy 2018) or matching bullet striae (Hare et al. 2017b,  Chu et al 2013,  De Kinder and Bonfanti 1999). One key aspect of validating automatic matching algorithms is to evaluate the performance of the algorithm on external tests. Here, we are presenting a discussion of the performance of the matching algorithm (Hare et al. 2017b) in three studies. We are considering matching performance based on the Random forest score, cross correlation, and consecutive matching striae (CMS) at the land-to-land level and, using Sequential Average Maxima scores, also at the bullet-to bullet level. Cross correlation and Random Forest scores both result in perfect discrimination of same-source and different-source bullets. At the land-to-land level, discrimination (based on area under the curve, AUC) is excellent ($ge$ 0.90).
+Recent advances in microscopy have made it possible to collect 3D topographic data, enabling virtual comparisons based on the collected 3D data next to traditional comparison microscopy. Automatic matching algorithms have been introduced for various scenarios, such as matching cartridge cases (Tai and Eddy 2018) or matching bullet striae (Hare et al. 2017b,  Chu et al 2013,  De Kinder and Bonfanti 1999). One key aspect of validating automatic matching algorithms is to evaluate the performance of the algorithm on external tests. Here, we are presenting a discussion of the performance of the matching algorithm (Hare et al. 2017b) in three studies. We are considering matching performance based on the Random forest score, cross correlation, and consecutive matching striae (CMS) at the land-to-land level and, using Sequential Average Maxima scores, also at the bullet-to bullet level. Cross correlation and Random Forest scores both result in perfect discrimination of same-source and different-source bullets. At the land-to-land level, discrimination (based on area under the curve, AUC) is excellent ($\ge$ 0.90).
 \end{abstract}
 
 \begin{keyword}
@@ -362,7 +362,7 @@ $k=2$ is higher than the other sequence averages, and also higher than the seque
 
 The sequence average maximum of the correlation between lands is used in SensoComp \citep{sensofar-sam} to capture the similarity between bullets. The correlation based SAM score has also been called the 'average correlation calculated at the max phase' in \citet{chuPilotStudyAutomated2010}. 
 
-<<sam-sketch, out.width='\\textwidth', fig.width=12, fig.height = 2.5, fig.cap="Sketch of all six land-to-land sequences between two bullets with six lands.">>=
+<<sam-sketch, out.width='\\textwidth', fig.width=8, fig.height = 3, fig.cap="Sketch of all six land-to-land sequences between two bullets with six lands.">>=
 df2 <- data.frame(expand.grid(x = 1:6, y = 1:6))
 df2$case1 <- df2$x == ((df2$y + 5) %% 6) + 1
 df2$case2 <- df2$x == ((df2$y + 0) %% 6) + 1
@@ -416,7 +416,7 @@ Case studies were chosen such that difficulty for the matching algorithm increas
 
 \subsection{Hamby Set 44}
 
-<<h44, echo=FALSE, fig.width = 10, fig.height=5, fig.cap="Hamby set 44: overview of all bullet-to-bullet matches between all pairs of questioned bullets (y-axis) and known test fires from ten barrels (x axis).">>=
+<<h44, echo=FALSE, fig.width = 8, fig.height=4, fig.cap="Hamby set 44: overview of all bullet-to-bullet matches between all pairs of questioned bullets (y-axis) and known test fires from ten barrels (x axis).">>=
 h44features <- read.csv("data/h44-features.csv")
 h44features <- h44features %>% mutate(
   lys = overlap*signature_length*1000/.645,
@@ -575,7 +575,7 @@ The right side of \autoref{fig:h44} shows the relationship between all pairs of 
 
 \subsection{Phoenix PD}
 
-<<pd, echo=FALSE, fig.width = 9, fig.height=4, fig.cap="Phoenix study: overview of all bullet-to-bullet matches between all pairs of questioned bullets (y-axis) and known test fires from ten barrels (x axis). The order of the bullets on the y axis is determined by matching barrel.">>=
+<<pd, echo=FALSE, fig.width = 8, fig.height=3.56, fig.cap="Phoenix study: overview of all bullet-to-bullet matches between all pairs of questioned bullets (y-axis) and known test fires from ten barrels (x axis). The order of the bullets on the y axis is determined by matching barrel.">>=
 features <- read.csv("data/pd-features.csv.gz")
 features <- features %>% mutate(
   lys = overlap*signature_length*1000/.645,
@@ -688,7 +688,7 @@ Once again, the results from automatic matching correctly pair questioned bullet
 % <!--Thus, we can conclude that the algorithm performs well on open set studies, as it can identify matches among questioned bullets which do not match any known bullets. -->
 While all bullet-to-bullet matches are correctly identified, and no known matches are missed, it is obvious from the generally lighter shades of the tiles corresponding to matching bullets in \autoref{fig:hou}(b) that the algorithm is not performing as well on set 2 as it performs on sets 1 and 3.
 
-<<hou, fig.width=9, fig.height = 3, fig.cap="Overview of matching scores for all pairs of questioned bullets to known bullets from five barrels (on the left) and questioned bullets to themselves (tiles on the right).", fig.subcap=c("Set 1", "Set 2", "Set 3"), fig.align="middle", fig.ncol=1>>=
+<<hou, fig.width=8, fig.height = 2.67, fig.cap="Overview of matching scores for all pairs of questioned bullets to known bullets from five barrels (on the left) and questioned bullets to themselves (tiles on the right).", fig.subcap=c("Set 1", "Set 2", "Set 3"), fig.align="middle", fig.ncol=1>>=
 features <- read.csv("data/fsi-features.csv.gz")
 features <- features %>% mutate(
   lys = overlap*signature_length*1000/.645,
