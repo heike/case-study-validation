@@ -928,7 +928,9 @@ pdnest <- pdnest %>% mutate(
       d
     })
 )
-pdlands <- pdnest %>% unnest(data)
+pdlands <- pdnest %>%
+  rename(bullet_KM = KM) %>% 
+  unnest(data)
 
 
 all_lands <- rbind(
