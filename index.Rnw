@@ -184,7 +184,7 @@ In the matching algorithm proposed in \citet{aoas2}, several features are combin
 From each land engraved area a signature is derived using the process described in detail in \citet{aoas2}:
 
 \begin{itemize}
-\item[(a)] Identify an area on the LEA with expressed striae. Locate a stable crosscut in the identified area.
+\item[(a)] Identify an area on the LEA with expressed striae. Locate a stable crosscut in the identified area; that is, an area where the striae are similar in the region above and below the crosscut.
 \item[(b)] Discard extraneous/contaminated data, such as data from groove engraved area and areas affected by break-off or contact with objects after the bullet exited the barrel  (``tank rash").
 \item[(c)] Remove bullet curvature using a non-parametric smooth. 
 \end{itemize}
@@ -268,11 +268,10 @@ The random forest presented in \citet{aoas2} is based on a combination of multip
 
 \subsection{Interpreting the Algorithm Score}
 
-The features described above are each individually designed to separate same-source and different-source signatures: for instance, same-source signatures would have high cross correlation values and different-source signatures would have low cross correlation values. An automated algorithm selects a cutoff value, introducing a barrier between identification and exclusion.
+The features described above are each individually designed to separate same-source and different-source signatures: for instance, same-source signatures would have high cross correlation values and different-source signatures would have low cross correlation values. An automated algorithm selects a cutoff value, introducing a barrier between identification and exclusion. 
 
-This threshold system introduces a binary classification: identification or exclusion. This definition of error is more stringent than the AFTE Theory of Identification, in that it does not allow for inconclusive results. This increased rigor may increase the error rate of the model when compared to examiner error rates, but we expect that the increased information available from the 3D measurement data will compensate for this loss. A binary decision model is also easier to interpret and provides more clear-cut, definitive results.
+This threshold system introduces a binary classification: identification or exclusion. This definition of error is more stringent than the AFTE Theory of Identification, in that it does not allow for inconclusive results. This increased rigor may increase the error rate of the model when compared to examiner error rates, but we expect that the increased information available from the 3D measurement data will compensate for this loss. A binary decision model is also easier to interpret and provides more clear-cut, definitive results than the AFTE Theory of Identification system used in most forensic laboratories in the United States. Of course, in jurisdictions which utilize score-based likelihood ratios, this threshold system is not necessary because likelihood ratios are evaluated on a continuous spectrum. Working under the binary decision model, we can enumerate characteristics of an ideal similarity scoring mechanism: 
 
-We can enumerate characteristics of an ideal similarity scoring mechanism: 
 \begin{description}
 \item[(R1)] {\bf Monotonicity:} a higher score is indicative of higher similarity between a pair of bullets, in particular, similarity scores of same-source pairs of bullets are higher than different-source pairs.
 \item[(R2)] {\bf Stability:} the same score leads to the same conclusion. 
