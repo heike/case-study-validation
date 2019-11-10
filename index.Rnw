@@ -310,44 +310,62 @@ When evaluating the \citet{aoas2} algorithm, we will describe errors as a percen
 Each of the scoring methods we have described is computed on a land-to-land basis. While these comparisons are useful, the question of interest typically involves the entire physical object (e.g. all lands on a single bullet), and a conclusion on same or different source should be reached based on the evidence of all lands of the bullets.
 
 <<echo=FALSE, results = 'hide', warning = FALSE, message = FALSE>>=
-features <- read.csv("data/fsi-features.csv.gz")
-features <- features %>% mutate(
-  bullet1 = gsub("ullet ", "", bullet1),
-  bullet2 = gsub("ullet ", "", bullet2)
-)
-b12 <- features %>% filter(
-  group1 == "G1", barrel1 == "KA", bullet1 == "B1",
-  group2 == "G1", barrel2 == "KA", bullet2 == "B2"
-)
-p1 <- b12 %>%
-  ggplot(aes(x = land1, y = land2, fill = rfscore)) +
-  geom_tile() + ggtitle("Same barrel") +
-  scale_fill_gradient2("RF score: ", midpoint = 0.3, low = "darkgrey", high = "darkorange", limits = c(0, 1)) +
-  theme_bw() +
-  xlab("Bullet 2") + ylab("Bullet 1") +
-  theme(legend.position = "bottom") + coord_equal()
+# features <- read.csv("data/fsi-features.csv.gz")
+# features <- features %>% mutate(
+#   bullet1 = gsub("ullet ", "", bullet1),
+#   bullet2 = gsub("ullet ", "", bullet2)
+# )
+# b12 <- features %>% filter(
+#   group1 == "G1", barrel1 == "KA", bullet1 == "B1",
+#   group2 == "G1", barrel2 == "KA", bullet2 == "B2"
+# )
+# 
+# p1 <- b12 %>%
+#   ggplot(aes(x = land1, y = land2, fill = rfscore)) +
+#   geom_tile() + ggtitle("Same barrel") +
+#   scale_fill_gradient2("RF score: ", midpoint = 0.3, low = "darkgrey", high = "darkorange", limits = c(0, 1)) +
+#   theme_bw() +
+#   xlab("Bullet 2") + ylab("Bullet 1") +
+#   theme(legend.position = "bottom") + coord_equal()
+# 
+# bab <- features %>% filter(
+#   group1 == "G1", barrel1 == "KA", bullet1 == "B1",
+#   group2 == "G1", barrel2 == "KB", bullet2 == "B1"
+# )
+# p2 <- bab %>%
+#   ggplot(aes(x = land1, y = land2, fill = rfscore)) +
+#   geom_tile() + ggtitle("Different barrel") +
+#   scale_fill_gradient2("RF score: ", midpoint = 0.3, low = "darkgrey", high = "darkorange", limits = c(0, 1)) +
+#   theme_bw() +
+#   xlab("Bullet 2") + ylab("Bullet 1") +
+#   theme(legend.position = "bottom") + coord_equal()
 
-bab <- features %>% filter(
-  group1 == "G1", barrel1 == "KA", bullet1 == "B1",
-  group2 == "G1", barrel2 == "KB", bullet2 == "B1"
-)
-p2 <- bab %>%
-  ggplot(aes(x = land1, y = land2, fill = rfscore)) +
-  geom_tile() + ggtitle("Different barrel") +
-  scale_fill_gradient2("RF score: ", midpoint = 0.3, low = "darkgrey", high = "darkorange", limits = c(0, 1)) +
-  theme_bw() +
-  xlab("Bullet 2") + ylab("Bullet 1") +
-  theme(legend.position = "bottom") + coord_equal()
+l2lscores <- bind_rows(
+  mutate(b12, type = "Same barrel"),
+  mutate(bab, type = "Different barrel")
+) %>% 
+  mutate(type = factor(type, levels = c("Same barrel", "Different barrel"), ordered = T))
+
+
+
 @
 
 Land-to-land comparisons lead to a whole set of scores for bullet-to-bullet comparisons. \autoref{fig:b2b} shows two matrices of scores for two pairs of bullet-to-bullet matches. On the left, a matrix is shown that is typical for scores from two bullets from the same barrel. On the right, values for a pair of known non-matching bullets are shown.
 
 
 <<b2b, echo = FALSE, fig.width = 5.4, fig.height = 3, out.width = ".6\\textwidth", fig.cap="Overview of land-land matching scores for two pairs of bullet-bullet comparisons. On the left the two bullets are known to come from the same source (barrel) on the right, the bullets are from two different sources (barrels).">>=
-grid.arrange(p1, p2, ncol = 2, padding = 2)
+# grid.arrange(p1, p2, ncol = 2, padding = 2)
+ggplot(data = l2lscores, aes(x = land1, y = land2, fill = rfscore)) +
+  geom_tile() + 
+  scale_fill_gradient2("Random Forest (RF) score: ", midpoint = 0.3, low = "darkgrey", high = "darkorange", limits = c(0, 1)) +
+  theme_bw() +
+  xlab("Bullet 2") + ylab("Bullet 1") +
+  theme(legend.position = "bottom") + coord_equal() + facet_wrap(~type)
 @
 
-When imaging bullets using a confocal light microscope, operators scan one land at a time in a clockwise (left twisted rifling) or anti-clockwise (right twisted rifling) sequence (Other imaging systems, such as BulletTrax 3D\footnote{https://www.ultra-forensictechnology.com/en/our-products/ballistic-identification/bullettrax/} or BalScan\footnote{https://www.forensic.cz/en/products/balscan}, may capture lower-resolution scans of an entire bullet at one time). The order in which scans are acquired is kept as meta-information. Let us assume that lands on a bullet are labelled $\ell_i$ with $i = 1, .., p$, where $p$ indicates the number of lands a bullet has, as determined by the rifling of a barrel. For all of the bullets considered here the number of lands $p$ is 6. A match between  a pair of lands from two bullets therefore results in an expected additional $p-1$ matches between pairs of lands. These lands are also expected to be in a sequence, i.e. if there is a match between lands $\ell_i$ on bullet 1 and $\ell_j$ on bullet 2, we also expect lands $\ell_{i\oplus s}$ and $\ell_{j\oplus s}$ to match for all integers $s$, where $\oplus$ is defined as $a \oplus b \equiv \left((a + b - 1)\mod p\right) + 1$. This relationship gives rise to the sequence average maximum (SAM) to quantify a bullet-to-bullet match. 
+While some imaging systems, such as BulletTrax 3D\footnote{https://www.ultra-forensictechnology.com/en/our-products/ballistic-identification/bullettrax/} or BalScan\footnote{https://www.forensic.cz/en/products/balscan}, may capture lower-resolution scans of an entire bullet at one time, confocal light microscopes do not have 360$^\circ$ capability. Thus, when imaging bullets using a confocal light microscope, operators scan one land at a time in a clockwise (left twisted rifling) or anti-clockwise (right twisted rifling) sequence. The order in which scans are acquired is kept as meta-information. 
+
+Let us assume that lands on a bullet are labelled $\ell_i$ with $i = 1, .., p$, where $p$ indicates the number of lands a bullet has, as determined by the rifling of a barrel. For all of the bullets considered here the number of lands $p$ is 6. A match between  a pair of lands from two bullets therefore results in an expected additional $p-1$ matches between pairs of lands. These lands are also expected to be in a sequence, i.e. if there is a match between lands $\ell_i$ on bullet 1 and $\ell_j$ on bullet 2, we also expect lands $\ell_{i\oplus s}$ and $\ell_{j\oplus s}$ to match for all integers $s$, where $\oplus$ is defined as $a \oplus b \equiv \left((a + b - 1)\mod p\right) + 1$. This relationship gives rise to the sequence average maximum (SAM) to quantify a bullet-to-bullet match. 
 
 \begin{definition}{Sequence Average and its Maximum}
 Let $A$ be a square real-valued matrix of dimensions $p \times p$. For the purpose of this paper, $A$ consists of scores describing the similarity between two sets of land engraved areas.
