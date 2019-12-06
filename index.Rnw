@@ -73,7 +73,7 @@
 
 \begin{frontmatter}
 
-\title{Case study validations of automatic bullet matching\tnoteref{t1}\tnoteref{t2}}
+\title{Comparison of three similarity scores for bullet LEA matching\tnoteref{t1}\tnoteref{t2}}
 
 \tnotetext[t1]{This work was partially funded by the Center for Statistics and Applications in Forensic Evidence (CSAFE) through Cooperative Agreement \#70NANB15H176 between NIST and Iowa State University, which includes activities carried out at Carnegie Mellon University, University of California Irvine, and University of Virginia.}
 
@@ -167,7 +167,7 @@ library(kableExtra)
 
 
  
-In current practice, firearms and toolmark examiners (FTE) evaluate the similarity of striae on bullets by placing the evidence together with another bullet under a comparison microscope. The second bullet could be a test fire from a weapon recovered during the investigation, or it could be a second bullet from the crime scene. Examiners visually classify similarity according to the theory of firearms identification \citep{identification} as one of identification, inconclusive or exclusion. Exact guidelines for this classification vary from lab to lab; some labs will exclude only on the basis of non-matching class characteristics, such as direction of the twist in rifling, land length or number of lands, or type of rifling. In other labs, CMS (consecutively matching striae) as defined by \citeauthor{biasotti} \citep{biasotti} is used as a measure to quantify the strength of a match. In virtually all labs, individual characteristics used to identify matching bullets are derived from visual assessment; some class characteristics may be directly measured, but these are not sufficient for individualization. 
+In current practice, firearms and toolmark examiners (FTE) evaluate the similarity of striae on bullets by placing the evidence together with another bullet under a comparison microscope. The second bullet could be a test fire from a weapon recovered during the investigation, or it could be a second bullet from the crime scene. Examiners visually classify similarity according to the theory of firearms identification \citep{identification} as one of identification, inconclusive or exclusion. Exact guidelines for this classification vary from lab to lab; some labs will exclude only on the basis of non-matching class characteristics, such as direction of the twist in rifling, land length or number of lands, or type of rifling. In other labs, CMS (consecutively matching striae) as defined by \citeauthor{biasotti} \citep{biasotti} is used as a measure to quantify the similarity of two lands. In virtually all labs, individual characteristics used to identify matching bullets are derived from visual assessment; some class characteristics may be directly measured, but these are not sufficient for individualization. 
 
 % Identification using 3D Scanning Technology
 
@@ -274,7 +274,7 @@ This threshold system introduces a binary classification: identification or excl
 
 \begin{description}
 \item[(R1)] {\bf Monotonicity:} a higher score is indicative of higher similarity between a pair of bullets, in particular, similarity scores of same-source pairs of bullets are higher than different-source pairs.
-\item[(R2)] {\bf Stability:} the same score leads to the same conclusion. 
+\item[(R2)] {\bf Stability:} the same score leads to the same conclusion in all situations and under separately assembled reference distributions. 
 \end{description}
 
 In particular, requirement (R2) would imply that the same threshold value would be used for all comparisons of a certain scoring mechanism. If the same-source and different-source similarity score distributions overlap, setting a threshold value will introduce classification errors.
