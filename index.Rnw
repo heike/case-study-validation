@@ -473,7 +473,7 @@ h44nest <- h44nest %>% mutate(
     max(scores)
   })
 )
-h44nest <- h44nest %>%
+h44nest <- h44nest %>%ungroup() %>% 
   mutate(
     barrel2 = factor(barrel2, levels = c(1:10, "Unknown")),
     bullet1 = factor(bullet1, levels = rev(c(
@@ -664,7 +664,7 @@ pdnest <- pdnest %>% mutate(
   })
 )
 
-pdnest <- pdnest %>%
+pdnest <- pdnest %>%ungroup() %>% 
   mutate(
     bullet2 = factor(bullet2, levels = rev(c("N", "B", "E", "T", "H", "J", "K", "Q", "Y", "Z"))),
     bullet1 = factor(bullet1, levels = c("B1", "B2", "B3", rev(levels(bullet2))))
@@ -745,7 +745,7 @@ hounest <- groups %>% mutate(
 
 hounest$samesource <- hounest$sam_rf > 0.3
 
-hou1nest <- hounest %>%
+hou1nest <- hounest %>%ungroup() %>% 
   filter(group1 == "G1") %>%
   mutate(
     bullet1 = factor(bullet1, levels = rev(c("U40", "U36", "U42", "U10", "U77", "U37", "U28", "U15"))),
@@ -768,7 +768,7 @@ hou1 <- hou1nest %>%
   guides(colour = guide_legend(override.aes = list(fill = NA))) + ggtitle("Houston set 1")
 
 
-hou2nest <- hounest %>%
+hou2nest <- hounest %>%ungroup() %>% 
   filter(group1 == "G2") %>%
   mutate(
     bullet1 = factor(bullet1, levels = rev(c("U23", "U41", "U61", "U98", "U73", "U34", "U63", "U66"))),
@@ -789,7 +789,7 @@ hou2 <- hou2nest %>%
   geom_tile(aes(colour = TRUE), size = .5, data = filter(hou2nest, sam_rf > 0.3)) +
   guides(colour = guide_legend(override.aes = list(fill = NA))) + ggtitle("Houston set 2")
 
-hou3nest <- hounest %>%
+hou3nest <- hounest %>%ungroup() %>% 
   filter(group1 == "G3") %>%
   mutate(
     bullet1 = factor(bullet1, levels = rev(c("U27", "U33", "U36", "U49", "U56", "U65", "U14", "U45"))),
@@ -827,13 +827,13 @@ The random forest scores correctly separate known matches from known non-matches
  
 <<compare, fig.width = 8, fig.height = 7, fig.cap="Density curves of similarity scores from random forest scores (top), cross correlation (middle), and consecutive matching striae (bottom). Different colors indicate same source versus different source. Ideally all scores of different source pairs should be much lower than scores for same source pairs.">>=
 nests <- rbind(
-  h44nest %>%
+  h44nest %>%ungroup() %>% 
     select(sam_rf, sam_ccf, sam_cms, samesource) %>%
     mutate(study = "Hamby 44", group1 = NA),
-  pdnest %>%
+  pdnest %>%ungroup() %>% 
     select(sam_rf, sam_ccf, sam_cms, samesource) %>%
     mutate(study = "Phoenix PD", group1 = NA),
-  hounest %>%
+  hounest %>%ungroup() %>% 
     select(sam_rf, sam_ccf, sam_cms, samesource, group1) %>%
     mutate(study = "Houston FSI")
 )
@@ -987,7 +987,7 @@ pdlands <- pdnest %>%
   unnest(data)
 
 
-all_lands <- rbind(
+all_lands <- bind_rows(
   h44lands %>%
     select(rfscore, ccf, cms, sameland, samesource) %>%
     mutate(study = "Hamby 44", group1 = ""),
@@ -1306,12 +1306,12 @@ The random forest matching algorithm presented in \citet{aoas2} does perform wel
 By validating the algorithm on external test sets, we have demonstrated that the method can be generalized to different types of ammunition and is not overly sensitive to small differences in rifling procedure. Future studies can and should generalize this to a wider range of external test sets to establish the limits of the algorithm's generalizability.
 
 
-<<output-all-figs, include = F>>=
-thisdoc <- readLines("index.Rmd")
+<<output-all-figs, eval = F, include = F>>=
+thisdoc <- readLines("index.Rnw")
 
 # First, get figures that aren't in code chunks
 # Haven't really tested this part - regex may need work
-raw_figures <- data_frame(
+raw_figures <- tibble(
   line_start = which(str_detect(thisdoc, "\\begin\\{figure\\}")), 
   line_end = which(str_detect(thisdoc, "\\end\\{figure\\}")),
   subfloats = purrr::map2(line_start, line_end, 
@@ -1320,10 +1320,10 @@ raw_figures <- data_frame(
 )
 
 # Code chunk figures
-chunk_figures <- data_frame(
-  line_start = which(str_detect(thisdoc, "^```\\{r.*\\}$")),
-  line_end = which(str_detect(thisdoc, "^``` *$")),
-  chunk_name = str_replace(thisdoc[line_start], "(```\\{r ?)([0-9A-z-]*)(,?.*\\})", "\\2")
+chunk_figures <- tibble(
+  line_start = which(str_detect(thisdoc, "^<<.*>>=$")),
+  line_end = which(str_detect(thisdoc, "^@$")),
+  chunk_name = str_replace(thisdoc[line_start], "<<([0-9A-z-]*?),?((?:.*=.*){1,})>>=", "\\1")
 ) %>% 
   mutate(
     chunk_name = ifelse(chunk_name == "", "unnamed-chunk", chunk_name),
@@ -1339,10 +1339,10 @@ chunk_figures <- data_frame(
   )
 
 # Knitr included graphics figures
-chunk_incl_figures <- data_frame(
-  line_start = which(str_detect(thisdoc, "^```\\{r.*\\}$")),
-  line_end = which(str_detect(thisdoc, "^``` *$")),
-  chunk_name = str_replace(thisdoc[line_start], "(```\\{r ?)([0-9A-z-]*)(,?.*\\})", "\\2")
+chunk_incl_figures <- tibble(
+  line_start = which(str_detect(thisdoc, "^<<.*>>=$")),
+  line_end = which(str_detect(thisdoc, "^@$")),
+  chunk_name = str_replace(thisdoc[line_start], "<<([0-9A-z-]*?),?((?:.*=.*){1,})>>=", "\\1")
 ) %>% 
   mutate(
     chunk_name = ifelse(chunk_name == "", "unnamed-chunk", chunk_name),
@@ -1367,7 +1367,7 @@ figs <- bind_rows(raw_figures, chunk_figures, chunk_incl_figures) %>%
   filter(exists) %>%
   mutate(fig_num = group_indices(., line_start, line_end)) %>%
   group_by(fig_num) %>%
-  mutate(rn = 1:n(),
+  mutate(rn = row_number(),
          maxrn = n(),
          fig_label = letters[rn],
          fig_label = ifelse(maxrn > 1, fig_label, ""),

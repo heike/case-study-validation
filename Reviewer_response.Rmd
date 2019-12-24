@@ -1,8 +1,8 @@
 ---
-title: "Response"
-author: "Susan Vanderplas"
-date: "12/6/2019"
-output: html_document
+title: "Response - Comparison of three similarity scores for bullet LEA matching"
+# author: "Susan Vanderplas"
+date: "2019-12-13"
+output: pdf_document
 ---
 
 We thank the reviewer for his or her careful and constructive comments on our article, which we have retitled "Comparison of three similarity scores for bullet LEA matching". We have made numerous changes to the document in response to the suggestions made by the reviewer, and have responses to the comments which we could not address according to the suggestions. Rather than address each point in turn, we have summarized the requested changes, as some of the issues appear in several separate comments. We first address the minor changes and then discuss some of the broader, more conceptual comments. We would be happy to provide a point by point response to the reviewer's suggestions, if this format does not work.

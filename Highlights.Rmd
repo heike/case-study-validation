@@ -1,0 +1,12 @@
+---
+title: "Highlights"
+output: word_document
+---
+
+- Automatic matching methods use numeric scores to describe evidence similarity
+
+- We compare 3 scoring methods for bullets, using 3 different test sets
+
+- Discrimination for cross-correlation and random forest scores are excellent
+
+- Numeric land-to-land scores can be assembled into whole-bullet comparisons
