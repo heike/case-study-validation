@@ -1,0 +1,14 @@
+---
+title: "CRediT author statement"
+output: pdf_document
+---
+
+Susan Vanderplas - writing - original draft, writing- review and editing, visualization, software, formal analysis
+
+Melissa Nally - investigation, resources
+
+Tylor Klep - investigation, resources
+
+Cristina Cadeval - investigation, resources
+
+Heike Hofmann - conceptualization, software, formal analysis, visualization, supervision, resources, funding acquisition, data curation
