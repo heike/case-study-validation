@@ -1,5 +1,5 @@
 ---
-title: "CRediT author statement"
+title: "Credit Author statement"
 output: pdf_document
 ---
 
@@ -11,4 +11,4 @@ Tylor Klep - investigation, resources
 
 Cristina Cadeval - investigation, resources
 
-Heike Hofmann - conceptualization, software, formal analysis, visualization, supervision, resources, funding acquisition, data curation
+Heike Hofmann -  writing - original draft, writing- review and editing, conceptualization, software, formal analysis, visualization, supervision, resources, funding acquisition, data curation
