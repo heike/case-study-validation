@@ -105,7 +105,7 @@
 %    
 
 \begin{abstract}
-Recent advances in microscopy have made it possible to collect 3D topographic data, enabling virtual comparisons based on the collected 3D data as a supplement to traditional comparison microscopy and 2D photography. Automatic comparison algorithms have been introduced for various scenarios, such as matching cartridge cases \citep{tai2018fully,song3DTopographyMeasurements2014} or matching bullet striae \citep{aoas2, chuAutomaticIdentificationBullet2013, dekinderAutomatedComparisonsBullet1999}. One key aspect of validating these automatic comparison algorithms is to evaluate the performance of the algorithm on external tests, that is, using data which were not used to train the algorithm. Here, we present a discussion of the performance of the matching algorithm \citep{aoas} in three studies conducted using different Ruger weapons. We consider the performance of three scoring measures: random forest score, cross correlation, and consecutive matching striae (CMS) at the land-to-land level and, using Sequential Average Maxima scores, also at the bullet-to bullet level. Cross correlation and random forest scores both result in perfect discrimination of same-source and different-source bullets. At the land-to-land level, discrimination for both cross correlation and random forest scores (based on area under the curve, AUC) is excellent ($\ge$ 0.90).
+Recent advances in microscopy have made it possible to collect 3D topographic data, enabling more precise virtual comparisons based on the collected 3D data as a supplement to traditional comparison microscopy and 2D photography. Automatic comparison algorithms have been introduced for various scenarios, such as matching cartridge cases \citep{tai2018fully,song3DTopographyMeasurements2014} or matching bullet striae \citep{aoas2, chuAutomaticIdentificationBullet2013, dekinderAutomatedComparisonsBullet1999}. One key aspect of validating these automatic comparison algorithms is to evaluate the performance of the algorithm on external tests, that is, using data which were not used to train the algorithm. Here, we present a discussion of the performance of the matching algorithm \citep{aoas} in three studies conducted using different Ruger weapons. We consider the performance of three scoring measures: random forest score, cross correlation, and consecutive matching striae (CMS) at the land-to-land level and, using Sequential Average Maxima scores, also at the bullet-to bullet level. Cross correlation and random forest scores both result in perfect discrimination of same-source and different-source bullets. At the land-to-land level, discrimination for both cross correlation and random forest scores (based on area under the curve, AUC) is excellent ($\ge$ 0.90).
 \end{abstract}
 
 \begin{keyword}
@@ -153,7 +153,8 @@ knitr::opts_chunk$set(
   out.width = "\\textwidth",
   cache = TRUE,
   fig.path = "figures/",
-  echo = FALSE
+  echo = FALSE,
+  dev = "png"
 )
 options(knitr.table.format = "latex")
 
@@ -263,9 +264,9 @@ In order to evaluate CMS, we must first identify peaks and valleys in each of th
 
 % <!-- I really think this belongs in this section: it's discussing cross correlation as a scoring statistic, rather than as a convenient way to align signatures so that scoring stats can be calculated. --> 
 
-Cross correlation can also be used to assess similarity between two aligned signatures. Cross correlation varies between -1 and 1, but as the alignment is based on the maximized cross correlation value, in practice the cross correlations for aligned signatures are generally positive. Cross correlation values which are close to 1 indicate similarity between signatures, and may consequentially indicate that the two signatures come from the same source. Low cross correlation values indicate signatures which may originate from different sources.
+Cross correlation can also be used to assess similarity between two aligned signatures. Cross correlation varies between -1 and 1, but as the alignment is based on the maximized cross correlation value, in practice the cross correlations for aligned signatures are generally positive. Cross correlation values which are close to 1 indicate similarity between signatures, with the possibility that the two signatures come from the same source. Low cross correlation values indicate signatures which are different and thus may originate from different sources.
 
-The random forest presented in \citet{aoas} is based on a combination of multiple characteristics, including cross correlation, number of matching striae, and number of consecutively matching striae. The output of the random forest is a score between 0 and 1 representing the algorithm's assessment of the similarity of the two signatures, where scores close to 1 indicate it to be highly likely that the aligned signatures come from the same source, while scores close to 0 indicate that the aligned signatures are highly likely to originate from different sources.
+The random forest presented in \citet{aoas} is based on a combination of multiple characteristics, including cross correlation, number of matching striae, and number of consecutively matching striae. The output of the random forest is a score between 0 and 1 representing the algorithm's assessment of the similarity of the two signatures, where scores close to 1 indicate signatures which are similar and may have originated from the same source, while scores close to 0 indicate that the aligned signatures are different and may originate from different sources.
 
 \subsection{Interpreting the Algorithm Score}
 
@@ -383,7 +384,7 @@ $k=2$ is higher than the other sequence averages, and also higher than the seque
 
 The sequence average maximum of the correlation between lands is used in SensoComp \citep{sensofar-sam} to capture the similarity between bullets. The correlation based SAM score has also been called the 'average correlation calculated at the max phase' in \citet{chuPilotStudyAutomated2010}. 
 
-<<sam-sketch, out.width='\\textwidth', fig.width=8, fig.height = 3, fig.cap="Sketch of all six land-to-land sequences between two bullets with six lands.">>=
+<<sam-sketch, out.width='\\textwidth', fig.width=6, fig.height = 2.5, fig.cap="Sketch of all six land-to-land sequences between two bullets with six lands.">>=
 df2 <- data.frame(expand.grid(x = 1:6, y = 1:6))
 df2$case1 <- df2$x == ((df2$y + 5) %% 6) + 1
 df2$case2 <- df2$x == ((df2$y + 0) %% 6) + 1

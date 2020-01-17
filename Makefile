@@ -56,8 +56,8 @@ cleanall: clean
 		-e "knitr::opts_chunk[['set']](fig.path='$(FIGUREDIR)/$*-')" \
 		-e "knitr::opts_chunk[['set']](cache.path='$(CACHEDIR)/$*-')" \
 		-e "knitr::knit('$*.Rnw', output='build/$*.tex')"
-	cp -r $(IMAGEDIR) build/$(IMAGEDIR)
-	cp -r $(FIGUREDIR) build/$(FIGUREDIR)
+	cp -r $(IMAGEDIR)/ build/$(IMAGEDIR)
+	cp -r $(FIGUREDIR)/ build/$(FIGUREDIR)
 	latexmk -pdf -halt-on-error -output-directory=build build/$*.tex 
 	cp build/$*.pdf $*.pdf
 
@@ -72,3 +72,7 @@ cleanall: clean
 # open all PDF's
 open:
 	open -a Skim $(PDFS)
+	
+# remove generated files except pdf and purled R files
+clean:
+	rm -f build/*.blg build/*.out *.log build/*.spl build/*.tikzDictionary build/*.fls build/*.fdb_latexmk
