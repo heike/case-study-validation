@@ -9,7 +9,7 @@
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{array}
-\usepackage{multirow}
+\usepackage{multirow} 
 \usepackage{adjustbox}
 \usepackage[table]{xcolor}
 \usepackage{wrapfig}
@@ -263,7 +263,7 @@ In order to evaluate CMS, we must first identify peaks and valleys in each of th
 
 Cross correlation can also be used to assess similarity between two aligned signatures. Cross correlation varies between -1 and 1, but as the alignment is based on the maximized cross correlation value, in practice the cross correlations for aligned signatures are generally positive. Cross correlation values which are close to 1 indicate similarity between signatures, with the possibility that the two signatures come from the same source. Low cross correlation values indicate signatures which are different and thus may originate from different sources.
 
-The random forest presented in \citet{aoas} is based on a combination of multiple characteristics, including cross correlation, number of matching striae, and number of consecutively matching striae. The output of the random forest is a score between 0 and 1 representing the algorithm's assessment of the similarity of the two signatures, where scores close to 1 indicate signatures which are similar and may have originated from the same source, while scores close to 0 indicate that the aligned signatures are different and may originate from different sources.
+The random forest presented in \citet{aoas2} is based on a combination of multiple characteristics, including cross correlation, number of matching striae, and number of consecutively matching striae. The output of the random forest is a score between 0 and 1 representing the algorithm's assessment of the similarity of the two signatures, where scores close to 1 indicate signatures which are similar and may have originated from the same source, while scores close to 0 indicate that the aligned signatures are different and may originate from different sources.
 
 \subsection{Interpreting the Algorithm Score}
 
